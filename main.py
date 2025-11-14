@@ -317,7 +317,7 @@ def main():
     if len(sys.argv) > 1:
         config_path = sys.argv[1]
     else:
-        config_path = Path(__file__).parent / "config.json"
+        config_path = Path(__file__).parent / "configs/config.json"
 
     try:
         app = SteelClockApp(config_path=str(config_path))
