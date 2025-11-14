@@ -82,6 +82,7 @@ def resolve_font_path(font: Optional[str]) -> Optional[str]:
     return None
 
 
+# fixme: strange defaults
 def load_font(font: Optional[str] = None, size: int = 10) -> ImageFont.FreeTypeFont:
     """
     Загружает шрифт по имени или пути.
