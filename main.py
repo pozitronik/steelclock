@@ -2,7 +2,12 @@
 """
 SteelClock - OLED display manager для SteelSeries APEX 7.
 
-Отображает время и системную информацию на OLED дисплее клавиатуры.
+Поддерживает:
+- Множественные экземпляры виджетов
+- Настройку позиции, размера, z-order через конфиг
+- Стилизацию виджетов (фон, рамки)
+- Фон дисплея
+- Виртуальный канвас / viewport (опционально)
 """
 
 import json
@@ -33,11 +38,7 @@ logger = logging.getLogger(__name__)
 
 
 class WidgetUpdateThread(threading.Thread):
-    """
-    Поток для периодического обновления виджета.
-
-    Вызывает widget.update() с интервалом widget.get_update_interval().
-    """
+    """Поток для периодического обновления виджета."""
 
     def __init__(self, widget: Widget):
         super().__init__(name=f"Widget-{widget.name}", daemon=True)
@@ -55,7 +56,6 @@ class WidgetUpdateThread(threading.Thread):
             except Exception as e:
                 logger.error(f"Error updating widget {self.widget.name}: {e}")
 
-            # Ждём следующего обновления (с возможностью прерывания)
             self.stop_event.wait(timeout=interval)
 
         logger.debug(f"Widget update thread stopped: {self.widget.name}")
@@ -69,11 +69,7 @@ class SteelClockApp:
     """
     Главное приложение SteelClock.
 
-    Управляет жизненным циклом всех компонентов:
-    - GameSense API
-    - Layout Manager
-    - Widgets
-    - Compositor
+    Поддерживает расширенную конфигурацию через JSON.
     """
 
     def __init__(self, config_path: str = "config.json"):
@@ -88,7 +84,7 @@ class SteelClockApp:
 
         # Компоненты (инициализируются в setup())
         self.api: GameSenseAPI = None
-        self.layout_manager: LayoutManager = None
+        self.layout_manager = None
         self.compositor: Compositor = None
         self.widgets: List[Widget] = []
         self.widget_threads: List[WidgetUpdateThread] = []
@@ -99,16 +95,7 @@ class SteelClockApp:
         logger.info("SteelClock initialized")
 
     def _load_config(self) -> Dict:
-        """
-        Загружает конфигурацию из файла.
-
-        Returns:
-            Dict: Конфигурация приложения
-
-        Raises:
-            FileNotFoundError: Если файл не найден
-            json.JSONDecodeError: Если JSON невалиден
-        """
+        """Загружает конфигурацию из файла."""
         if not self.config_path.exists():
             logger.warning(f"Config file not found: {self.config_path}, using defaults")
             return self._default_config()
@@ -123,34 +110,33 @@ class SteelClockApp:
             raise
 
     def _default_config(self) -> Dict:
-        """
-        Возвращает дефолтную конфигурацию.
-
-        Returns:
-            Dict: Дефолтная конфигурация
-        """
+        """Возвращает дефолтную конфигурацию."""
         return {
             "game_name": "STEELCLOCK",
             "game_display_name": "SteelClock",
             "refresh_rate_ms": 100,
+            "display": {
+                "width": 128,
+                "height": 40,
+                "background_color": 0
+            },
+            "layout": {
+                "type": "basic"
+            },
             "widgets": [
                 {
                     "type": "clock",
-                    "format": "%H:%M:%S",
-                    "update_interval": 1.0,
-                    "font_size": 12
+                    "id": "main_clock",
+                    "enabled": True,
+                    "position": {"x": 0, "y": 0, "w": 128, "h": 40, "z_order": 0},
+                    "style": {"background_color": 0, "border": False, "border_color": 255},
+                    "properties": {"format": "%H:%M:%S", "font_size": 12, "update_interval": 1.0}
                 }
             ]
         }
 
     def setup(self):
-        """
-        Инициализирует все компоненты приложения.
-
-        Raises:
-            ServerDiscoveryError: Если не найден SteelSeries Engine
-            GameSenseAPIError: Если ошибка при работе с API
-        """
+        """Инициализирует все компоненты приложения."""
         logger.info("Setting up SteelClock...")
 
         # Инициализируем GameSense API
@@ -160,39 +146,55 @@ class SteelClockApp:
                 game_display_name=self.config.get("game_display_name", "SteelClock")
             )
 
-            # Регистрируем игру
             self.api.register_game()
-
-            # Биндим событие для дисплея
             self.api.bind_screen_event("DISPLAY")
 
         except ServerDiscoveryError as e:
             logger.error(f"Failed to discover SteelSeries Engine: {e}")
-            logger.error("Make sure SteelSeries Engine 3 is installed and running")
             raise
         except GameSenseAPIError as e:
             logger.error(f"Failed to initialize GameSense API: {e}")
             raise
 
-        # Создаём Layout Manager
-        self.layout_manager = LayoutManager(width=128, height=40)
+        # Создаём Layout Manager (обычный или с viewport)
+        display_config = self.config.get("display", {})
+        layout_config = self.config.get("layout", {})
+
+        display_width = display_config.get("width", 128)
+        display_height = display_config.get("height", 40)
+
+        # Создаём LayoutManager (автоматически определяет режим)
+        virtual_width = layout_config.get("virtual_width")
+        virtual_height = layout_config.get("virtual_height")
+
+        self.layout_manager = LayoutManager(
+            width=display_width,
+            height=display_height,
+            virtual_width=virtual_width,
+            virtual_height=virtual_height
+        )
 
         # Создаём виджеты из конфигурации
         widget_configs = self.config.get("widgets", [])
         for widget_config in widget_configs:
-            widget = self._create_widget(widget_config)
+            # Пропускаем отключённые виджеты
+            if not widget_config.get("enabled", True):
+                continue
+
+            widget = self._create_widget_from_config(widget_config)
             if widget:
                 self.widgets.append(widget)
 
-        # Добавляем виджеты в layout
-        # Для MVP с одним fullscreen clock просто добавляем на (0, 0)
-        for widget in self.widgets:
-            self.layout_manager.add_widget(
-                widget,
-                x=0, y=0,
-                w=128, h=40,
-                z_order=0
-            )
+                # Добавляем виджет в layout с параметрами из конфига
+                position = widget_config.get("position", {})
+                self.layout_manager.add_widget(
+                    widget,
+                    x=position.get("x", 0),
+                    y=position.get("y", 0),
+                    w=position.get("w", 128),
+                    h=position.get("h", 40),
+                    z_order=position.get("z_order", 0)
+                )
 
         # Создаём Compositor
         refresh_rate_ms = self.config.get("refresh_rate_ms", 100)
@@ -203,9 +205,9 @@ class SteelClockApp:
             event_name="DISPLAY"
         )
 
-        logger.info("Setup completed successfully")
+        logger.info(f"Setup completed: {len(self.widgets)} widgets loaded")
 
-    def _create_widget(self, config: Dict) -> Widget:
+    def _create_widget_from_config(self, config: Dict) -> Widget:
         """
         Создаёт виджет из конфигурации.
 
@@ -216,30 +218,31 @@ class SteelClockApp:
             Widget: Экземпляр виджета или None при ошибке
         """
         widget_type = config.get("type")
+        widget_id = config.get("id", f"{widget_type}_auto")
+        properties = config.get("properties", {})
+        style = config.get("style", {})
 
         try:
             if widget_type == "clock":
                 return ClockWidget(
-                    name=config.get("name", "Clock"),
-                    format_string=config.get("format", "%H:%M:%S"),
-                    update_interval=config.get("update_interval", 1.0),
-                    font_size=config.get("font_size", 12)
+                    name=widget_id,
+                    format_string=properties.get("format", "%H:%M:%S"),
+                    update_interval=properties.get("update_interval", 1.0),
+                    font_size=properties.get("font_size", 12),
+                    background_color=style.get("background_color", 0),
+                    border=style.get("border", False),
+                    border_color=style.get("border_color", 255)
                 )
             else:
                 logger.error(f"Unknown widget type: {widget_type}")
                 return None
 
         except Exception as e:
-            logger.error(f"Failed to create widget {widget_type}: {e}")
+            logger.error(f"Failed to create widget {widget_type}/{widget_id}: {e}")
             return None
 
     def run(self):
-        """
-        Запускает приложение.
-
-        Запускает потоки обновления виджетов и compositor,
-        затем ждёт сигнала завершения.
-        """
+        """Запускает приложение."""
         logger.info("Starting SteelClock...")
 
         # Запускаем потоки обновления виджетов
@@ -253,7 +256,7 @@ class SteelClockApp:
 
         logger.info("SteelClock is running. Press Ctrl+C to stop.")
 
-        # Главный цикл - просто ждём сигнала завершения
+        # Главный цикл
         try:
             while not self.shutdown_requested:
                 time.sleep(1.0)
@@ -270,9 +273,7 @@ class SteelClockApp:
         self.shutdown()
 
     def shutdown(self):
-        """
-        Останавливает приложение и очищает ресурсы.
-        """
+        """Останавливает приложение и очищает ресурсы."""
         if self.shutdown_requested:
             return
 
@@ -287,7 +288,6 @@ class SteelClockApp:
         for thread in self.widget_threads:
             thread.stop()
 
-        # Ждём завершения потоков
         for thread in self.widget_threads:
             thread.join(timeout=1.0)
 
@@ -301,9 +301,7 @@ class SteelClockApp:
         logger.info("SteelClock stopped")
 
     def signal_handler(self, signum, frame):
-        """
-        Обработчик системных сигналов (SIGINT, SIGTERM).
-        """
+        """Обработчик системных сигналов."""
         logger.info(f"Received signal {signum}")
         self.shutdown_requested = True
 
@@ -314,21 +312,20 @@ def main():
     logger.info("SteelClock - OLED Display Manager for SteelSeries APEX 7")
     logger.info("=" * 60)
 
-    # Путь к конфигу
-    config_path = Path(__file__).parent / "config.json"
+    # Путь к конфигу (можно передать как аргумент)
+    if len(sys.argv) > 1:
+        config_path = sys.argv[1]
+    else:
+        config_path = Path(__file__).parent / "config.json"
 
     try:
-        # Создаём приложение
         app = SteelClockApp(config_path=str(config_path))
 
         # Регистрируем обработчики сигналов
         signal.signal(signal.SIGINT, app.signal_handler)
         signal.signal(signal.SIGTERM, app.signal_handler)
 
-        # Инициализируем
         app.setup()
-
-        # Запускаем
         app.run()
 
     except KeyboardInterrupt:
