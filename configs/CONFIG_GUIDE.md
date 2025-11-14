@@ -167,17 +167,93 @@ Control where content appears within the widget:
 
 #### Common Time Format Examples:
 
-| Format | Example Output | Description |
-|--------|---------------|-------------|
-| `%H:%M:%S` | 15:43:27 | 24-hour with seconds |
-| `%H:%M` | 15:43 | 24-hour without seconds |
-| `%I:%M:%S %p` | 03:43:27 PM | 12-hour with AM/PM |
-| `%Y-%m-%d` | 2025-11-14 | ISO date |
-| `%d.%m.%Y` | 14.11.2025 | European date |
-| `%A, %B %d` | Thursday, November 14 | Full date |
-| `%a %H:%M` | Thu 15:43 | Short day + time |
+| Format        | Example Output        | Description             |
+|---------------|-----------------------|-------------------------|
+| `%H:%M:%S`    | 15:43:27              | 24-hour with seconds    |
+| `%H:%M`       | 15:43                 | 24-hour without seconds |
+| `%I:%M:%S %p` | 03:43:27 PM           | 12-hour with AM/PM      |
+| `%Y-%m-%d`    | 2025-11-14            | ISO date                |
+| `%d.%m.%Y`    | 14.11.2025            | European date           |
+| `%A, %B %d`   | Thursday, November 14 | Full date               |
+| `%a %H:%M`    | Thu 15:43             | Short day + time        |
 
 Full format codes: https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
+
+### CPU Widget Properties
+
+```json
+"properties": {
+  "display_mode": "bar_horizontal",  // Display mode (see below)
+  "per_core": false,                 // true = per-core, false = aggregate
+  "update_interval": 1.0,            // Update frequency in seconds
+  "history_length": 30,              // History samples for graph mode
+  "show_percentage": true            // Show percentage text
+}
+```
+
+#### Display Modes
+
+**`display_mode`** - How CPU usage is visualized:
+
+- **`"text"`** - Text display
+  - Aggregate: `CPU: 45%`
+  - Per-core: Grid of `CPU0: 78%`, `CPU1: 34%`, etc.
+
+- **`"bar_horizontal"`** - Horizontal progress bars (htop-style)
+  - Aggregate: Single bar with label
+  - Per-core: Multiple bars, one per core
+
+- **`"bar_vertical"`** - Vertical column bars
+  - Aggregate: Single column in center
+  - Per-core: Multiple columns side-by-side
+
+- **`"graph"`** - Time-series line graph (Task Manager-style)
+  - Aggregate: Single line showing history
+  - Per-core: Multiple overlaid lines (one per core)
+
+**`per_core`** - Mode:
+- `false` - Show aggregate CPU usage (all cores combined)
+- `true` - Show per-core CPU usage (separate display for each core)
+
+**`history_length`** - Number of samples to keep for graph mode (default: 30)
+
+**`show_percentage`** - Show "%" text in text/bar modes (default: true)
+
+**Example configurations:**
+
+```json
+// Simple aggregate bar
+{
+  "type": "cpu",
+  "properties": {
+    "display_mode": "bar_horizontal",
+    "per_core": false
+  }
+}
+
+// Per-core vertical bars
+{
+  "type": "cpu",
+  "properties": {
+    "display_mode": "bar_vertical",
+    "per_core": true
+  }
+}
+
+// History graph (60 seconds)
+{
+  "type": "cpu",
+  "properties": {
+    "display_mode": "graph",
+    "per_core": false,
+    "history_length": 60,
+    "update_interval": 1.0
+  }
+}
+```
+
+**Requirements:**
+- Requires `psutil` library: `pip install psutil`
 
 ## Complete Examples
 
