@@ -93,20 +93,30 @@ def load_font(font: Optional[str] = None, size: int = 10) -> ImageFont.FreeTypeF
     Returns:
         ImageFont: Загруженный шрифт или default font
     """
+    import logging
+    logger = logging.getLogger(__name__)
+
     if font:
         font_path = resolve_font_path(font)
         if font_path:
             try:
-                return ImageFont.truetype(font_path, size)
-            except Exception:
-                pass  # Fallback to default
+                loaded = ImageFont.truetype(font_path, size)
+                logger.debug(f"Loaded font: {font_path} at size {size}")
+                return loaded
+            except Exception as e:
+                logger.warning(f"Failed to load font {font_path}: {e}, falling back to default")
+        else:
+            logger.warning(f"Font '{font}' not found, falling back to default")
 
     # Default fallback
     try:
         # Пробуем DejaVuSans как запасной вариант
-        return ImageFont.truetype("DejaVuSans.ttf", size)
+        loaded = ImageFont.truetype("DejaVuSans.ttf", size)
+        logger.debug(f"Loaded DejaVuSans at size {size}")
+        return loaded
     except:
         # Финальный fallback на встроенный bitmap font
+        logger.warning(f"DejaVuSans not found, using PIL default bitmap font (size will be ignored)")
         return ImageFont.load_default()
 
 

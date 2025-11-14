@@ -162,6 +162,7 @@ class SteelClockApp:
 
         display_width = display_config.get("width", 128)
         display_height = display_config.get("height", 40)
+        background_color = display_config.get("background_color", 0)
 
         # Создаём LayoutManager (автоматически определяет режим)
         virtual_width = layout_config.get("virtual_width")
@@ -171,7 +172,8 @@ class SteelClockApp:
             width=display_width,
             height=display_height,
             virtual_width=virtual_width,
-            virtual_height=virtual_height
+            virtual_height=virtual_height,
+            background_color=background_color
         )
 
         # Создаём виджеты из конфигурации

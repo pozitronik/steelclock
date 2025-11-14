@@ -68,7 +68,8 @@ class LayoutManager:
         width: int = 128,
         height: int = 40,
         virtual_width: Optional[int] = None,
-        virtual_height: Optional[int] = None
+        virtual_height: Optional[int] = None,
+        background_color: int = 0
     ):
         """
         Инициализирует Layout Manager.
@@ -78,6 +79,7 @@ class LayoutManager:
             height: Физическая высота дисплея (или высота канваса в базовом режиме)
             virtual_width: Ширина виртуального канваса (None = равна width, базовый режим)
             virtual_height: Высота виртуального канваса (None = равна height, базовый режим)
+            background_color: Цвет фона канваса (0-255, 0=чёрный, 255=белый)
         """
         # Физический дисплей
         self.display_width = width
@@ -86,6 +88,9 @@ class LayoutManager:
         # Виртуальный канвас (может быть больше физического дисплея)
         self.virtual_width = virtual_width or width
         self.virtual_height = virtual_height or height
+
+        # Цвет фона
+        self.background_color = background_color
 
         # Определяем режим работы
         self.viewport_mode = (
@@ -222,7 +227,7 @@ class LayoutManager:
         virtual_canvas = create_blank_image(
             self.virtual_width,
             self.virtual_height,
-            color=0
+            color=self.background_color
         )
 
         # Шаг 2: Рендерим виджеты в порядке z_order (от меньшего к большему)
@@ -309,11 +314,11 @@ class LayoutManager:
         if (left < 0 or top < 0 or
             right > zoomed_width or bottom > zoomed_height):
 
-            # Создаём чёрный канвас размером с дисплей
+            # Создаём канвас размером с дисплей
             display_canvas = create_blank_image(
                 self.display_width,
                 self.display_height,
-                color=0
+                color=self.background_color
             )
 
             # Вычисляем какая часть виртуального канваса видна
