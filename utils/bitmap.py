@@ -116,7 +116,7 @@ def load_font(font: Optional[str] = None, size: int = 10) -> ImageFont.FreeTypeF
         return loaded
     except:
         # Финальный fallback на встроенный bitmap font
-        logger.warning(f"DejaVuSans not found, using PIL default bitmap font (size will be ignored)")
+        logger.warning("DejaVuSans not found, using PIL default bitmap font (size will be ignored)")
         return ImageFont.load_default()
 
 
