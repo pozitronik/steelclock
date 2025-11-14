@@ -1,0 +1,14 @@
+{
+  "game_name": "STEELCLOCK",
+  "game_display_name": "SteelClock",
+  "refresh_rate_ms": 100,
+  "widgets": [
+    {
+      "type": "clock",
+      "name": "MainClock",
+      "format": "%H:%M:%S",
+      "update_interval": 1.0,
+      "font_size": 12
+    }
+  ]
+}
