@@ -13,7 +13,8 @@ except ImportError:
     psutil = None
 
 from core.widget import Widget
-from utils.bitmap import create_blank_image, load_font
+from utils.bitmap import create_blank_image
+from utils.text_renderer import render_multi_line_text
 
 logger = logging.getLogger(__name__)
 
@@ -254,65 +255,28 @@ class NetworkWidget(Widget):
 
     def _render_text(self, image: Image.Image) -> None:
         """Рендерит текстовое представление скорости (RX и TX с префиксами)."""
-        draw = ImageDraw.Draw(image)
-
-        # Загружаем шрифт
-        font_obj = load_font(self.font, self.font_size)
-
-        # Вычисляем доступное пространство
-        content_x = self.padding
-        content_y = self.padding
-        content_w = image.width - self.padding * 2
-        content_h = image.height - self.padding * 2
-
         # Форматируем скорость с префиксами
         rx_value = self._format_speed(self._current_rx_speed)
         tx_value = self._format_speed(self._current_tx_speed)
         rx_text = f"RX:{rx_value}"
         tx_text = f"TX:{tx_value}"
 
-        # Вычисляем размеры каждой строки
-        rx_bbox = draw.textbbox((0, 0), rx_text, font=font_obj)
-        rx_w = rx_bbox[2] - rx_bbox[0]
-        rx_h = rx_bbox[3] - rx_bbox[1]
+        # Создаём список строк с цветами
+        lines = [
+            (rx_text, self.rx_color),
+            (tx_text, self.tx_color)
+        ]
 
-        tx_bbox = draw.textbbox((0, 0), tx_text, font=font_obj)
-        tx_w = tx_bbox[2] - tx_bbox[0]
-        tx_h = tx_bbox[3] - tx_bbox[1]
-
-        # Общая высота блока (две строки с небольшим промежутком)
-        line_spacing = 2
-        total_h = rx_h + line_spacing + tx_h
-
-        # Вычисляем вертикальное положение блока
-        if self.vertical_align == "top":
-            block_y = content_y
-        elif self.vertical_align == "bottom":
-            block_y = content_y + content_h - total_h
-        else:  # center
-            block_y = content_y + (content_h - total_h) // 2
-
-        # RX строка
-        if self.horizontal_align == "left":
-            rx_x = content_x
-        elif self.horizontal_align == "right":
-            rx_x = content_x + content_w - rx_w
-        else:  # center
-            rx_x = content_x + (content_w - rx_w) // 2
-
-        rx_y = block_y
-        draw.text((rx_x, rx_y), rx_text, fill=self.rx_color, font=font_obj)
-
-        # TX строка
-        if self.horizontal_align == "left":
-            tx_x = content_x
-        elif self.horizontal_align == "right":
-            tx_x = content_x + content_w - tx_w
-        else:  # center
-            tx_x = content_x + (content_w - tx_w) // 2
-
-        tx_y = block_y + rx_h + line_spacing
-        draw.text((tx_x, tx_y), tx_text, fill=self.tx_color, font=font_obj)
+        render_multi_line_text(
+            image,
+            lines,
+            font=self.font,
+            font_size=self.font_size,
+            horizontal_align=self.horizontal_align,
+            vertical_align=self.vertical_align,
+            padding=self.padding,
+            line_spacing=2
+        )
 
     def _render_bar_horizontal(self, image: Image.Image) -> None:
         """Рендерит две горизонтальные полосы (RX сверху, TX снизу)."""

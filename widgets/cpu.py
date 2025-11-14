@@ -14,6 +14,7 @@ except ImportError:
 
 from core.widget import Widget
 from utils.bitmap import create_blank_image
+from utils.text_renderer import render_single_line_text, render_grid_text
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +39,10 @@ class CPUWidget(Widget):
         per_core: bool = False,
         update_interval: float = 1.0,
         history_length: int = 30,
+        font: str = None,
+        font_size: int = 10,
+        horizontal_align: str = "center",
+        vertical_align: str = "center",
         background_color: int = 0,
         border: bool = False,
         border_color: int = 255,
@@ -55,6 +60,10 @@ class CPUWidget(Widget):
             per_core: True = по ядрам, False = агрегированное значение
             update_interval: Интервал обновления в секундах
             history_length: Количество образцов для graph режима
+            font: Шрифт для text режима (имя или путь к TTF файлу)
+            font_size: Размер шрифта для text режима (в пикселях)
+            horizontal_align: Горизонтальное выравнивание текста ("left", "center", "right")
+            vertical_align: Вертикальное выравнивание текста ("top", "center", "bottom")
             background_color: Цвет фона (0-255)
             border: Рисовать ли рамку виджета
             border_color: Цвет рамки виджета (0-255)
@@ -72,6 +81,10 @@ class CPUWidget(Widget):
         self.per_core = per_core
         self.update_interval_sec = update_interval
         self.history_length = history_length
+        self.font = font
+        self.font_size = font_size
+        self.horizontal_align = horizontal_align
+        self.vertical_align = vertical_align
         self.background_color = background_color
         self.border = border
         self.border_color = border_color
@@ -168,52 +181,30 @@ class CPUWidget(Widget):
 
     def _render_text(self, image: Image.Image) -> None:
         """Рендерит текстовое представление загрузки CPU (только цифры)."""
-        draw = ImageDraw.Draw(image)
-
-        # Вычисляем доступное пространство (внутри рамки и padding)
-        content_x = self.padding
-        content_y = self.padding
-        content_w = image.width - self.padding * 2
-        content_h = image.height - self.padding * 2
-
         if self.per_core:
             # Per-core: сетка чисел, равномерно распределённых
-            cores_count = len(self._current_usage)
-            # Определяем количество строк и столбцов для оптимального размещения
-            cols = int((cores_count ** 0.5) + 0.5)
-            rows = (cores_count + cols - 1) // cols
-
-            cell_w = content_w // cols
-            cell_h = content_h // rows
-
-            for i, usage in enumerate(self._current_usage):
-                col = i % cols
-                row = i // cols
-
-                text = f"{usage:.0f}"
-                cell_x = content_x + col * cell_w
-                cell_y = content_y + row * cell_h
-
-                # Центрируем текст в ячейке
-                bbox = draw.textbbox((0, 0), text)
-                text_w = bbox[2] - bbox[0]
-                text_h = bbox[3] - bbox[1]
-                x = cell_x + (cell_w - text_w) // 2
-                y = cell_y + (cell_h - text_h) // 2
-
-                draw.text((x, y), text, fill=self.fill_color)
+            render_grid_text(
+                image,
+                self._current_usage,
+                font=self.font,
+                font_size=self.font_size,
+                color=self.fill_color,
+                padding=self.padding,
+                decimal_places=0
+            )
         else:
-            # Агрегированный: одно число по центру
+            # Агрегированный: одно число с выравниванием
             text = f"{self._current_usage:.0f}"
-
-            # Центрируем в доступном пространстве
-            bbox = draw.textbbox((0, 0), text)
-            text_w = bbox[2] - bbox[0]
-            text_h = bbox[3] - bbox[1]
-            x = content_x + (content_w - text_w) // 2
-            y = content_y + (content_h - text_h) // 2
-
-            draw.text((x, y), text, fill=self.fill_color)
+            render_single_line_text(
+                image,
+                text,
+                font=self.font,
+                font_size=self.font_size,
+                color=self.fill_color,
+                horizontal_align=self.horizontal_align,
+                vertical_align=self.vertical_align,
+                padding=self.padding
+            )
 
     def _render_bar_horizontal(self, image: Image.Image) -> None:
         """Рендерит горизонтальные полосы загрузки."""
