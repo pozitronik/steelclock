@@ -345,25 +345,6 @@ Use the disk name from logs in config:
 "disk_name": "PhysicalDrive0"
 ```
 
-## Running from WSL
-
-SteelSeries Engine runs on Windows and is not accessible from WSL network. To run from WSL:
-
-### Option 1: Run from Windows Host
-
-```cmd
-cd /mnt/d/WORK/projects/steelclock/python
-python main.py
-```
-
-### Option 2: Access WSL Files from Windows
-
-```cmd
-python \\wsl$\Ubuntu\path\to\steelclock\python\main.py
-```
-
-## Advanced Features
-
 ### Virtual Canvas (Scrolling)
 
 Create a larger virtual canvas:
