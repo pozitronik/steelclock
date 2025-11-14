@@ -270,8 +270,11 @@ class MemoryWidget(Widget):
 
         # График истории
         points = []
+        # Смещение чтобы график всегда заполнялся справа
+        offset = self.history_length - len(self._usage_history)
         for i, sample in enumerate(self._usage_history):
-            x = content_x + int((i / (len(self._usage_history) - 1)) * content_w)
+            # X координата: новые данные всегда появляются справа
+            x = content_x + int((offset + i) / max(self.history_length - 1, 1) * content_w)
             y = content_y + content_h - int((sample / 100.0) * content_h)
             points.append((x, y))
 

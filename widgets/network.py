@@ -452,8 +452,11 @@ class NetworkWidget(Widget):
 
         # RX график (первым, чтобы быть под TX)
         rx_points = []
+        # Смещение чтобы график всегда заполнялся справа
+        offset = self.history_length - len(self._rx_history)
         for i, speed in enumerate(self._rx_history):
-            x = content_x + int((i / (len(self._rx_history) - 1)) * content_w)
+            # X координата: новые данные всегда появляются справа
+            x = content_x + int((offset + i) / max(self.history_length - 1, 1) * content_w)
             pct = self._get_speed_percentage(speed)
             y = content_y + content_h - int((pct / 100.0) * content_h)
             rx_points.append((x, y))
@@ -474,8 +477,11 @@ class NetworkWidget(Widget):
 
         # TX график (поверх)
         tx_points = []
+        # Смещение чтобы график всегда заполнялся справа
+        offset = self.history_length - len(self._tx_history)
         for i, speed in enumerate(self._tx_history):
-            x = content_x + int((i / (len(self._tx_history) - 1)) * content_w)
+            # X координата: новые данные всегда появляются справа
+            x = content_x + int((offset + i) / max(self.history_length - 1, 1) * content_w)
             pct = self._get_speed_percentage(speed)
             y = content_y + content_h - int((pct / 100.0) * content_h)
             tx_points.append((x, y))

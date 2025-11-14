@@ -444,8 +444,11 @@ class CPUWidget(Widget):
 
                     # Вычисляем точки графика для этого ядра
                     points = []
+                    # Смещение чтобы график всегда заполнялся справа
+                    offset = self.history_length - len(self._usage_history)
                     for i, sample in enumerate(self._usage_history):
-                        px = content_x + int((i / (len(self._usage_history) - 1)) * content_w)
+                        # X координата: новые данные всегда появляются справа
+                        px = content_x + int((offset + i) / max(self.history_length - 1, 1) * content_w)
                         usage = sample[core_idx] if isinstance(sample, list) else 0
                         py = section_y + section_h - int((usage / 100.0) * section_h)
                         points.append((px, py))
@@ -468,8 +471,11 @@ class CPUWidget(Widget):
         else:
             # Агрегированный график
             points = []
+            # Смещение чтобы график всегда заполнялся справа
+            offset = self.history_length - len(self._usage_history)
             for i, sample in enumerate(self._usage_history):
-                x = content_x + int((i / (len(self._usage_history) - 1)) * content_w)
+                # X координата: новые данные всегда появляются справа
+                x = content_x + int((offset + i) / max(self.history_length - 1, 1) * content_w)
                 usage = sample if not isinstance(sample, list) else sum(sample) / len(sample)
                 y = content_y + content_h - int((usage / 100.0) * content_h)
                 points.append((x, y))
