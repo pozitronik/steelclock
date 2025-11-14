@@ -236,6 +236,56 @@ def draw_centered_text(
     draw.text((x, y), text, fill=color, font=font_obj)
 
 
+def draw_aligned_text(
+    image: Image.Image,
+    text: str,
+    font_size: int = 10,
+    color: int = 255,
+    font: Optional[str] = None,
+    horizontal_align: str = "center",
+    vertical_align: str = "center",
+    padding: int = 0
+) -> None:
+    """
+    Рисует текст с заданным выравниванием.
+
+    Args:
+        image: PIL Image для рисования
+        text: Текст для отображения
+        font_size: Размер шрифта
+        color: Цвет текста (0=чёрный, 255=белый)
+        font: Имя шрифта или путь к файлу (None = default)
+        horizontal_align: Горизонтальное выравнивание ("left", "center", "right")
+        vertical_align: Вертикальное выравнивание ("top", "center", "bottom")
+        padding: Отступ от краёв в пикселях
+    """
+    draw = ImageDraw.Draw(image)
+    font_obj = load_font(font, font_size)
+
+    # Получаем размер текста
+    bbox = draw.textbbox((0, 0), text, font=font_obj)
+    text_width = bbox[2] - bbox[0]
+    text_height = bbox[3] - bbox[1]
+
+    # Вычисляем X координату
+    if horizontal_align == "left":
+        x = padding
+    elif horizontal_align == "right":
+        x = image.width - text_width - padding
+    else:  # center
+        x = (image.width - text_width) // 2
+
+    # Вычисляем Y координату
+    if vertical_align == "top":
+        y = padding
+    elif vertical_align == "bottom":
+        y = image.height - text_height - padding
+    else:  # center
+        y = (image.height - text_height) // 2
+
+    draw.text((x, y), text, fill=color, font=font_obj)
+
+
 def draw_progress_bar(
     image: Image.Image,
     x: int,

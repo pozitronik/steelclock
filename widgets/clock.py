@@ -7,7 +7,7 @@ from datetime import datetime
 from PIL import Image, ImageDraw
 
 from core.widget import Widget
-from utils.bitmap import create_blank_image, draw_centered_text
+from utils.bitmap import create_blank_image, draw_aligned_text
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,10 @@ class ClockWidget(Widget):
         font: str = None,
         background_color: int = 0,
         border: bool = False,
-        border_color: int = 255
+        border_color: int = 255,
+        horizontal_align: str = "center",
+        vertical_align: str = "center",
+        padding: int = 0
     ):
         """
         Инициализирует Clock Widget.
@@ -55,6 +58,9 @@ class ClockWidget(Widget):
             background_color: Цвет фона (0-255, 0=чёрный, 255=белый)
             border: Рисовать ли рамку
             border_color: Цвет рамки (0-255)
+            horizontal_align: Горизонтальное выравнивание ("left", "center", "right")
+            vertical_align: Вертикальное выравнивание ("top", "center", "bottom")
+            padding: Отступ от краёв в пикселях
         """
         super().__init__(name)
 
@@ -65,6 +71,9 @@ class ClockWidget(Widget):
         self.background_color = background_color
         self.border = border
         self.border_color = border_color
+        self.horizontal_align = horizontal_align
+        self.vertical_align = vertical_align
+        self.padding = padding
 
         # Текущее время (обновляется в update())
         self._current_time: datetime = None
@@ -73,7 +82,7 @@ class ClockWidget(Widget):
         logger.info(
             f"ClockWidget initialized: {name}, format='{format_string}', "
             f"interval={update_interval}s, font_size={font_size}, font={font or 'default'}, "
-            f"bg={background_color}, border={border}"
+            f"bg={background_color}, border={border}, align={horizontal_align}/{vertical_align}, padding={padding}"
         )
 
     def update(self) -> None:
@@ -111,16 +120,19 @@ class ClockWidget(Widget):
                 fill=None
             )
 
-        # Рисуем текст по центру
+        # Рисуем текст с заданным выравниванием
         # Текст должен контрастировать с фоном
         text_color = 0 if self.background_color > 128 else 255
 
-        draw_centered_text(
+        draw_aligned_text(
             image,
             self._formatted_time,
             font_size=self.font_size,
             color=text_color,
-            font=self.font
+            font=self.font,
+            horizontal_align=self.horizontal_align,
+            vertical_align=self.vertical_align,
+            padding=self.padding
         )
 
         return image

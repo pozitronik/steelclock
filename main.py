@@ -234,7 +234,10 @@ class SteelClockApp:
                     font=properties.get("font"),
                     background_color=style.get("background_color", 0),
                     border=style.get("border", False),
-                    border_color=style.get("border_color", 255)
+                    border_color=style.get("border_color", 255),
+                    horizontal_align=properties.get("horizontal_align", "center"),
+                    vertical_align=properties.get("vertical_align", "center"),
+                    padding=properties.get("padding", 0)
                 )
             else:
                 logger.error(f"Unknown widget type: {widget_type}")

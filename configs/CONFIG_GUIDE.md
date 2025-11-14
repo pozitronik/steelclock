@@ -95,10 +95,13 @@ Each widget in the `widgets` array has this structure:
 
 ```json
 "properties": {
-  "format": "%H:%M:%S",      // strftime format string
-  "font_size": 12,           // Font size in points
-  "font": "Arial",           // Font name or path (optional)
-  "update_interval": 1.0     // Update frequency in seconds
+  "format": "%H:%M:%S",         // strftime format string
+  "font_size": 12,              // Font size in points
+  "font": "Arial",              // Font name or path (optional)
+  "horizontal_align": "center", // Horizontal alignment: "left", "center", "right"
+  "vertical_align": "center",   // Vertical alignment: "top", "center", "bottom"
+  "padding": 0,                 // Padding from edges in pixels
+  "update_interval": 1.0        // Update frequency in seconds
 }
 ```
 
@@ -127,6 +130,39 @@ Supported font names:
 "font": "Arial"
 "font": "Consolas"
 "font": "C:/Windows/Fonts/comic.ttf"
+```
+
+#### Content Alignment
+
+Control where content appears within the widget:
+
+**`horizontal_align`** - Horizontal alignment:
+- `"left"` - Align to left edge (with padding)
+- `"center"` - Center horizontally (default)
+- `"right"` - Align to right edge (with padding)
+
+**`vertical_align`** - Vertical alignment:
+- `"top"` - Align to top edge (with padding)
+- `"center"` - Center vertically (default)
+- `"bottom"` - Align to bottom edge (with padding)
+
+**`padding`** - Space from edges in pixels (applies to aligned edges)
+
+**Examples:**
+```json
+// Top-left corner with 5px padding
+"horizontal_align": "left",
+"vertical_align": "top",
+"padding": 5
+
+// Bottom-right corner
+"horizontal_align": "right",
+"vertical_align": "bottom",
+"padding": 3
+
+// Centered (default)
+"horizontal_align": "center",
+"vertical_align": "center"
 ```
 
 #### Common Time Format Examples:
