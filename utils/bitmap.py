@@ -30,7 +30,7 @@ def resolve_font_path(font: Optional[str]) -> Optional[str]:
     windows_fonts_dir = Path("C:/Windows/Fonts")
 
     # Словарь распространённых названий шрифтов и их файлов
-    font_mappings = {
+    font_mappings = {  # todo: implement runtime mappings
         "arial": "arial.ttf",
         "arial bold": "arialbd.ttf",
         "arial italic": "ariali.ttf",
@@ -163,10 +163,10 @@ def image_to_bytes(image: Image.Image, width: int = 128, height: int = 40) -> Li
 
 
 def create_blank_image(
-    width: int = 128,
-    height: int = 40,
-    color: int = 0,
-    opacity: int = 255
+        width: int = 128,
+        height: int = 40,
+        color: int = 0,
+        opacity: int = 255
 ) -> Image.Image:
     """
     Создаёт пустое монохромное изображение.
@@ -190,12 +190,12 @@ def create_blank_image(
 
 
 def draw_text(
-    image: Image.Image,
-    text: str,
-    position: Tuple[int, int] = (0, 0),
-    font_size: int = 10,
-    color: int = 255,
-    font: Optional[str] = None
+        image: Image.Image,
+        text: str,
+        position: Tuple[int, int] = (0, 0),
+        font_size: int = 10,
+        color: int = 255,
+        font: Optional[str] = None
 ) -> None:
     """
     Рисует текст на изображении.
@@ -214,12 +214,12 @@ def draw_text(
 
 
 def draw_centered_text(
-    image: Image.Image,
-    text: str,
-    font_size: int = 10,
-    color: int = 255,
-    vertical_offset: int = 0,
-    font: Optional[str] = None
+        image: Image.Image,
+        text: str,
+        font_size: int = 10,
+        color: int = 255,
+        vertical_offset: int = 0,
+        font: Optional[str] = None
 ) -> None:
     """
     Рисует текст по центру изображения.
@@ -248,14 +248,14 @@ def draw_centered_text(
 
 
 def draw_aligned_text(
-    image: Image.Image,
-    text: str,
-    font_size: int = 10,
-    color: int = 255,
-    font: Optional[str] = None,
-    horizontal_align: str = "center",
-    vertical_align: str = "center",
-    padding: int = 0
+        image: Image.Image,
+        text: str,
+        font_size: int = 10,
+        color: int = 255,
+        font: Optional[str] = None,
+        horizontal_align: str = "center",
+        vertical_align: str = "center",
+        padding: int = 0
 ) -> None:
     """
     Рисует текст с заданным выравниванием.
@@ -298,13 +298,13 @@ def draw_aligned_text(
 
 
 def draw_progress_bar(
-    image: Image.Image,
-    x: int,
-    y: int,
-    width: int,
-    height: int,
-    percentage: float,
-    border: bool = True
+        image: Image.Image,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        percentage: float,
+        border: bool = True
 ) -> None:
     """
     Рисует progress bar на изображении.
