@@ -1,0 +1,191 @@
+{
+  "game_name": "STEELCLOCK",
+  "game_display_name": "SteelClock - Complete Dashboard",
+  "refresh_rate_ms": 100,
+
+  "display": {
+    "width": 128,
+    "height": 40,
+    "background_color": 0
+  },
+
+  "layout": {
+    "type": "basic"
+  },
+
+  "widgets": [
+    {
+      "type": "clock",
+      "id": "time_display",
+      "enabled": true,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "w": 96,
+        "h": 8,
+        "z_order": 0
+      },
+      "style": {
+        "background_color": 0,
+        "background_opacity": 255,
+        "border": false,
+        "border_color": 255
+      },
+      "properties": {
+        "format": "%H:%M:%S",
+        "font": "Arial",
+        "font_size": 7,
+        "horizontal_align": "center",
+        "vertical_align": "center",
+        "padding": 0,
+        "update_interval": 1.0
+      }
+    },
+    {
+      "type": "keyboard",
+      "id": "keyboard_indicators",
+      "enabled": true,
+      "position": {
+        "x": 96,
+        "y": 0,
+        "w": 32,
+        "h": 8,
+        "z_order": 0
+      },
+      "style": {
+        "background_color": 0,
+        "background_opacity": 255,
+        "border": false,
+        "border_color": 255
+      },
+      "properties": {
+        "update_interval": 0.2,
+        "font": "Segoe UI Emoji",
+        "font_size": 6,
+        "horizontal_align": "center",
+        "vertical_align": "center",
+        "padding": 1,
+        "spacing": 2,
+        "caps_lock_on": "⬆",
+        "caps_lock_off": "",
+        "num_lock_on": "🔒",
+        "num_lock_off": "",
+        "scroll_lock_on": "⬇",
+        "scroll_lock_off": "",
+        "indicator_color_on": 255,
+        "indicator_color_off": 100
+      }
+    },
+    {
+      "type": "cpu",
+      "id": "cpu_monitor",
+      "enabled": true,
+      "position": {
+        "x": 0,
+        "y": 8,
+        "w": 32,
+        "h": 8,
+        "z_order": 0
+      },
+      "style": {
+        "background_color": 0,
+        "background_opacity": 255,
+        "border": true,
+        "border_color": 255
+      },
+      "properties": {
+        "display_mode": "bar_horizontal",
+        "per_core": false,
+        "update_interval": 1.0,
+        "padding": 1,
+        "bar_border": false,
+        "bar_margin": 0,
+        "fill_color": 255
+      }
+    },
+    {
+      "type": "memory",
+      "id": "memory_monitor",
+      "enabled": true,
+      "position": {
+        "x": 32,
+        "y": 8,
+        "w": 32,
+        "h": 8,
+        "z_order": 0
+      },
+      "style": {
+        "background_color": 0,
+        "background_opacity": 255,
+        "border": true,
+        "border_color": 255
+      },
+      "properties": {
+        "display_mode": "bar_horizontal",
+        "update_interval": 1.0,
+        "padding": 1,
+        "bar_border": false,
+        "fill_color": 255
+      }
+    },
+    {
+      "type": "disk",
+      "id": "disk_monitor",
+      "enabled": true,
+      "position": {
+        "x": 64,
+        "y": 8,
+        "w": 64,
+        "h": 8,
+        "z_order": 0
+      },
+      "style": {
+        "background_color": 0,
+        "background_opacity": 255,
+        "border": true,
+        "border_color": 255
+      },
+      "properties": {
+        "disk_name": "PhysicalDrive0",
+        "display_mode": "bar_horizontal",
+        "update_interval": 1.0,
+        "padding": 1,
+        "bar_border": false,
+        "read_color": 255,
+        "write_color": 200,
+        "max_speed_mbps": -1
+      }
+    },
+    {
+      "type": "network",
+      "id": "network_monitor",
+      "enabled": true,
+      "position": {
+        "x": 0,
+        "y": 16,
+        "w": 128,
+        "h": 24,
+        "z_order": 0
+      },
+      "style": {
+        "background_color": 0,
+        "background_opacity": 255,
+        "border": true,
+        "border_color": 255
+      },
+      "properties": {
+        "interface": "eth0",
+        "display_mode": "graph",
+        "update_interval": 1.0,
+        "history_length": 30,
+        "max_speed_mbps": -1,
+        "speed_unit": "kbps",
+        "padding": 2,
+        "bar_border": false,
+        "bar_margin": 1,
+        "rx_color": 255,
+        "tx_color": 128
+      }
+    }
+  ]
+}

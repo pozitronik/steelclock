@@ -1,0 +1,49 @@
+{
+  "game_name": "STEELCLOCK",
+  "game_display_name": "SteelClock - Keyboard (Custom Symbols)",
+  "refresh_rate_ms": 100,
+  "display": {
+    "width": 128,
+    "height": 40,
+    "background_color": 0
+  },
+  "layout": {
+    "type": "basic"
+  },
+  "widgets": [
+    {
+      "type": "keyboard",
+      "id": "keyboard_indicators",
+      "enabled": true,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 40,
+        "z_order": 0
+      },
+      "style": {
+        "background_color": 0,
+        "background_opacity": 255,
+        "border": true,
+        "border_color": 255
+      },
+      "properties": {
+        "update_interval": 0.2,
+        "font_size": 10,
+        "horizontal_align": "center",
+        "vertical_align": "center",
+        "padding": 2,
+        "spacing": 3,
+        "caps_lock_on": "CAPS",
+        "caps_lock_off": "caps",
+        "num_lock_on": "NUM",
+        "num_lock_off": "num",
+        "scroll_lock_on": "SCR",
+        "scroll_lock_off": "scr",
+        "indicator_color_on": 255,
+        "indicator_color_off": 80
+      }
+    }
+  ]
+}

@@ -29,6 +29,7 @@ from widgets.cpu import CPUWidget
 from widgets.memory import MemoryWidget
 from widgets.network import NetworkWidget
 from widgets.disk import DiskWidget
+from widgets.keyboard import KeyboardWidget
 
 
 # Настройка логирования
@@ -325,6 +326,29 @@ class SteelClockApp:
                     bar_border=properties.get("bar_border", False),
                     read_color=properties.get("read_color", 255),
                     write_color=properties.get("write_color", 200)
+                )
+            elif widget_type == "keyboard":
+                return KeyboardWidget(
+                    name=widget_id,
+                    update_interval=properties.get("update_interval", 0.2),
+                    font=properties.get("font", None),
+                    font_size=properties.get("font_size", 10),
+                    horizontal_align=properties.get("horizontal_align", "center"),
+                    vertical_align=properties.get("vertical_align", "center"),
+                    background_color=style.get("background_color", 0),
+                    background_opacity=style.get("background_opacity", 255),
+                    border=style.get("border", False),
+                    border_color=style.get("border_color", 255),
+                    padding=properties.get("padding", 2),
+                    spacing=properties.get("spacing", 3),
+                    caps_lock_on=properties.get("caps_lock_on", "⬆"),
+                    caps_lock_off=properties.get("caps_lock_off", ""),
+                    num_lock_on=properties.get("num_lock_on", "🔒"),
+                    num_lock_off=properties.get("num_lock_off", ""),
+                    scroll_lock_on=properties.get("scroll_lock_on", "⬇"),
+                    scroll_lock_off=properties.get("scroll_lock_off", ""),
+                    indicator_color_on=properties.get("indicator_color_on", 255),
+                    indicator_color_off=properties.get("indicator_color_off", 100)
                 )
             else:
                 logger.error(f"Unknown widget type: {widget_type}")
