@@ -66,7 +66,9 @@ def render_single_line_text(
     else:  # center
         y = content_y + (content_h - text_h) // 2
 
-    draw.text((x, y), text, fill=color, font=font_obj)
+    # Текст всегда непрозрачный (полная видимость)
+    text_color = (color, 255) if image.mode == 'LA' else color
+    draw.text((x, y), text, fill=text_color, font=font_obj)
 
 
 def render_multi_line_text(
@@ -141,7 +143,9 @@ def render_multi_line_text(
         else:  # center
             x = content_x + (content_w - width) // 2
 
-        draw.text((x, current_y), text, fill=color, font=font_obj)
+        # Текст всегда непрозрачный (полная видимость)
+        text_color = (color, 255) if image.mode == 'LA' else color
+        draw.text((x, current_y), text, fill=text_color, font=font_obj)
         current_y += height + line_spacing
 
 
@@ -209,7 +213,9 @@ def render_grid_text(
         x = cell_x + (cell_w - text_w) // 2
         y = cell_y + (cell_h - text_h) // 2
 
-        draw.text((x, y), text, fill=color, font=font_obj)
+        # Текст всегда непрозрачный (полная видимость)
+        text_color = (color, 255) if image.mode == 'LA' else color
+        draw.text((x, y), text, fill=text_color, font=font_obj)
 
 
 def measure_text_size(

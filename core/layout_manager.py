@@ -261,9 +261,14 @@ class LayoutManager:
                         Image.LANCZOS
                     )
 
-                # Вставляем на виртуальный канвас
+                # Вставляем на виртуальный канвас с поддержкой альфа-канала
                 # paste() автоматически обрабатывает clipping
-                virtual_canvas.paste(widget_img, (layout.x, layout.y))
+                if widget_img.mode in ('LA', 'RGBA'):
+                    # Изображение с альфа-каналом - используем альфа-композитинг
+                    virtual_canvas.paste(widget_img, (layout.x, layout.y), widget_img)
+                else:
+                    # Обычное изображение без прозрачности
+                    virtual_canvas.paste(widget_img, (layout.x, layout.y))
 
             except Exception as e:
                 logger.error(f"Failed to render widget {layout.widget.name}: {e}")

@@ -162,7 +162,12 @@ def image_to_bytes(image: Image.Image, width: int = 128, height: int = 40) -> Li
     return byte_array
 
 
-def create_blank_image(width: int = 128, height: int = 40, color: int = 0) -> Image.Image:
+def create_blank_image(
+    width: int = 128,
+    height: int = 40,
+    color: int = 0,
+    opacity: int = 255
+) -> Image.Image:
     """
     Создаёт пустое монохромное изображение.
 
@@ -170,12 +175,18 @@ def create_blank_image(width: int = 128, height: int = 40, color: int = 0) -> Im
         width: Ширина в пикселях
         height: Высота в пикселях
         color: Цвет (0=чёрный, 255=белый)
+        opacity: Прозрачность фона (0=полностью прозрачный, 255=непрозрачный)
 
     Returns:
-        Image.Image: Пустое изображение в режиме 'L' (grayscale)
+        Image.Image: Пустое изображение в режиме 'L' (grayscale) или 'LA' (с альфа-каналом)
     """
-    # Используем 'L' (grayscale) для удобства рисования, потом конвертируем в '1'
-    return Image.new('L', (width, height), color=color)
+    if opacity < 255:
+        # Создаём изображение с альфа-каналом
+        image = Image.new('LA', (width, height), color=(color, opacity))
+        return image
+    else:
+        # Стандартное grayscale изображение без альфа-канала
+        return Image.new('L', (width, height), color=color)
 
 
 def draw_text(

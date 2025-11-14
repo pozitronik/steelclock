@@ -47,6 +47,7 @@ class NetworkWidget(Widget):
         horizontal_align: str = "center",
         vertical_align: str = "center",
         background_color: int = 0,
+        background_opacity: int = 255,
         border: bool = False,
         border_color: int = 255,
         padding: int = 0,
@@ -71,6 +72,7 @@ class NetworkWidget(Widget):
             horizontal_align: Горизонтальное выравнивание текста ("left", "center", "right")
             vertical_align: Вертикальное выравнивание текста ("top", "center", "bottom")
             background_color: Цвет фона (0-255)
+            background_opacity: Прозрачность фона (0=полностью прозрачный, 255=непрозрачный)
             border: Рисовать ли рамку виджета
             border_color: Цвет рамки виджета (0-255)
             padding: Отступ от краёв виджета
@@ -97,6 +99,7 @@ class NetworkWidget(Widget):
         self.horizontal_align = horizontal_align
         self.vertical_align = vertical_align
         self.background_color = background_color
+        self.background_opacity = background_opacity
         self.border = border
         self.border_color = border_color
         self.padding = padding
@@ -198,14 +201,20 @@ class NetworkWidget(Widget):
         width, height = self.get_preferred_size()
 
         # Создаём изображение с фоном
-        image = create_blank_image(width, height, color=self.background_color)
+        image = create_blank_image(
+            width, height,
+            color=self.background_color,
+            opacity=self.background_opacity
+        )
 
         # Рисуем рамку если нужно
         if self.border:
             draw = ImageDraw.Draw(image)
+            # Рамка всегда непрозрачная (полная видимость)
+            border_color = (self.border_color, 255) if image.mode == 'LA' else self.border_color
             draw.rectangle(
                 [0, 0, width-1, height-1],
-                outline=self.border_color,
+                outline=border_color,
                 fill=None
             )
 
@@ -282,6 +291,10 @@ class NetworkWidget(Widget):
         """Рендерит две горизонтальные полосы (RX сверху, TX снизу)."""
         draw = ImageDraw.Draw(image)
 
+        # Подготавливаем цвета с полной непрозрачностью для контента
+        rx_color = (self.rx_color, 255) if image.mode == 'LA' else self.rx_color
+        tx_color = (self.tx_color, 255) if image.mode == 'LA' else self.tx_color
+
         # Вычисляем доступное пространство
         content_x = self.padding
         content_y = self.padding
@@ -302,21 +315,21 @@ class NetworkWidget(Widget):
         if self.bar_border:
             draw.rectangle(
                 [content_x, rx_y, content_x + content_w - 1, rx_y + bar_h - 1],
-                outline=self.rx_color,
+                outline=rx_color,
                 fill=None
             )
             fill_w = int((content_w - 2) * (rx_pct / 100.0))
             if fill_w > 0:
                 draw.rectangle(
                     [content_x + 1, rx_y + 1, content_x + fill_w, rx_y + bar_h - 2],
-                    fill=self.rx_color
+                    fill=rx_color
                 )
         else:
             fill_w = int(content_w * (rx_pct / 100.0))
             if fill_w > 0:
                 draw.rectangle(
                     [content_x, rx_y, content_x + fill_w - 1, rx_y + bar_h - 1],
-                    fill=self.rx_color
+                    fill=rx_color
                 )
 
         # TX бар (нижний)
@@ -326,26 +339,30 @@ class NetworkWidget(Widget):
         if self.bar_border:
             draw.rectangle(
                 [content_x, tx_y, content_x + content_w - 1, tx_y + bar_h - 1],
-                outline=self.tx_color,
+                outline=tx_color,
                 fill=None
             )
             fill_w = int((content_w - 2) * (tx_pct / 100.0))
             if fill_w > 0:
                 draw.rectangle(
                     [content_x + 1, tx_y + 1, content_x + fill_w, tx_y + bar_h - 2],
-                    fill=self.tx_color
+                    fill=tx_color
                 )
         else:
             fill_w = int(content_w * (tx_pct / 100.0))
             if fill_w > 0:
                 draw.rectangle(
                     [content_x, tx_y, content_x + fill_w - 1, tx_y + bar_h - 1],
-                    fill=self.tx_color
+                    fill=tx_color
                 )
 
     def _render_bar_vertical(self, image: Image.Image) -> None:
         """Рендерит два вертикальных столбца (RX слева, TX справа)."""
         draw = ImageDraw.Draw(image)
+
+        # Подготавливаем цвета с полной непрозрачностью для контента
+        rx_color = (self.rx_color, 255) if image.mode == 'LA' else self.rx_color
+        tx_color = (self.tx_color, 255) if image.mode == 'LA' else self.tx_color
 
         # Вычисляем доступное пространство
         content_x = self.padding
@@ -369,19 +386,19 @@ class NetworkWidget(Widget):
         if self.bar_border:
             draw.rectangle(
                 [rx_x, content_y, rx_x + bar_w - 1, content_y + content_h - 1],
-                outline=self.rx_color,
+                outline=rx_color,
                 fill=None
             )
             if fill_h > 2:
                 draw.rectangle(
                     [rx_x + 1, max(fill_y, content_y + 1), rx_x + bar_w - 2, content_y + content_h - 2],
-                    fill=self.rx_color
+                    fill=rx_color
                 )
         else:
             if fill_h > 0:
                 draw.rectangle(
                     [rx_x, fill_y, rx_x + bar_w - 1, content_y + content_h - 1],
-                    fill=self.rx_color
+                    fill=rx_color
                 )
 
         # TX бар (правый)
@@ -393,19 +410,19 @@ class NetworkWidget(Widget):
         if self.bar_border:
             draw.rectangle(
                 [tx_x, content_y, tx_x + bar_w - 1, content_y + content_h - 1],
-                outline=self.tx_color,
+                outline=tx_color,
                 fill=None
             )
             if fill_h > 2:
                 draw.rectangle(
                     [tx_x + 1, max(fill_y, content_y + 1), tx_x + bar_w - 2, content_y + content_h - 2],
-                    fill=self.tx_color
+                    fill=tx_color
                 )
         else:
             if fill_h > 0:
                 draw.rectangle(
                     [tx_x, fill_y, tx_x + bar_w - 1, content_y + content_h - 1],
-                    fill=self.tx_color
+                    fill=tx_color
                 )
 
     def _render_graph(self, image: Image.Image) -> None:
@@ -420,6 +437,12 @@ class NetworkWidget(Widget):
                     f"TX range {min(self._tx_history)/1024:.1f}-{max(self._tx_history)/1024:.1f}KB/s")
 
         draw = ImageDraw.Draw(image)
+
+        # Подготавливаем цвета с полной непрозрачностью для контента
+        rx_color = (self.rx_color, 255) if image.mode == 'LA' else self.rx_color
+        rx_color_semi = (self.rx_color, 85) if image.mode == 'LA' else (self.rx_color // 3)
+        tx_color = (self.tx_color, 255) if image.mode == 'LA' else self.tx_color
+        tx_color_semi = (self.tx_color, 85) if image.mode == 'LA' else (self.tx_color // 3)
 
         # Вычисляем доступное пространство
         content_x = self.padding
@@ -438,7 +461,7 @@ class NetworkWidget(Widget):
         # Рисуем RX линию
         if len(rx_points) >= 2:
             logger.debug(f"Drawing RX line with {len(rx_points)} points, first={(rx_points[0])}, last={(rx_points[-1])}")
-            draw.line(rx_points, fill=self.rx_color, width=1)
+            draw.line(rx_points, fill=rx_color, width=1)
         else:
             logger.debug(f"Not enough RX points: {len(rx_points)}")
 
@@ -447,7 +470,7 @@ class NetworkWidget(Widget):
             fill_points = rx_points.copy()
             fill_points.append((rx_points[-1][0], content_y + content_h))
             fill_points.append((rx_points[0][0], content_y + content_h))
-            draw.polygon(fill_points, fill=self.rx_color // 3, outline=None)
+            draw.polygon(fill_points, fill=rx_color_semi, outline=None)
 
         # TX график (поверх)
         tx_points = []
@@ -459,14 +482,14 @@ class NetworkWidget(Widget):
 
         # Рисуем TX линию
         if len(tx_points) >= 2:
-            draw.line(tx_points, fill=self.tx_color, width=1)
+            draw.line(tx_points, fill=tx_color, width=1)
 
         # Заполнение под TX графиком (полупрозрачное)
         if len(tx_points) >= 2:
             fill_points = tx_points.copy()
             fill_points.append((tx_points[-1][0], content_y + content_h))
             fill_points.append((tx_points[0][0], content_y + content_h))
-            draw.polygon(fill_points, fill=self.tx_color // 3, outline=None)
+            draw.polygon(fill_points, fill=tx_color_semi, outline=None)
 
     def get_update_interval(self) -> float:
         """Возвращает интервал обновления."""

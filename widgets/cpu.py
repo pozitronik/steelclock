@@ -44,6 +44,7 @@ class CPUWidget(Widget):
         horizontal_align: str = "center",
         vertical_align: str = "center",
         background_color: int = 0,
+        background_opacity: int = 255,
         border: bool = False,
         border_color: int = 255,
         padding: int = 0,
@@ -65,6 +66,7 @@ class CPUWidget(Widget):
             horizontal_align: Горизонтальное выравнивание текста ("left", "center", "right")
             vertical_align: Вертикальное выравнивание текста ("top", "center", "bottom")
             background_color: Цвет фона (0-255)
+            background_opacity: Прозрачность фона (0=полностью прозрачный, 255=непрозрачный)
             border: Рисовать ли рамку виджета
             border_color: Цвет рамки виджета (0-255)
             padding: Отступ от краёв виджета
@@ -86,6 +88,7 @@ class CPUWidget(Widget):
         self.horizontal_align = horizontal_align
         self.vertical_align = vertical_align
         self.background_color = background_color
+        self.background_opacity = background_opacity
         self.border = border
         self.border_color = border_color
         self.padding = padding
@@ -154,14 +157,20 @@ class CPUWidget(Widget):
         width, height = self.get_preferred_size()
 
         # Создаём изображение с фоном
-        image = create_blank_image(width, height, color=self.background_color)
+        image = create_blank_image(
+            width, height,
+            color=self.background_color,
+            opacity=self.background_opacity
+        )
 
         # Рисуем рамку если нужно
         if self.border:
             draw = ImageDraw.Draw(image)
+            # Рамка всегда непрозрачная (полная видимость)
+            border_color = (self.border_color, 255) if image.mode == 'LA' else self.border_color
             draw.rectangle(
                 [0, 0, width-1, height-1],
-                outline=self.border_color,
+                outline=border_color,
                 fill=None
             )
 
@@ -210,6 +219,9 @@ class CPUWidget(Widget):
         """Рендерит горизонтальные полосы загрузки."""
         draw = ImageDraw.Draw(image)
 
+        # Подготавливаем цвета с полной непрозрачностью для контента
+        fill_color = (self.fill_color, 255) if image.mode == 'LA' else self.fill_color
+
         # Вычисляем доступное пространство
         content_x = self.padding
         content_y = self.padding
@@ -244,7 +256,7 @@ class CPUWidget(Widget):
                     if self.bar_border:
                         draw.rectangle(
                             [content_x, bar_y, content_x + content_w - 1, bar_y + bar_h - 1],
-                            outline=self.fill_color,
+                            outline=fill_color,
                             fill=None
                         )
                         # Заполнение внутри рамки
@@ -254,7 +266,7 @@ class CPUWidget(Widget):
                         if fill_w > 0:
                             draw.rectangle(
                                 [content_x + 1, bar_y + 1, content_x + fill_w, bar_y + bar_h - 2],
-                                fill=self.fill_color
+                                fill=fill_color
                             )
                     else:
                         # Заполнение без рамки
@@ -264,7 +276,7 @@ class CPUWidget(Widget):
                         if fill_w > 0:
                             draw.rectangle(
                                 [content_x, bar_y, content_x + fill_w - 1, bar_y + bar_h - 1],
-                                fill=self.fill_color
+                                fill=fill_color
                             )
 
                 # Переходим к следующему бару
@@ -276,7 +288,7 @@ class CPUWidget(Widget):
             if self.bar_border:
                 draw.rectangle(
                     [content_x, content_y, content_x + content_w - 1, content_y + content_h - 1],
-                    outline=self.fill_color,
+                    outline=fill_color,
                     fill=None
                 )
                 # Заполнение внутри рамки
@@ -284,7 +296,7 @@ class CPUWidget(Widget):
                 if fill_w > 0:
                     draw.rectangle(
                         [content_x + 1, content_y + 1, content_x + fill_w, content_y + content_h - 2],
-                        fill=self.fill_color
+                        fill=fill_color
                     )
             else:
                 # Заполнение без рамки
@@ -292,12 +304,15 @@ class CPUWidget(Widget):
                 if fill_w > 0:
                     draw.rectangle(
                         [content_x, content_y, content_x + fill_w - 1, content_y + content_h - 1],
-                        fill=self.fill_color
+                        fill=fill_color
                     )
 
     def _render_bar_vertical(self, image: Image.Image) -> None:
         """Рендерит вертикальные столбцы загрузки."""
         draw = ImageDraw.Draw(image)
+
+        # Подготавливаем цвета с полной непрозрачностью для контента
+        fill_color = (self.fill_color, 255) if image.mode == 'LA' else self.fill_color
 
         # Вычисляем доступное пространство
         content_x = self.padding
@@ -330,21 +345,21 @@ class CPUWidget(Widget):
                     if self.bar_border:
                         draw.rectangle(
                             [bar_x, content_y, bar_x + bar_w - 1, content_y + content_h - 1],
-                            outline=self.fill_color,
+                            outline=fill_color,
                             fill=None
                         )
                         # Заполнение внутри рамки (снизу вверх)
                         if fill_h > 2:
                             draw.rectangle(
                                 [bar_x + 1, max(fill_y, content_y + 1), bar_x + bar_w - 2, content_y + content_h - 2],
-                                fill=self.fill_color
+                                fill=fill_color
                             )
                     else:
                         # Заполнение без рамки (снизу вверх)
                         if fill_h > 0:
                             draw.rectangle(
                                 [bar_x, fill_y, bar_x + bar_w - 1, content_y + content_h - 1],
-                                fill=self.fill_color
+                                fill=fill_color
                             )
 
                 # Переходим к следующему бару
@@ -359,21 +374,21 @@ class CPUWidget(Widget):
             if self.bar_border:
                 draw.rectangle(
                     [content_x, content_y, content_x + content_w - 1, content_y + content_h - 1],
-                    outline=self.fill_color,
+                    outline=fill_color,
                     fill=None
                 )
                 # Заполнение внутри рамки (снизу вверх)
                 if fill_h > 2:
                     draw.rectangle(
                         [content_x + 1, max(fill_y, content_y + 1), content_x + content_w - 2, content_y + content_h - 2],
-                        fill=self.fill_color
+                        fill=fill_color
                     )
             else:
                 # Заполнение без рамки (снизу вверх)
                 if fill_h > 0:
                     draw.rectangle(
                         [content_x, fill_y, content_x + content_w - 1, content_y + content_h - 1],
-                        fill=self.fill_color
+                        fill=fill_color
                     )
 
     def _render_graph(self, image: Image.Image) -> None:
@@ -383,6 +398,10 @@ class CPUWidget(Widget):
             return
 
         draw = ImageDraw.Draw(image)
+
+        # Подготавливаем цвета с полной непрозрачностью для контента
+        fill_color = (self.fill_color, 255) if image.mode == 'LA' else self.fill_color
+        fill_color_semi = (self.fill_color, 128) if image.mode == 'LA' else (self.fill_color // 2)
 
         # Вычисляем доступное пространство
         content_x = self.padding
@@ -419,7 +438,7 @@ class CPUWidget(Widget):
                     if self.bar_border:
                         draw.rectangle(
                             [content_x, section_y, content_x + content_w - 1, section_y + section_h - 1],
-                            outline=self.fill_color,
+                            outline=fill_color,
                             fill=None
                         )
 
@@ -433,14 +452,14 @@ class CPUWidget(Widget):
 
                     # Рисуем линию
                     if len(points) >= 2:
-                        draw.line(points, fill=self.fill_color, width=1)
+                        draw.line(points, fill=fill_color, width=1)
 
                     # Заполнение под графиком
                     if len(points) >= 2:
                         fill_points = points.copy()
                         fill_points.append((points[-1][0], section_y + section_h))
                         fill_points.append((points[0][0], section_y + section_h))
-                        draw.polygon(fill_points, fill=self.fill_color // 2, outline=None)
+                        draw.polygon(fill_points, fill=fill_color_semi, outline=None)
 
                 # Переходим к следующей секции
                 y += section_height
@@ -457,7 +476,7 @@ class CPUWidget(Widget):
 
             # Рисуем линию
             if len(points) >= 2:
-                draw.line(points, fill=self.fill_color, width=1)
+                draw.line(points, fill=fill_color, width=1)
 
             # Заполнение под графиком
             if len(points) >= 2:
@@ -465,7 +484,7 @@ class CPUWidget(Widget):
                 fill_points = points.copy()
                 fill_points.append((points[-1][0], content_y + content_h))
                 fill_points.append((points[0][0], content_y + content_h))
-                draw.polygon(fill_points, fill=self.fill_color // 2, outline=None)
+                draw.polygon(fill_points, fill=fill_color_semi, outline=None)
 
     def get_update_interval(self) -> float:
         """Возвращает интервал обновления."""

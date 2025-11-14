@@ -31,6 +31,7 @@ class ClockWidget(Widget):
         font_size: int = 12,
         font: str = None,
         background_color: int = 0,
+        background_opacity: int = 255,
         border: bool = False,
         border_color: int = 255,
         horizontal_align: str = "center",
@@ -56,6 +57,7 @@ class ClockWidget(Widget):
                 - "Consolas"
                 - "C:/Windows/Fonts/arial.ttf"
             background_color: Цвет фона (0-255, 0=чёрный, 255=белый)
+            background_opacity: Прозрачность фона (0=полностью прозрачный, 255=непрозрачный)
             border: Рисовать ли рамку
             border_color: Цвет рамки (0-255)
             horizontal_align: Горизонтальное выравнивание ("left", "center", "right")
@@ -69,6 +71,7 @@ class ClockWidget(Widget):
         self.font_size = font_size
         self.font = font
         self.background_color = background_color
+        self.background_opacity = background_opacity
         self.border = border
         self.border_color = border_color
         self.horizontal_align = horizontal_align
@@ -109,14 +112,20 @@ class ClockWidget(Widget):
         width, height = self.get_preferred_size()
 
         # Создаём изображение с фоном
-        image = create_blank_image(width, height, color=self.background_color)
+        image = create_blank_image(
+            width, height,
+            color=self.background_color,
+            opacity=self.background_opacity
+        )
 
         # Рисуем рамку если нужно
         if self.border:
             draw = ImageDraw.Draw(image)
+            # Рамка всегда непрозрачная (полная видимость)
+            border_color = (self.border_color, 255) if image.mode == 'LA' else self.border_color
             draw.rectangle(
                 [0, 0, width-1, height-1],
-                outline=self.border_color,
+                outline=border_color,
                 fill=None
             )
 
