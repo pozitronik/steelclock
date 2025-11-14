@@ -1,6 +1,6 @@
 """
 Compositor - главный цикл рендеринга для OLED дисплея.
-Композитирует виджеты и отправляет кадры на дисплей с частотой 10Hz.
+Композирует виджеты и отправляет кадры на дисплей с частотой 10Hz.
 """
 
 import logging
@@ -26,11 +26,11 @@ class Compositor:
     """
 
     def __init__(
-        self,
-        layout_manager: LayoutManager,
-        api: GameSenseAPI,
-        refresh_rate_ms: int = 100,
-        event_name: str = "DISPLAY"
+            self,
+            layout_manager: LayoutManager,
+            api: GameSenseAPI,
+            refresh_rate_ms: int = 100,
+            event_name: str = "DISPLAY"
     ):
         """
         Инициализирует Compositor.

@@ -64,12 +64,12 @@ class LayoutManager:
     """
 
     def __init__(
-        self,
-        width: int = 128,
-        height: int = 40,
-        virtual_width: Optional[int] = None,
-        virtual_height: Optional[int] = None,
-        background_color: int = 0
+            self,
+            width: int = 128,
+            height: int = 40,
+            virtual_width: Optional[int] = None,
+            virtual_height: Optional[int] = None,
+            background_color: int = 0
     ):
         """
         Инициализирует Layout Manager.
@@ -94,8 +94,8 @@ class LayoutManager:
 
         # Определяем режим работы
         self.viewport_mode = (
-            self.virtual_width != self.display_width or
-            self.virtual_height != self.display_height
+                self.virtual_width != self.display_width or
+                self.virtual_height != self.display_height
         )
 
         # Viewport - используется только в расширенном режиме
@@ -136,14 +136,14 @@ class LayoutManager:
         return self.virtual_height
 
     def add_widget(
-        self,
-        widget: Widget,
-        x: int = 0,
-        y: int = 0,
-        w: int = None,
-        h: int = None,
-        z_order: int = 0,
-        scale: float = 1.0
+            self,
+            widget: Widget,
+            x: int = 0,
+            y: int = 0,
+            w: int = None,
+            h: int = None,
+            z_order: int = 0,
+            scale: float = 1.0
     ) -> None:
         """
         Добавляет виджет в layout на виртуальном канвасе.
@@ -238,7 +238,7 @@ class LayoutManager:
             # Оптимизация: пропускаем виджеты вне viewport (только в viewport режиме)
             if self.viewport_mode and apply_viewport and self.viewport:
                 if not self.viewport.is_rect_visible(
-                    layout.x, layout.y, layout.w, layout.h
+                        layout.x, layout.y, layout.w, layout.h
                 ):
                     continue
 
@@ -317,7 +317,7 @@ class LayoutManager:
         # Обработка границ: если viewport выходит за пределы канваса,
         # заполняем недостающие области чёрным
         if (left < 0 or top < 0 or
-            right > zoomed_width or bottom > zoomed_height):
+                right > zoomed_width or bottom > zoomed_height):
 
             # Создаём канвас размером с дисплей
             display_canvas = create_blank_image(
@@ -359,8 +359,8 @@ class LayoutManager:
 
         # Обновляем режим
         self.viewport_mode = (
-            self.virtual_width != self.display_width or
-            self.virtual_height != self.display_height
+                self.virtual_width != self.display_width or
+                self.virtual_height != self.display_height
         )
 
         # Создаём viewport если переходим в viewport режим
@@ -403,7 +403,7 @@ class LayoutManager:
                 continue
 
             if (layout.x <= x < layout.x + layout.w and
-                layout.y <= y < layout.y + layout.h):
+                    layout.y <= y < layout.y + layout.h):
                 return layout.widget
 
         return None
