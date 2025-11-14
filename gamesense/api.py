@@ -5,9 +5,9 @@
 
 import json
 import logging
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
-import requests
+import requests  # type: ignore[import-untyped]
 
 from .discovery import get_server_url
 
@@ -209,7 +209,7 @@ class GameSenseAPI:
             # Игнорируем ошибки при cleanup
             return False
 
-    def _post(self, endpoint: str, payload: Dict) -> Optional[Dict]:
+    def _post(self, endpoint: str, payload: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
         Выполняет POST запрос к API.
 
@@ -218,7 +218,7 @@ class GameSenseAPI:
             payload: JSON payload
 
         Returns:
-            Optional[Dict]: Ответ от сервера или None
+            Optional[Dict[str, Any]]: Ответ от сервера или None
 
         Raises:
             GameSenseAPIError: При HTTP ошибке
@@ -239,7 +239,7 @@ class GameSenseAPI:
             # 500 - внутренняя ошибка сервера
             if response.status_code == 200:
                 try:
-                    return response.json()
+                    return cast(Dict[str, Any], response.json())
                 except json.JSONDecodeError:
                     return None
             else:
@@ -254,11 +254,11 @@ class GameSenseAPI:
         except requests.exceptions.RequestException as e:
             raise GameSenseAPIError(f"Request error: {e}")
 
-    def __enter__(self):
+    def __enter__(self) -> "GameSenseAPI":
         """Context manager вход"""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         """Context manager выход - cleanup"""
         try:
             self.remove_game()

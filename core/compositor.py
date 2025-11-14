@@ -6,7 +6,7 @@ Compositor - главный цикл рендеринга для OLED диспл
 import logging
 import threading
 import time
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from .layout_manager import LayoutManager
 from gamesense.api import GameSenseAPI, GameSenseAPIError
@@ -53,7 +53,7 @@ class Compositor:
         # Статистика
         self._frame_count = 0
         self._error_count = 0
-        self._last_error_time = 0
+        self._last_error_time = 0.0
 
         logger.info(f"Compositor initialized: refresh rate {refresh_rate_ms}ms")
 
@@ -179,12 +179,12 @@ class Compositor:
             logger.error(f"Frame rendering error: {e}", exc_info=True)
             self._error_count += 1
 
-    def get_stats(self) -> dict:
+    def get_stats(self) -> Dict[str, Any]:
         """
         Возвращает статистику работы compositor.
 
         Returns:
-            dict: Статистика (frame_count, error_count, is_running)
+            Dict[str, Any]: Статистика (frame_count, error_count, is_running)
         """
         return {
             'frame_count': self._frame_count,
@@ -193,11 +193,11 @@ class Compositor:
             'refresh_rate_ms': self.refresh_rate_ms
         }
 
-    def __enter__(self):
+    def __enter__(self) -> "Compositor":
         """Context manager вход - запускает compositor"""
         self.start()
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         """Context manager выход - останавливает compositor"""
         self.stop()

@@ -80,7 +80,7 @@ class ClockWidget(Widget):
         self.padding = padding
 
         # Текущее время (обновляется в update())
-        self._current_time: datetime = None
+        self._current_time: Optional[datetime] = None
         self._formatted_time: str = ""
 
         logger.info(

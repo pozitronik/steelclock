@@ -131,9 +131,11 @@ class CPUWidget(Widget):
 
             # Добавляем в историю для graph режима
             if self.display_mode == "graph":
+                assert self._current_usage is not None
                 self._usage_history.append(self._current_usage)
 
             # Log first few cores for debugging
+            assert self._current_usage is not None
             if self.per_core and isinstance(self._current_usage, list):
                 logger.debug(f"CPU updated (first 4 cores): {self._current_usage[:4]}")
             else:
@@ -153,6 +155,9 @@ class CPUWidget(Widget):
         # Если update() ещё не вызывался, обновляем сейчас
         if self._current_usage is None:
             self.update()
+
+        # Гарантируем что значение установлено
+        assert self._current_usage is not None
 
         width, height = self.get_preferred_size()
 
@@ -190,8 +195,10 @@ class CPUWidget(Widget):
 
     def _render_text(self, image: Image.Image) -> None:
         """Рендерит текстовое представление загрузки CPU (только цифры)."""
+        assert self._current_usage is not None
         if self.per_core:
             # Per-core: сетка чисел, равномерно распределённых
+            assert isinstance(self._current_usage, list)
             render_grid_text(
                 image,
                 self._current_usage,
@@ -203,6 +210,7 @@ class CPUWidget(Widget):
             )
         else:
             # Агрегированный: одно число с выравниванием
+            assert isinstance(self._current_usage, float)
             text = f"{self._current_usage:.0f}"
             render_single_line_text(
                 image,
@@ -217,6 +225,7 @@ class CPUWidget(Widget):
 
     def _render_bar_horizontal(self, image: Image.Image) -> None:
         """Рендерит горизонтальные полосы загрузки."""
+        assert self._current_usage is not None
         draw = ImageDraw.Draw(image)
 
         # Подготавливаем цвета с полной непрозрачностью для контента
@@ -230,6 +239,7 @@ class CPUWidget(Widget):
 
         if self.per_core:
             # Per-core: разделяем высоту на N частей
+            assert isinstance(self._current_usage, list)
             cores_count = len(self._current_usage)
             total_margin = self.bar_margin * (cores_count - 1)
             available_h = content_h - total_margin
@@ -242,7 +252,7 @@ class CPUWidget(Widget):
             # Log dimensions for debugging (once)
             if bar_height < 3 and not self._warned_bar_height:
                 logger.warning(f"Bar height very small: {bar_height:.2f}px for {cores_count} cores. "
-                              f"Consider using aggregate mode or larger widget height.")
+                               f"Consider using aggregate mode or larger widget height.")
                 self._warned_bar_height = True
 
             y = content_y
@@ -285,6 +295,7 @@ class CPUWidget(Widget):
                     y += self.bar_margin
         else:
             # Агрегированный: один горизонтальный бар на всю ширину
+            assert isinstance(self._current_usage, float)
             if self.bar_border:
                 draw.rectangle(
                     [content_x, content_y, content_x + content_w - 1, content_y + content_h - 1],
@@ -309,6 +320,7 @@ class CPUWidget(Widget):
 
     def _render_bar_vertical(self, image: Image.Image) -> None:
         """Рендерит вертикальные столбцы загрузки."""
+        assert self._current_usage is not None
         draw = ImageDraw.Draw(image)
 
         # Подготавливаем цвета с полной непрозрачностью для контента
@@ -322,6 +334,7 @@ class CPUWidget(Widget):
 
         if self.per_core:
             # Per-core: разделяем ширину на N частей
+            assert isinstance(self._current_usage, list)
             cores_count = len(self._current_usage)
             total_margin = self.bar_margin * (cores_count - 1)
             available_w = content_w - total_margin
@@ -368,6 +381,7 @@ class CPUWidget(Widget):
                     x += self.bar_margin
         else:
             # Агрегированный: один вертикальный бар на всю высоту
+            assert isinstance(self._current_usage, float)
             fill_h = int(content_h * (self._current_usage / 100.0))
             fill_y = content_y + content_h - fill_h
 
@@ -393,6 +407,7 @@ class CPUWidget(Widget):
 
     def _render_graph(self, image: Image.Image) -> None:
         """Рендерит график истории загрузки."""
+        assert self._current_usage is not None
         if len(self._usage_history) < 2:
             # Недостаточно данных для графика
             return
@@ -411,6 +426,7 @@ class CPUWidget(Widget):
 
         if self.per_core:
             # Per-core: разделяем виджет на прямоугольники (горизонтальные секции)
+            assert isinstance(self._current_usage, list)
             cores_count = len(self._current_usage)
             total_margin = self.bar_margin * (cores_count - 1)
             available_h = content_h - total_margin
@@ -423,8 +439,8 @@ class CPUWidget(Widget):
             # Warn if sections are too small for readable graphs (once)
             if section_height < 8 and not self._warned_graph_height:
                 logger.warning(f"Graph section height very small: {section_height:.2f}px for {cores_count} cores. "
-                              f"Graph mode requires at least 8px per core. "
-                              f"Consider using aggregate mode, fewer cores display, or larger widget height.")
+                               f"Graph mode requires at least 8px per core. "
+                               f"Consider using aggregate mode, fewer cores display, or larger widget height.")
                 self._warned_graph_height = True
 
             y = content_y

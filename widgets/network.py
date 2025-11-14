@@ -175,11 +175,13 @@ class NetworkWidget(Widget):
 
             # Добавляем в историю для graph режима
             if self.display_mode == "graph":
+                assert self._current_rx_speed is not None and self._current_tx_speed is not None
                 self._rx_history.append(self._current_rx_speed)
                 self._tx_history.append(self._current_tx_speed)
                 logger.debug(f"Added to history: RX={self._current_rx_speed/1024:.1f}KB/s, TX={self._current_tx_speed/1024:.1f}KB/s, "
-                           f"history_len={len(self._rx_history)}/{self.history_length}")
+                             f"history_len={len(self._rx_history)}/{self.history_length}")
 
+            assert self._current_rx_speed is not None and self._current_tx_speed is not None
             logger.debug(f"Network updated: RX={self._current_rx_speed/1024:.1f}KB/s, TX={self._current_tx_speed/1024:.1f}KB/s")
 
         except Exception as e:
@@ -197,6 +199,9 @@ class NetworkWidget(Widget):
         # Если update() ещё не вызывался, обновляем сейчас
         if self._current_rx_speed is None:
             self.update()
+
+        # Гарантируем что значения установлены
+        assert self._current_rx_speed is not None and self._current_tx_speed is not None
 
         width, height = self.get_preferred_size()
 
@@ -264,6 +269,7 @@ class NetworkWidget(Widget):
 
     def _render_text(self, image: Image.Image) -> None:
         """Рендерит текстовое представление скорости (RX и TX с префиксами)."""
+        assert self._current_rx_speed is not None and self._current_tx_speed is not None
         # Форматируем скорость с префиксами
         rx_value = self._format_speed(self._current_rx_speed)
         tx_value = self._format_speed(self._current_tx_speed)
@@ -289,6 +295,7 @@ class NetworkWidget(Widget):
 
     def _render_bar_horizontal(self, image: Image.Image) -> None:
         """Рендерит две горизонтальные полосы (RX сверху, TX снизу)."""
+        assert self._current_rx_speed is not None and self._current_tx_speed is not None
         draw = ImageDraw.Draw(image)
 
         # Подготавливаем цвета с полной непрозрачностью для контента
@@ -358,6 +365,7 @@ class NetworkWidget(Widget):
 
     def _render_bar_vertical(self, image: Image.Image) -> None:
         """Рендерит два вертикальных столбца (RX слева, TX справа)."""
+        assert self._current_rx_speed is not None and self._current_tx_speed is not None
         draw = ImageDraw.Draw(image)
 
         # Подготавливаем цвета с полной непрозрачностью для контента
@@ -433,8 +441,8 @@ class NetworkWidget(Widget):
             return
 
         logger.debug(f"Rendering graph: {len(self._rx_history)} samples, "
-                    f"RX range {min(self._rx_history)/1024:.1f}-{max(self._rx_history)/1024:.1f}KB/s, "
-                    f"TX range {min(self._tx_history)/1024:.1f}-{max(self._tx_history)/1024:.1f}KB/s")
+                     f"RX range {min(self._rx_history)/1024:.1f}-{max(self._rx_history)/1024:.1f}KB/s, "
+                     f"TX range {min(self._tx_history)/1024:.1f}-{max(self._tx_history)/1024:.1f}KB/s")
 
         draw = ImageDraw.Draw(image)
 

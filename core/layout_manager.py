@@ -99,6 +99,7 @@ class LayoutManager:
         )
 
         # Viewport - используется только в расширенном режиме
+        self.viewport: Optional[Viewport] = None
         if self.viewport_mode:
             self.viewport = Viewport(
                 width=self.display_width,
@@ -107,8 +108,6 @@ class LayoutManager:
                 offset_y=0,
                 zoom=1.0
             )
-        else:
-            self.viewport = None
 
         self.layouts: List[WidgetLayout] = []
 
@@ -140,8 +139,8 @@ class LayoutManager:
             widget: Widget,
             x: int = 0,
             y: int = 0,
-            w: int = None,
-            h: int = None,
+            w: Optional[int] = None,
+            h: Optional[int] = None,
             z_order: int = 0,
             scale: float = 1.0
     ) -> None:
@@ -180,7 +179,7 @@ class LayoutManager:
         self.layouts.append(layout)
 
         # Сортируем по z_order для правильного порядка рендеринга
-        self.layouts.sort(key=lambda l: l.z_order)
+        self.layouts.sort(key=lambda layout: layout.z_order)
 
         if self.viewport_mode and scale != 1.0:
             logger.info(
@@ -201,7 +200,7 @@ class LayoutManager:
             bool: True если виджет был найден и удалён
         """
         initial_count = len(self.layouts)
-        self.layouts = [l for l in self.layouts if l.widget != widget]
+        self.layouts = [layout for layout in self.layouts if layout.widget != widget]
         removed = len(self.layouts) < initial_count
 
         if removed:

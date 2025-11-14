@@ -115,7 +115,7 @@ def load_font(font: Optional[str] = None, size: int = 10) -> ImageFont.FreeTypeF
         loaded = ImageFont.truetype("DejaVuSans.ttf", size)
         logger.debug(f"Loaded DejaVuSans at size {size}")
         return loaded
-    except:
+    except Exception:
         # Финальный fallback на встроенный bitmap font
         logger.warning("DejaVuSans not found, using PIL default bitmap font (size will be ignored)")
         return ImageFont.load_default()
@@ -335,7 +335,7 @@ def draw_progress_bar(
             )
 
 
-def test_bitmap_conversion():
+def test_bitmap_conversion() -> List[int]:
     """
     Тестовая функция для проверки конвертации bitmap.
     Создаёт простой паттерн и конвертирует в байты.

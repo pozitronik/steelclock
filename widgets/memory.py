@@ -110,8 +110,10 @@ class MemoryWidget(Widget):
 
             # Добавляем в историю для graph режима
             if self.display_mode == "graph":
+                assert self._current_usage is not None
                 self._usage_history.append(self._current_usage)
 
+            assert self._current_usage is not None
             logger.debug(f"Memory updated: {self._current_usage:.1f}%")
 
         except Exception as e:
@@ -128,6 +130,9 @@ class MemoryWidget(Widget):
         # Если update() ещё не вызывался, обновляем сейчас
         if self._current_usage is None:
             self.update()
+
+        # Гарантируем что значение установлено
+        assert self._current_usage is not None
 
         width, height = self.get_preferred_size()
 
@@ -165,6 +170,7 @@ class MemoryWidget(Widget):
 
     def _render_text(self, image: Image.Image) -> None:
         """Рендерит текстовое представление загрузки памяти (только цифра)."""
+        assert self._current_usage is not None
         text = f"{self._current_usage:.0f}"
         render_single_line_text(
             image,
@@ -179,6 +185,7 @@ class MemoryWidget(Widget):
 
     def _render_bar_horizontal(self, image: Image.Image) -> None:
         """Рендерит горизонтальную полосу загрузки."""
+        assert self._current_usage is not None
         draw = ImageDraw.Draw(image)
 
         # Подготавливаем цвета с полной непрозрачностью для контента
@@ -215,6 +222,7 @@ class MemoryWidget(Widget):
 
     def _render_bar_vertical(self, image: Image.Image) -> None:
         """Рендерит вертикальный столбец загрузки."""
+        assert self._current_usage is not None
         draw = ImageDraw.Draw(image)
 
         # Подготавливаем цвета с полной непрозрачностью для контента

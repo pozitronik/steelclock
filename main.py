@@ -17,7 +17,7 @@ import sys
 import threading
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 from gamesense.api import GameSenseAPI, GameSenseAPIError
 from gamesense.discovery import ServerDiscoveryError
@@ -109,7 +109,7 @@ class SteelClockApp:
             with open(self.config_path, 'r', encoding='utf-8') as f:
                 config = json.load(f)
             logger.info(f"Config loaded from: {self.config_path}")
-            return config
+            return cast(Dict[str, Any], config)
         except json.JSONDecodeError as e:
             logger.error(f"Invalid JSON in config file: {e}")
             raise
@@ -362,6 +362,9 @@ class SteelClockApp:
         """Запускает приложение."""
         logger.info("Starting SteelClock...")
 
+        # Проверяем что setup() был вызван
+        assert self.api is not None and self.compositor is not None, "Call setup() before run()"
+
         # Запускаем потоки обновления виджетов
         for widget in self.widgets:
             thread = WidgetUpdateThread(widget)
@@ -417,23 +420,24 @@ class SteelClockApp:
 
         logger.info("SteelClock stopped")
 
-    def signal_handler(self, signum, frame):
+    def signal_handler(self, signum: int, frame: Any) -> None:
         """Обработчик системных сигналов."""
         logger.info(f"Received signal {signum}")
         self.shutdown_requested = True
 
 
-def main():
+def main() -> None:
     """Точка входа в приложение"""
     logger.info("=" * 60)
     logger.info("SteelClock - OLED Display Manager for SteelSeries APEX 7")
     logger.info("=" * 60)
 
     # Путь к конфигу (можно передать как аргумент)
+    config_path: str
     if len(sys.argv) > 1:
         config_path = sys.argv[1]
     else:
-        config_path = Path(__file__).parent / "configs/config.json"
+        config_path = str(Path(__file__).parent / "configs/config.json")
 
     try:
         app = SteelClockApp(config_path=str(config_path))
