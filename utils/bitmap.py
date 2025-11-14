@@ -3,8 +3,111 @@
 Конвертация PIL Image в формат GameSense API.
 """
 
-from typing import List, Tuple
+import os
+from pathlib import Path
+from typing import List, Tuple, Optional
 from PIL import Image, ImageDraw, ImageFont
+
+
+def resolve_font_path(font: Optional[str]) -> Optional[str]:
+    """
+    Преобразует имя шрифта или путь в полный путь к файлу шрифта.
+
+    Args:
+        font: Имя шрифта (например "Arial", "Consolas") или путь к файлу шрифта
+
+    Returns:
+        Optional[str]: Полный путь к файлу шрифта или None если не найден
+    """
+    if not font:
+        return None
+
+    # Если это уже путь к существующему файлу, возвращаем как есть
+    if os.path.isfile(font):
+        return font
+
+    # Пробуем найти шрифт в системных директориях Windows
+    windows_fonts_dir = Path("C:/Windows/Fonts")
+
+    # Словарь распространённых названий шрифтов и их файлов
+    font_mappings = {
+        "arial": "arial.ttf",
+        "arial bold": "arialbd.ttf",
+        "arial italic": "ariali.ttf",
+        "consolas": "consola.ttf",
+        "consolas bold": "consolab.ttf",
+        "courier new": "cour.ttf",
+        "courier new bold": "courbd.ttf",
+        "comic sans": "comic.ttf",
+        "comic sans ms": "comic.ttf",
+        "georgia": "georgia.ttf",
+        "impact": "impact.ttf",
+        "lucida console": "lucon.ttf",
+        "tahoma": "tahoma.ttf",
+        "times new roman": "times.ttf",
+        "times new roman bold": "timesbd.ttf",
+        "trebuchet ms": "trebuc.ttf",
+        "verdana": "verdana.ttf",
+        "verdana bold": "verdanab.ttf",
+        "dejavu sans": "DejaVuSans.ttf",
+        "dejavu sans mono": "DejaVuSansMono.ttf",
+    }
+
+    # Нормализуем имя шрифта (lowercase, убираем лишние пробелы)
+    font_normalized = font.lower().strip()
+
+    # Проверяем есть ли в маппинге
+    if font_normalized in font_mappings:
+        font_file = windows_fonts_dir / font_mappings[font_normalized]
+        if font_file.exists():
+            return str(font_file)
+
+    # Пробуем прямое совпадение: имя.ttf
+    direct_path = windows_fonts_dir / f"{font}.ttf"
+    if direct_path.exists():
+        return str(direct_path)
+
+    # Пробуем lowercase версию
+    direct_path = windows_fonts_dir / f"{font_normalized}.ttf"
+    if direct_path.exists():
+        return str(direct_path)
+
+    # Пробуем найти файл содержащий это имя (fuzzy match)
+    if windows_fonts_dir.exists():
+        for font_file in windows_fonts_dir.glob("*.ttf"):
+            if font_normalized in font_file.stem.lower():
+                return str(font_file)
+
+    # Не найден
+    return None
+
+
+def load_font(font: Optional[str] = None, size: int = 10) -> ImageFont.FreeTypeFont:
+    """
+    Загружает шрифт по имени или пути.
+
+    Args:
+        font: Имя шрифта или путь к файлу (None = default font)
+        size: Размер шрифта
+
+    Returns:
+        ImageFont: Загруженный шрифт или default font
+    """
+    if font:
+        font_path = resolve_font_path(font)
+        if font_path:
+            try:
+                return ImageFont.truetype(font_path, size)
+            except Exception:
+                pass  # Fallback to default
+
+    # Default fallback
+    try:
+        # Пробуем DejaVuSans как запасной вариант
+        return ImageFont.truetype("DejaVuSans.ttf", size)
+    except:
+        # Финальный fallback на встроенный bitmap font
+        return ImageFont.load_default()
 
 
 def image_to_bytes(image: Image.Image, width: int = 128, height: int = 40) -> List[int]:
@@ -70,7 +173,8 @@ def draw_text(
     text: str,
     position: Tuple[int, int] = (0, 0),
     font_size: int = 10,
-    color: int = 255
+    color: int = 255,
+    font: Optional[str] = None
 ) -> None:
     """
     Рисует текст на изображении.
@@ -81,19 +185,11 @@ def draw_text(
         position: Позиция (x, y) левого верхнего угла текста
         font_size: Размер шрифта
         color: Цвет текста (0=чёрный, 255=белый)
+        font: Имя шрифта или путь к файлу (None = default)
     """
     draw = ImageDraw.Draw(image)
-
-    # Используем default PIL font (простой bitmap font)
-    # Для более красивых шрифтов можно использовать ImageFont.truetype()
-    try:
-        # Попытка загрузить TrueType font (если доступен)
-        font = ImageFont.truetype("DejaVuSans.ttf", font_size)
-    except:
-        # Fallback на дефолтный bitmap font
-        font = ImageFont.load_default()
-
-    draw.text(position, text, fill=color, font=font)
+    font_obj = load_font(font, font_size)
+    draw.text(position, text, fill=color, font=font_obj)
 
 
 def draw_centered_text(
@@ -101,7 +197,8 @@ def draw_centered_text(
     text: str,
     font_size: int = 10,
     color: int = 255,
-    vertical_offset: int = 0
+    vertical_offset: int = 0,
+    font: Optional[str] = None
 ) -> None:
     """
     Рисует текст по центру изображения.
@@ -112,16 +209,13 @@ def draw_centered_text(
         font_size: Размер шрифта
         color: Цвет текста (0=чёрный, 255=белый)
         vertical_offset: Смещение по вертикали (положительное = вниз)
+        font: Имя шрифта или путь к файлу (None = default)
     """
     draw = ImageDraw.Draw(image)
-
-    try:
-        font = ImageFont.truetype("DejaVuSans.ttf", font_size)
-    except:
-        font = ImageFont.load_default()
+    font_obj = load_font(font, font_size)
 
     # Получаем размер текста
-    bbox = draw.textbbox((0, 0), text, font=font)
+    bbox = draw.textbbox((0, 0), text, font=font_obj)
     text_width = bbox[2] - bbox[0]
     text_height = bbox[3] - bbox[1]
 
@@ -129,7 +223,7 @@ def draw_centered_text(
     x = (image.width - text_width) // 2
     y = (image.height - text_height) // 2 + vertical_offset
 
-    draw.text((x, y), text, fill=color, font=font)
+    draw.text((x, y), text, fill=color, font=font_obj)
 
 
 def draw_progress_bar(

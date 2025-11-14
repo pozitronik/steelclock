@@ -29,6 +29,7 @@ class ClockWidget(Widget):
         format_string: str = "%H:%M:%S",
         update_interval: float = 1.0,
         font_size: int = 12,
+        font: str = None,
         background_color: int = 0,
         border: bool = False,
         border_color: int = 255
@@ -46,6 +47,11 @@ class ClockWidget(Widget):
                 - "%d.%m.%Y" - 14.11.2025
             update_interval: Интервал обновления в секундах
             font_size: Размер шрифта
+            font: Имя шрифта или путь к файлу (None = default)
+                Примеры:
+                - "Arial"
+                - "Consolas"
+                - "C:/Windows/Fonts/arial.ttf"
             background_color: Цвет фона (0-255, 0=чёрный, 255=белый)
             border: Рисовать ли рамку
             border_color: Цвет рамки (0-255)
@@ -55,6 +61,7 @@ class ClockWidget(Widget):
         self.format_string = format_string
         self.update_interval_sec = update_interval
         self.font_size = font_size
+        self.font = font
         self.background_color = background_color
         self.border = border
         self.border_color = border_color
@@ -65,7 +72,7 @@ class ClockWidget(Widget):
 
         logger.info(
             f"ClockWidget initialized: {name}, format='{format_string}', "
-            f"interval={update_interval}s, font={font_size}, "
+            f"interval={update_interval}s, font_size={font_size}, font={font or 'default'}, "
             f"bg={background_color}, border={border}"
         )
 
@@ -112,7 +119,8 @@ class ClockWidget(Widget):
             image,
             self._formatted_time,
             font_size=self.font_size,
-            color=text_color
+            color=text_color,
+            font=self.font
         )
 
         return image

@@ -229,6 +229,7 @@ class SteelClockApp:
                     format_string=properties.get("format", "%H:%M:%S"),
                     update_interval=properties.get("update_interval", 1.0),
                     font_size=properties.get("font_size", 12),
+                    font=properties.get("font"),
                     background_color=style.get("background_color", 0),
                     border=style.get("border", False),
                     border_color=style.get("border_color", 255)
