@@ -3,7 +3,7 @@ Network Widget - отображает скорость сети (RX/TX) в ра�
 """
 
 import logging
-from typing import Optional, Tuple
+from typing import Optional
 from collections import deque
 from PIL import Image, ImageDraw
 
@@ -118,8 +118,8 @@ class NetworkWidget(Widget):
         self._prev_time: Optional[float] = None
 
         # История для graph режима (очереди кортежей (rx_speed, tx_speed))
-        self._rx_history: deque = deque(maxlen=history_length)
-        self._tx_history: deque = deque(maxlen=history_length)
+        self._rx_history: deque[float] = deque(maxlen=history_length)
+        self._tx_history: deque[float] = deque(maxlen=history_length)
 
         # Флаг предупреждения об отсутствующем интерфейсе
         self._warned_interface = False

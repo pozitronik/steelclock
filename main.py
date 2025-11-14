@@ -17,7 +17,7 @@ import sys
 import threading
 import time
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List, Optional
 
 from gamesense.api import GameSenseAPI, GameSenseAPIError
 from gamesense.discovery import ServerDiscoveryError
@@ -50,7 +50,7 @@ class WidgetUpdateThread(threading.Thread):
         self.widget = widget
         self.stop_event = threading.Event()
 
-    def run(self):
+    def run(self) -> None:
         """Главный цикл обновления виджета"""
         interval = self.widget.get_update_interval()
         logger.debug(f"Widget update thread started: {self.widget.name} (interval={interval}s)")
@@ -65,7 +65,7 @@ class WidgetUpdateThread(threading.Thread):
 
         logger.debug(f"Widget update thread stopped: {self.widget.name}")
 
-    def stop(self):
+    def stop(self) -> None:
         """Останавливает поток обновления"""
         self.stop_event.set()
 
@@ -88,9 +88,9 @@ class SteelClockApp:
         self.config = self._load_config()
 
         # Компоненты (инициализируются в setup())
-        self.api: GameSenseAPI = None
-        self.layout_manager = None
-        self.compositor: Compositor = None
+        self.api: Optional[GameSenseAPI] = None
+        self.layout_manager: Optional[LayoutManager] = None
+        self.compositor: Optional[Compositor] = None
         self.widgets: List[Widget] = []
         self.widget_threads: List[WidgetUpdateThread] = []
 
@@ -99,7 +99,7 @@ class SteelClockApp:
 
         logger.info("SteelClock initialized")
 
-    def _load_config(self) -> Dict:
+    def _load_config(self) -> Dict[str, Any]:
         """Загружает конфигурацию из файла."""
         if not self.config_path.exists():
             logger.warning(f"Config file not found: {self.config_path}, using defaults")
@@ -114,7 +114,7 @@ class SteelClockApp:
             logger.error(f"Invalid JSON in config file: {e}")
             raise
 
-    def _default_config(self) -> Dict:
+    def _default_config(self) -> Dict[str, Any]:
         """Возвращает дефолтную конфигурацию."""
         return {
             "game_name": "STEELCLOCK",
@@ -140,7 +140,7 @@ class SteelClockApp:
             ]
         }
 
-    def setup(self):
+    def setup(self) -> None:
         """Инициализирует все компоненты приложения."""
         logger.info("Setting up SteelClock...")
 
@@ -214,7 +214,7 @@ class SteelClockApp:
 
         logger.info(f"Setup completed: {len(self.widgets)} widgets loaded")
 
-    def _create_widget_from_config(self, config: Dict) -> Widget:
+    def _create_widget_from_config(self, config: Dict[str, Any]) -> Optional[Widget]:
         """
         Создаёт виджет из конфигурации.
 
@@ -358,7 +358,7 @@ class SteelClockApp:
             logger.error(f"Failed to create widget {widget_type}/{widget_id}: {e}")
             return None
 
-    def run(self):
+    def run(self) -> None:
         """Запускает приложение."""
         logger.info("Starting SteelClock...")
 
@@ -389,7 +389,7 @@ class SteelClockApp:
 
         self.shutdown()
 
-    def shutdown(self):
+    def shutdown(self) -> None:
         """Останавливает приложение и очищает ресурсы."""
         if self.shutdown_requested:
             return

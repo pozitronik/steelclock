@@ -39,7 +39,7 @@ class CPUWidget(Widget):
         per_core: bool = False,
         update_interval: float = 1.0,
         history_length: int = 30,
-        font: str = None,
+        font: Optional[str] = None,
         font_size: int = 10,
         horizontal_align: str = "center",
         vertical_align: str = "center",
@@ -101,7 +101,7 @@ class CPUWidget(Widget):
 
         # История для graph режима (очередь образцов)
         # Каждый элемент: float (aggregate) или List[float] (per-core)
-        self._usage_history: deque = deque(maxlen=history_length)
+        self._usage_history: deque[float | List[float]] = deque(maxlen=history_length)
 
         # Количество ядер
         self._core_count = psutil.cpu_count(logical=True)

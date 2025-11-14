@@ -5,7 +5,6 @@
 
 import json
 import logging
-import time
 from typing import Dict, List, Optional
 
 import requests
@@ -67,7 +66,7 @@ class GameSenseAPI:
         }
 
         try:
-            response = self._post('/game_metadata', payload)
+            _ = self._post('/game_metadata', payload)
             logger.info(f"Game registered: {self.game_name}")
             return True
         except GameSenseAPIError as e:
@@ -120,7 +119,7 @@ class GameSenseAPI:
         }
 
         try:
-            response = self._post('/bind_game_event', payload)
+            _ = self._post('/bind_game_event', payload)
             logger.info(f"Event bound: {event_name}")
             return True
         except GameSenseAPIError as e:

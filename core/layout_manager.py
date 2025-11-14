@@ -12,7 +12,7 @@ Layout Manager - управляет размещением виджетов на
 """
 
 import logging
-from typing import List, Tuple, Optional
+from typing import List, Optional
 from dataclasses import dataclass
 from PIL import Image
 

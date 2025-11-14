@@ -1,0 +1,19 @@
+[flake8]
+max-line-length = 100
+extend-ignore = E203,W503,E501
+exclude = 
+    __pycache__,
+    venv,
+    .venv,
+    .git,
+    .pytest_cache,
+    .mypy_cache,
+    alembic/versions,
+    build,
+    dist
+    node_modules/*
+per-file-ignores = 
+    # Test files can have longer lines
+    */tests/*:E501
+    # Migration files are auto-generated
+    */alembic/versions/*:E501,E402

@@ -38,7 +38,7 @@ class MemoryWidget(Widget):
         display_mode: str = "bar_horizontal",
         update_interval: float = 1.0,
         history_length: int = 30,
-        font: str = None,
+        font: Optional[str] = None,
         font_size: int = 10,
         horizontal_align: str = "center",
         vertical_align: str = "center",
@@ -94,7 +94,7 @@ class MemoryWidget(Widget):
         self._current_usage: Optional[float] = None
 
         # История для graph режима (очередь образцов)
-        self._usage_history: deque = deque(maxlen=history_length)
+        self._usage_history: deque[float] = deque(maxlen=history_length)
 
         logger.info(
             f"MemoryWidget initialized: {name}, mode={display_mode}, interval={update_interval}s"

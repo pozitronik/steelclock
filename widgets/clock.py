@@ -3,6 +3,7 @@ Clock Widget - отображает текущее время на диспле�
 """
 
 import logging
+from typing import Optional
 from datetime import datetime
 from PIL import Image, ImageDraw
 
@@ -29,7 +30,7 @@ class ClockWidget(Widget):
         format_string: str = "%H:%M:%S",
         update_interval: float = 1.0,
         font_size: int = 12,
-        font: str = None,
+        font: Optional[str] = None,
         background_color: int = 0,
         background_opacity: int = 255,
         border: bool = False,

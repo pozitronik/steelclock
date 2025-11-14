@@ -48,7 +48,7 @@ class KeyboardWidget(Widget):
         self,
         name: str = "Keyboard",
         update_interval: float = 0.2,
-        font: str = None,
+        font: Optional[str] = None,
         font_size: int = 10,
         horizontal_align: str = "center",
         vertical_align: str = "center",
@@ -149,7 +149,7 @@ class KeyboardWidget(Widget):
 
         try:
             # GetKeyState возвращает ненулевое значение если клавиша включена
-            state = ctypes.windll.user32.GetKeyState(vk_code)
+            state = ctypes.windll.user32.GetKeyState(vk_code)  # type: ignore[attr-defined]
             # Младший бит показывает состояние toggle (включено/выключено)
             return bool(state & 1)
         except Exception as e:
@@ -229,7 +229,7 @@ class KeyboardWidget(Widget):
 
         return image
 
-    def _render_indicators(self, image: Image.Image, indicators: list) -> None:
+    def _render_indicators(self, image: Image.Image, indicators: list[tuple[str, int]]) -> None:
         """
         Рендерит индикаторы на изображении.
 
@@ -258,9 +258,6 @@ class KeyboardWidget(Widget):
             total_width += width
             if i < len(indicators) - 1:
                 total_width += self.spacing
-
-        # Вычисляем максимальную высоту для вертикального выравнивания
-        max_height = max(h for _, h in indicator_sizes) if indicator_sizes else 0
 
         # Вычисляем начальную X координату в зависимости от выравнивания
         if self.horizontal_align == "left":

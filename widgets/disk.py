@@ -3,7 +3,7 @@ Disk Widget - отображает загрузку дисков в различ
 """
 
 import logging
-from typing import Optional, Dict
+from typing import Optional, Any
 from collections import deque
 from PIL import Image, ImageDraw
 import time
@@ -36,12 +36,12 @@ class DiskWidget(Widget):
     def __init__(
         self,
         name: str = "Disk",
-        disk_name: str = None,
+        disk_name: Optional[str] = None,
         display_mode: str = "bar_horizontal",
         update_interval: float = 1.0,
         history_length: int = 30,
         max_speed_mbps: float = -1,
-        font: str = None,
+        font: Optional[str] = None,
         font_size: int = 10,
         horizontal_align: str = "center",
         vertical_align: str = "center",
@@ -108,8 +108,8 @@ class DiskWidget(Widget):
         self._current_write_speed: float = 0.0
 
         # История для graph режима
-        self._read_history: deque = deque(maxlen=history_length)
-        self._write_history: deque = deque(maxlen=history_length)
+        self._read_history: deque[float] = deque(maxlen=history_length)
+        self._write_history: deque[float] = deque(maxlen=history_length)
 
         # Для вычисления скорости
         self._last_read_bytes: Optional[int] = None
@@ -136,10 +136,10 @@ class DiskWidget(Widget):
             f"interval={update_interval}s, max_speed={max_speed_mbps} MB/s"
         )
 
-    def _get_disk_io_counters(self) -> Optional[Dict]:
+    def _get_disk_io_counters(self) -> Optional[Any]:
         """Получает счётчики I/O для выбранного диска."""
         try:
-            counters = psutil.disk_io_counters(perdisk=True)
+            counters = psutil.disk_io_counters(perdisk=True)  # type: ignore[no-untyped-call]
 
             if not counters:
                 return None
