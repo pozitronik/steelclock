@@ -28,6 +28,7 @@ from widgets.clock import ClockWidget
 from widgets.cpu import CPUWidget
 from widgets.memory import MemoryWidget
 from widgets.network import NetworkWidget
+from widgets.disk import DiskWidget
 
 
 # Настройка логирования
@@ -303,6 +304,27 @@ class SteelClockApp:
                     bar_margin=properties.get("bar_margin", 1),
                     rx_color=properties.get("rx_color", 255),
                     tx_color=properties.get("tx_color", 128)
+                )
+            elif widget_type == "disk":
+                return DiskWidget(
+                    name=widget_id,
+                    disk_name=properties.get("disk_name", None),
+                    display_mode=properties.get("display_mode", "bar_horizontal"),
+                    update_interval=properties.get("update_interval", 1.0),
+                    history_length=properties.get("history_length", 30),
+                    max_speed_mbps=properties.get("max_speed_mbps", -1),
+                    font=properties.get("font", None),
+                    font_size=properties.get("font_size", 10),
+                    horizontal_align=properties.get("horizontal_align", "center"),
+                    vertical_align=properties.get("vertical_align", "center"),
+                    background_color=style.get("background_color", 0),
+                    background_opacity=style.get("background_opacity", 255),
+                    border=style.get("border", False),
+                    border_color=style.get("border_color", 255),
+                    padding=style.get("padding", 0),
+                    bar_border=properties.get("bar_border", False),
+                    read_color=properties.get("read_color", 255),
+                    write_color=properties.get("write_color", 200)
                 )
             else:
                 logger.error(f"Unknown widget type: {widget_type}")
