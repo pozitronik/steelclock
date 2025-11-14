@@ -27,6 +27,7 @@ from core.widget import Widget
 from widgets.clock import ClockWidget
 from widgets.cpu import CPUWidget
 from widgets.memory import MemoryWidget
+from widgets.network import NetworkWidget
 
 
 # Настройка логирования
@@ -268,6 +269,28 @@ class SteelClockApp:
                     padding=style.get("padding", 0),
                     bar_border=properties.get("bar_border", False),
                     fill_color=properties.get("fill_color", 255)
+                )
+            elif widget_type == "network":
+                return NetworkWidget(
+                    name=widget_id,
+                    interface=properties.get("interface", "eth0"),
+                    display_mode=properties.get("display_mode", "bar_horizontal"),
+                    update_interval=properties.get("update_interval", 1.0),
+                    history_length=properties.get("history_length", 30),
+                    max_speed_mbps=properties.get("max_speed_mbps", 100.0),
+                    speed_unit=properties.get("speed_unit", "kbps"),
+                    font=properties.get("font", None),
+                    font_size=properties.get("font_size", 10),
+                    horizontal_align=properties.get("horizontal_align", "center"),
+                    vertical_align=properties.get("vertical_align", "center"),
+                    background_color=style.get("background_color", 0),
+                    border=style.get("border", False),
+                    border_color=style.get("border_color", 255),
+                    padding=style.get("padding", 0),
+                    bar_border=properties.get("bar_border", False),
+                    bar_margin=properties.get("bar_margin", 1),
+                    rx_color=properties.get("rx_color", 255),
+                    tx_color=properties.get("tx_color", 128)
                 )
             else:
                 logger.error(f"Unknown widget type: {widget_type}")
