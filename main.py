@@ -17,11 +17,12 @@ import sys
 import threading
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, List, Optional
 
 from gamesense.api import GameSenseAPI, GameSenseAPIError
 from gamesense.discovery import ServerDiscoveryError
 from core.layout_manager import LayoutManager
+from core.config_types import SteelClockConfig, WidgetConfig, WidgetProperties, StyleConfig
 from core.compositor import Compositor
 from core.widget import Widget
 from widgets.clock import ClockWidget
@@ -99,7 +100,7 @@ class SteelClockApp:
 
         logger.info("SteelClock initialized")
 
-    def _load_config(self) -> Dict[str, Any]:
+    def _load_config(self) -> SteelClockConfig:
         """Загружает конфигурацию из файла."""
         if not self.config_path.exists():
             logger.warning(f"Config file not found: {self.config_path}, using defaults")
@@ -107,14 +108,21 @@ class SteelClockApp:
 
         try:
             with open(self.config_path, 'r', encoding='utf-8') as f:
-                config = json.load(f)
+                config: Any = json.load(f)
+
+            # Базовая валидация структуры
+            if not isinstance(config, dict):
+                raise ValueError("Config must be a JSON object")
+
             logger.info(f"Config loaded from: {self.config_path}")
-            return cast(Dict[str, Any], config)
+            # TypedDict - это только аннотация типа, не runtime проверка
+            # В runtime это просто dict, поэтому безопасно вернуть
+            return config  # type: ignore[return-value]
         except json.JSONDecodeError as e:
             logger.error(f"Invalid JSON in config file: {e}")
             raise
 
-    def _default_config(self) -> Dict[str, Any]:
+    def _default_config(self) -> SteelClockConfig:
         """Возвращает дефолтную конфигурацию."""
         return {
             "game_name": "STEELCLOCK",
@@ -214,7 +222,7 @@ class SteelClockApp:
 
         logger.info(f"Setup completed: {len(self.widgets)} widgets loaded")
 
-    def _create_widget_from_config(self, config: Dict[str, Any]) -> Optional[Widget]:
+    def _create_widget_from_config(self, config: WidgetConfig) -> Optional[Widget]:
         """
         Создаёт виджет из конфигурации.
 
@@ -226,8 +234,10 @@ class SteelClockApp:
         """
         widget_type = config.get("type")
         widget_id = config.get("id", f"{widget_type}_auto")
-        properties = config.get("properties", {})
-        style = config.get("style", {})
+
+        # Извлекаем properties и style с правильными типами
+        properties: WidgetProperties = config.get("properties", {})  # type: ignore[typeddict-item]
+        style: StyleConfig = config.get("style", {})  # type: ignore[typeddict-item]
 
         try:
             if widget_type == "clock":
@@ -260,7 +270,7 @@ class SteelClockApp:
                     background_opacity=style.get("background_opacity", 255),
                     border=style.get("border", False),
                     border_color=style.get("border_color", 255),
-                    padding=style.get("padding", 0),
+                    padding=style.get("padding", 0),  # type: ignore[arg-type]
                     bar_border=properties.get("bar_border", False),
                     bar_margin=properties.get("bar_margin", 0),
                     fill_color=properties.get("fill_color", 255)
@@ -279,7 +289,7 @@ class SteelClockApp:
                     background_opacity=style.get("background_opacity", 255),
                     border=style.get("border", False),
                     border_color=style.get("border_color", 255),
-                    padding=style.get("padding", 0),
+                    padding=style.get("padding", 0),  # type: ignore[arg-type]
                     bar_border=properties.get("bar_border", False),
                     fill_color=properties.get("fill_color", 255)
                 )
@@ -300,7 +310,7 @@ class SteelClockApp:
                     background_opacity=style.get("background_opacity", 255),
                     border=style.get("border", False),
                     border_color=style.get("border_color", 255),
-                    padding=style.get("padding", 0),
+                    padding=style.get("padding", 0),  # type: ignore[arg-type]
                     bar_border=properties.get("bar_border", False),
                     bar_margin=properties.get("bar_margin", 1),
                     rx_color=properties.get("rx_color", 255),
@@ -322,7 +332,7 @@ class SteelClockApp:
                     background_opacity=style.get("background_opacity", 255),
                     border=style.get("border", False),
                     border_color=style.get("border_color", 255),
-                    padding=style.get("padding", 0),
+                    padding=style.get("padding", 0),  # type: ignore[arg-type]
                     bar_border=properties.get("bar_border", False),
                     read_color=properties.get("read_color", 255),
                     write_color=properties.get("write_color", 200)

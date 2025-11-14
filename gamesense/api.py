@@ -5,7 +5,7 @@
 
 import json
 import logging
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, Optional
 
 import requests  # type: ignore[import-untyped]
 
@@ -239,7 +239,12 @@ class GameSenseAPI:
             # 500 - внутренняя ошибка сервера
             if response.status_code == 200:
                 try:
-                    return cast(Dict[str, Any], response.json())
+                    result: Any = response.json()
+                    # API обычно возвращает dict, но может быть и None
+                    if result is None or isinstance(result, dict):
+                        return result
+                    # Если вернули что-то другое, оборачиваем в dict
+                    return {"data": result}
                 except json.JSONDecodeError:
                     return None
             else:
