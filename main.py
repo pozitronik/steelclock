@@ -72,7 +72,7 @@ class SteelClockApp:
     Поддерживает расширенную конфигурацию через JSON.
     """
 
-    def __init__(self, config_path: str = "config.json"):
+    def __init__(self, config_path: str = "configs/config.json"):
         """
         Инициализирует приложение.
 
