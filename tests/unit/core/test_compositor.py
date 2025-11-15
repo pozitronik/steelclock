@@ -14,8 +14,7 @@ Unit tests для Compositor - главный цикл рендеринга дл
 
 import pytest
 import time
-import threading
-from unittest.mock import Mock, MagicMock, patch, call
+from unittest.mock import Mock, patch
 from PIL import Image
 
 from core.compositor import Compositor
@@ -492,8 +491,6 @@ def test_compositor_multiple_start_stop_cycles(compositor):
         time.sleep(0.05)
         compositor.stop()
         time.sleep(0.05)
-
-        count_after_first = compositor._frame_count
 
         # Второй цикл - можно перезапустить после остановки
         compositor2 = Compositor(compositor.layout_manager, compositor.api)

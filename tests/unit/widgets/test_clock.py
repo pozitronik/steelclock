@@ -216,7 +216,7 @@ def test_clock_render_calls_update_if_needed():
         widget = ClockWidget(format_string="%H:%M")
         # update() не вызван, _formatted_time пустой
 
-        image = widget.render()
+        widget.render()
 
         # render() должен был вызвать update()
         assert widget._formatted_time == "12:34"

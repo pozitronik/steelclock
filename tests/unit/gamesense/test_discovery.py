@@ -278,7 +278,7 @@ def test_find_core_props_path_windows_fallback():
     Edge case: PROGRAMDATA не установлен, используем жёстко заданный путь.
     """
     with patch.dict('os.environ', {}, clear=True):
-        with patch('pathlib.Path.exists') as mock_exists:
+        with patch('pathlib.Path.exists'):
             def exists_side_effect(self):
                 # Только C:/ProgramData путь существует
                 return 'C:/ProgramData' in str(self)
@@ -298,7 +298,7 @@ def test_find_core_props_path_macos():
     Проверяет путь /Library/Application Support/SteelSeries Engine 3/coreProps.json.
     """
     with patch.dict('os.environ', {}, clear=True):
-        with patch('pathlib.Path.exists') as mock_exists:
+        with patch('pathlib.Path.exists'):
             def exists_side_effect(self):
                 # Только macOS путь существует
                 return '/Library/Application Support' in str(self)

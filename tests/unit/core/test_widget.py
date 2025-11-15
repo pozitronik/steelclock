@@ -208,7 +208,7 @@ def test_cannot_instantiate_abstract_widget():
     """
     with pytest.raises(TypeError):
         # Это должно вызвать ошибку, т.к. Widget абстрактный
-        widget = Widget(name="test")  # type: ignore[abstract]
+        Widget(name="test")  # type: ignore[abstract]
 
 
 # =============================================================================

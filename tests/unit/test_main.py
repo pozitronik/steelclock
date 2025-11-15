@@ -19,11 +19,8 @@ import signal
 import time
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch, call, mock_open
+from unittest.mock import Mock, patch
 
-# Импортируем после патча
-import sys
-from typing import Any
 
 # Мокаем все виджеты перед импортом main
 @pytest.fixture(autouse=True)
@@ -612,7 +609,7 @@ def test_main_without_config_arg(mock_api, mock_components):
 
     with patch('sys.argv', ['main.py']), \
          patch('main.SteelClockApp') as mock_app_class, \
-         patch('main.Path') as mock_path:
+         patch('main.Path'):
 
         mock_app = Mock()
         mock_app.setup = Mock()

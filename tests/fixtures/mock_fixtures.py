@@ -8,8 +8,7 @@
 """
 
 import pytest
-from unittest.mock import Mock, MagicMock, patch
-from typing import Any, Dict
+from unittest.mock import Mock, patch
 
 
 # =============================================================================

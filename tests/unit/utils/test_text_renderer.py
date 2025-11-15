@@ -14,7 +14,6 @@ Unit tests для utils.text_renderer - рендеринг текста с вы�
 """
 
 import pytest
-from PIL import Image
 from utils.text_renderer import (
     render_single_line_text,
     render_multi_line_text,

@@ -15,8 +15,7 @@ Unit tests для widgets.cpu - виджет мониторинга CPU.
 
 import pytest
 from PIL import Image
-from unittest.mock import patch, Mock
-from collections import deque
+from unittest.mock import patch
 
 from widgets.cpu import CPUWidget
 
@@ -411,7 +410,7 @@ def test_cpu_render_calls_update_if_needed():
         widget.set_size(128, 40)
         # update() не вызван, _current_usage = None
 
-        image = widget.render()
+        widget.render()
 
         # render() должен был вызвать update()
         assert widget._current_usage == 75.0

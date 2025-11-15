@@ -16,7 +16,7 @@ Unit tests для widgets.keyboard - виджет индикации состо�
 """
 
 import pytest
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 from PIL import Image
 from widgets.keyboard import KeyboardWidget
 
@@ -122,8 +122,6 @@ def test_keyboard_get_key_state_logic():
     Проверяет что бит 0 корректно извлекается из разных значений.
     Edge case: Тестируется логика без вызова реального Windows API.
     """
-    widget = KeyboardWidget()
-
     # Симулируем логику: bool(state & 1)
     # Бит 0 установлен (нечётные числа) -> True
     for value in [1, 3, 5, 255, 32767]:

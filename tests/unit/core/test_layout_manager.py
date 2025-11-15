@@ -14,10 +14,10 @@ Unit tests для LayoutManager - управление размещением в
 """
 
 import pytest
-from unittest.mock import Mock, MagicMock, patch
+from unittest.mock import Mock
 from PIL import Image
 
-from core.layout_manager import LayoutManager, WidgetLayout
+from core.layout_manager import LayoutManager
 from core.widget import Widget
 
 
@@ -254,7 +254,7 @@ def test_layout_manager_remove_widget_from_multiple(mock_widget_factory):
 
     assert result is True
     assert len(manager) == 4
-    assert widgets[2] not in [l.widget for l in manager.layouts]
+    assert widgets[2] not in [layout.widget for layout in manager.layouts]
 
 
 # ===========================
@@ -316,7 +316,7 @@ def test_layout_manager_composite_widget_visibility(mock_widget_factory):
     # Скрываем второй виджет
     manager.set_widget_visibility(widget2, False)
 
-    image = manager.composite()
+    manager.composite()
 
     widget1.render.assert_called_once()
     widget2.render.assert_not_called()
@@ -432,7 +432,7 @@ def test_layout_manager_composite_viewport_culling(mock_widget_factory):
     manager.add_widget(widget_outside, x=200, y=60, w=64, h=20)
 
     # Viewport по умолчанию (0, 0)
-    image = manager.composite(apply_viewport=True)
+    manager.composite(apply_viewport=True)
 
     # Только видимый виджет должен быть отрендерен
     widget_visible.render.assert_called_once()
@@ -451,7 +451,7 @@ def test_layout_manager_composite_widget_scale_in_viewport_mode(mock_widget):
     # Виджет с scale=2.0
     manager.add_widget(mock_widget, x=0, y=0, w=32, h=10, scale=2.0)
 
-    image = manager.composite(apply_viewport=False)
+    manager.composite(apply_viewport=False)
 
     # Виджет должен быть отрендерен и заскейлен
     mock_widget.render.assert_called_once()
@@ -775,7 +775,7 @@ def test_layout_manager_full_workflow(mock_widget_factory):
 
     # Скрываем средний виджет
     manager.set_widget_visibility(widget2, False)
-    image2 = manager.composite()
+    manager.composite()
     widget2.render.assert_called_once()  # Первый composite
 
     # Удаляем виджет
@@ -800,12 +800,12 @@ def test_layout_manager_viewport_workflow(mock_widget_factory):
     manager.add_widget(widget, x=150, y=50, w=64, h=20)
 
     # Виджет вне viewport
-    image1 = manager.composite(apply_viewport=True)
+    manager.composite(apply_viewport=True)
     widget.render.assert_not_called()
 
     # Скроллим к виджету
     manager.viewport.scroll_to(100, 30)
-    image2 = manager.composite(apply_viewport=True)
+    manager.composite(apply_viewport=True)
     widget.render.assert_called_once()
 
     # Зумируем

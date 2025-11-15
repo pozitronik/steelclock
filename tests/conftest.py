@@ -8,10 +8,8 @@
 - Фикстуры для контроля времени
 """
 
-import sys
-from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
 from typing import Any, Dict
+from unittest.mock import Mock, patch
 
 import pytest
 from PIL import Image

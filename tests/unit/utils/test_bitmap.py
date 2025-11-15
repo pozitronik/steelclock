@@ -14,7 +14,7 @@ Unit tests для utils.bitmap - утилиты для работы с изоб�
 """
 
 import pytest
-from PIL import Image, ImageFont
+from PIL import Image
 from unittest.mock import patch, Mock
 from utils.bitmap import (
     resolve_font_path,

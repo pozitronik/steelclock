@@ -20,8 +20,8 @@ Unit tests для gamesense.api - GameSense API клиент.
 
 import pytest
 import json
-from unittest.mock import patch, Mock, MagicMock
-from requests.exceptions import Timeout, ConnectionError as RequestsConnectionError, RequestException
+from unittest.mock import patch, Mock
+from requests.exceptions import Timeout, ConnectionError as RequestsConnectionError
 
 from gamesense.api import GameSenseAPI, GameSenseAPIError
 
@@ -634,7 +634,7 @@ def test_context_manager_closes_session():
             mock_post.return_value = mock_response
 
             with patch('requests.Session.close') as mock_close:
-                with GameSenseAPI() as api:
+                with GameSenseAPI():
                     pass
 
                 # session.close() должен быть вызван

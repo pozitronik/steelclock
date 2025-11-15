@@ -16,7 +16,6 @@ Unit tests для widgets.memory - виджет мониторинга памя�
 import pytest
 from PIL import Image
 from unittest.mock import patch, Mock
-from collections import deque
 
 from widgets.memory import MemoryWidget
 
@@ -315,7 +314,7 @@ def test_memory_render_calls_update_if_needed():
         widget.set_size(128, 40)
         # update() не вызван, _current_usage = None
 
-        image = widget.render()
+        widget.render()
 
         # render() должен был вызвать update()
         assert widget._current_usage == 75.0

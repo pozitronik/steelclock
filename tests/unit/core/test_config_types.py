@@ -17,9 +17,6 @@ Unit tests для config_types - TypedDict определения для кон�
 определены и могут быть использованы для валидации конфигураций.
 """
 
-import pytest
-from typing import get_type_hints
-
 from core.config_types import (
     PositionConfig,
     StyleConfig,
