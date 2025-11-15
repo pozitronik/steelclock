@@ -1,6 +1,6 @@
 # SteelClock
 
-[![CI](https://github.com/pozitonik/steelclock/workflows/ci.yml/badge.svg)](https://github.com/pozitonik/steelclock/actions/workflows/ci.yml)
+[![CI](https://github.com/pozitronik/steelclock/actions/workflows/ci.yml/badge.svg)](https://github.com/pozitronik/steelclock/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/pozitonik/steelclock/branch/main/graph/badge.svg)](https://codecov.io/gh/pozitonik/steelclock)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
