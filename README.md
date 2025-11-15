@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/pozitonik/steelclock/branch/main/graph/badge.svg)](https://codecov.io/gh/pozitonik/steelclock)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-Customizable OLED display manager for SteelSeries devices.
+Customizable display manager for SteelSeries devices.
 
 Transform your SteelSeries OLED display into a powerful real-time system monitoring dashboard with fully customizable widgets, layouts, and styling.
 
