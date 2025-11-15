@@ -12,25 +12,25 @@ from PIL import Image, ImageDraw
 
 
 @pytest.fixture
-def image_1x1():
+def image_1x1() -> Image.Image:
     """Минимальное изображение 1x1."""
     return Image.new('L', (1, 1), color=0)
 
 
 @pytest.fixture
-def image_128x40():
+def image_128x40() -> Image.Image:
     """Стандартное изображение для OLED дисплея."""
     return Image.new('L', (128, 40), color=0)
 
 
 @pytest.fixture
-def image_256x80():
+def image_256x80() -> Image.Image:
     """Изображение удвоенного размера (для viewport тестов)."""
     return Image.new('L', (256, 80), color=0)
 
 
 @pytest.fixture
-def image_with_text():
+def image_with_text() -> Image.Image:
     """Изображение 128x40 с текстом 'TEST'."""
     img = Image.new('L', (128, 40), color=0)
     draw = ImageDraw.Draw(img)
@@ -39,37 +39,37 @@ def image_with_text():
 
 
 @pytest.fixture
-def image_with_alpha():
+def image_with_alpha() -> Image.Image:
     """Изображение с альфа-каналом (LA mode)."""
     return Image.new('LA', (128, 40), color=(128, 200))
 
 
 @pytest.fixture
-def image_rgb():
+def image_rgb() -> Image.Image:
     """Цветное RGB изображение."""
     return Image.new('RGB', (128, 40), color=(255, 128, 0))
 
 
 @pytest.fixture
-def image_rgba():
+def image_rgba() -> Image.Image:
     """Цветное RGBA изображение с прозрачностью."""
     return Image.new('RGBA', (128, 40), color=(255, 128, 0, 200))
 
 
 @pytest.fixture
-def image_all_black():
+def image_all_black() -> Image.Image:
     """Полностью чёрное изображение."""
     return Image.new('L', (128, 40), color=0)
 
 
 @pytest.fixture
-def image_all_white():
+def image_all_white() -> Image.Image:
     """Полностью белое изображение."""
     return Image.new('L', (128, 40), color=255)
 
 
 @pytest.fixture
-def image_gradient():
+def image_gradient() -> Image.Image:
     """Изображение с горизонтальным градиентом от чёрного к белому."""
     img = Image.new('L', (128, 40))
     pixels = img.load()
@@ -81,7 +81,7 @@ def image_gradient():
 
 
 @pytest.fixture
-def image_checkerboard():
+def image_checkerboard() -> Image.Image:
     """Изображение с шахматным паттерном (8x8 клетки)."""
     img = Image.new('L', (128, 40))
     pixels = img.load()
@@ -96,7 +96,7 @@ def image_checkerboard():
 
 
 @pytest.fixture
-def image_with_rect():
+def image_with_rect() -> Image.Image:
     """Изображение с белым прямоугольником в центре."""
     img = Image.new('L', (128, 40), color=0)
     draw = ImageDraw.Draw(img)
@@ -105,7 +105,7 @@ def image_with_rect():
 
 
 @pytest.fixture
-def image_with_border():
+def image_with_border() -> Image.Image:
     """Изображение с рамкой."""
     img = Image.new('L', (128, 40), color=0)
     draw = ImageDraw.Draw(img)

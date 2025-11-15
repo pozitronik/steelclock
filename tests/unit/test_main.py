@@ -13,18 +13,22 @@ Unit tests для main.py - главное приложение SteelClock.
 - main() entry point
 """
 
-import pytest
 import json
 import signal
-import time
 import tempfile
+import time
 from pathlib import Path
+from typing import Any, Dict, Generator
 from unittest.mock import Mock, patch
+
+import pytest
+
+from core.config_types import WidgetConfig
 
 
 # Мокаем все виджеты перед импортом main
 @pytest.fixture(autouse=True)
-def mock_all_widgets():
+def mock_all_widgets() -> Generator[Dict[str, Mock], None, None]:
     """Автоматически мокируем все виджеты для всех тестов."""
     with patch('main.ClockWidget') as mock_clock, \
          patch('main.CPUWidget') as mock_cpu, \
@@ -56,7 +60,7 @@ def mock_all_widgets():
 # ===========================
 
 @pytest.fixture
-def temp_config_file():
+def temp_config_file() -> Generator[str, None, None]:
     """Фикстура создающая временный файл конфигурации."""
     config_data = {
         "game_name": "TEST_GAME",
@@ -92,7 +96,7 @@ def temp_config_file():
 
 
 @pytest.fixture
-def mock_api():
+def mock_api() -> Generator[Mock, None, None]:
     """Фикстура создающая mock GameSenseAPI."""
     with patch('main.GameSenseAPI') as mock_api_class:
         api_instance = Mock()
@@ -105,7 +109,7 @@ def mock_api():
 
 
 @pytest.fixture
-def mock_components():
+def mock_components() -> Generator[Dict[str, Mock], None, None]:
     """Фикстура мокирующая все основные компоненты."""
     with patch('main.LayoutManager') as mock_layout, \
          patch('main.Compositor') as mock_comp:
@@ -129,7 +133,7 @@ def mock_components():
 # Тесты WidgetUpdateThread
 # ===========================
 
-def test_widget_update_thread_init():
+def test_widget_update_thread_init() -> None:
     """Тест инициализации WidgetUpdateThread."""
     from main import WidgetUpdateThread
 
@@ -144,7 +148,7 @@ def test_widget_update_thread_init():
     assert thread.name == "Widget-TestWidget"
 
 
-def test_widget_update_thread_run():
+def test_widget_update_thread_run() -> None:
     """Тест run() метода WidgetUpdateThread."""
     from main import WidgetUpdateThread
 
@@ -163,7 +167,7 @@ def test_widget_update_thread_run():
     assert mock_widget.update.call_count >= 1
 
 
-def test_widget_update_thread_handles_errors():
+def test_widget_update_thread_handles_errors() -> None:
     """Тест обработки ошибок в WidgetUpdateThread."""
     from main import WidgetUpdateThread
 
@@ -186,7 +190,7 @@ def test_widget_update_thread_handles_errors():
 # Тесты SteelClockApp.__init__
 # ===========================
 
-def test_steelclock_app_init_with_valid_config(temp_config_file):
+def test_steelclock_app_init_with_valid_config(temp_config_file: str) -> None:
     """Тест инициализации SteelClockApp с валидным конфигом."""
     from main import SteelClockApp
 
@@ -201,7 +205,7 @@ def test_steelclock_app_init_with_valid_config(temp_config_file):
     assert app.shutdown_requested is False
 
 
-def test_steelclock_app_init_with_missing_config():
+def test_steelclock_app_init_with_missing_config() -> None:
     """Тест инициализации SteelClockApp с отсутствующим конфигом."""
     from main import SteelClockApp
 
@@ -212,7 +216,7 @@ def test_steelclock_app_init_with_missing_config():
     assert len(app.config['widgets']) == 1
 
 
-def test_steelclock_app_load_config_invalid_json():
+def test_steelclock_app_load_config_invalid_json() -> None:
     """Тест _load_config с невалидным JSON."""
     from main import SteelClockApp
 
@@ -227,7 +231,7 @@ def test_steelclock_app_load_config_invalid_json():
         Path(temp_path).unlink(missing_ok=True)
 
 
-def test_steelclock_app_load_config_not_a_dict():
+def test_steelclock_app_load_config_not_a_dict() -> None:
     """Тест _load_config когда конфиг не dict."""
     from main import SteelClockApp
 
@@ -242,7 +246,7 @@ def test_steelclock_app_load_config_not_a_dict():
         Path(temp_path).unlink(missing_ok=True)
 
 
-def test_steelclock_app_default_config():
+def test_steelclock_app_default_config() -> None:
     """Тест _default_config возвращает валидную конфигурацию."""
     from main import SteelClockApp
 
@@ -259,7 +263,7 @@ def test_steelclock_app_default_config():
 # Тесты SteelClockApp.setup()
 # ===========================
 
-def test_steelclock_app_setup_success(temp_config_file, mock_api, mock_components):
+def test_steelclock_app_setup_success(temp_config_file: str, mock_api: Mock, mock_components: Dict[str, Mock]) -> None:
     """Тест успешного setup()."""
     from main import SteelClockApp
 
@@ -281,7 +285,7 @@ def test_steelclock_app_setup_success(temp_config_file, mock_api, mock_component
     assert len(app.widgets) == 1
 
 
-def test_steelclock_app_setup_server_discovery_error(temp_config_file):
+def test_steelclock_app_setup_server_discovery_error(temp_config_file: str) -> None:
     """Тест setup() при ошибке discovery."""
     from main import SteelClockApp
     from gamesense.discovery import ServerDiscoveryError
@@ -295,7 +299,7 @@ def test_steelclock_app_setup_server_discovery_error(temp_config_file):
             app.setup()
 
 
-def test_steelclock_app_setup_api_error(temp_config_file):
+def test_steelclock_app_setup_api_error(temp_config_file: str) -> None:
     """Тест setup() при ошибке API."""
     from main import SteelClockApp
     from gamesense.api import GameSenseAPIError
@@ -311,7 +315,7 @@ def test_steelclock_app_setup_api_error(temp_config_file):
             app.setup()
 
 
-def test_steelclock_app_setup_disabled_widgets(mock_api, mock_components):
+def test_steelclock_app_setup_disabled_widgets(mock_api: Mock, mock_components: Dict[str, Mock]) -> None:
     """Тест setup() с отключёнными виджетами."""
     from main import SteelClockApp
 
@@ -341,13 +345,13 @@ def test_steelclock_app_setup_disabled_widgets(mock_api, mock_components):
 # Тесты _create_widget_from_config()
 # ===========================
 
-def test_create_widget_clock(mock_all_widgets):
+def test_create_widget_clock(mock_all_widgets: Dict[str, Mock]) -> None:
     """Тест создания Clock виджета."""
     from main import SteelClockApp
 
     app = SteelClockApp(config_path="/nonexistent/config.json")
 
-    config = {
+    config: WidgetConfig = {
         "type": "clock",
         "id": "test_clock",
         "properties": {"format": "%H:%M", "font_size": 14},
@@ -360,13 +364,13 @@ def test_create_widget_clock(mock_all_widgets):
     mock_all_widgets['clock'].assert_called_once()
 
 
-def test_create_widget_cpu(mock_all_widgets):
+def test_create_widget_cpu(mock_all_widgets: Dict[str, Mock]) -> None:
     """Тест создания CPU виджета."""
     from main import SteelClockApp
 
     app = SteelClockApp(config_path="/nonexistent/config.json")
 
-    config = {
+    config: WidgetConfig = {
         "type": "cpu",
         "id": "test_cpu",
         "properties": {"display_mode": "bar_horizontal", "per_core": True}
@@ -378,13 +382,13 @@ def test_create_widget_cpu(mock_all_widgets):
     mock_all_widgets['cpu'].assert_called_once()
 
 
-def test_create_widget_memory(mock_all_widgets):
+def test_create_widget_memory(mock_all_widgets: Dict[str, Mock]) -> None:
     """Тест создания Memory виджета."""
     from main import SteelClockApp
 
     app = SteelClockApp(config_path="/nonexistent/config.json")
 
-    config = {
+    config: WidgetConfig = {
         "type": "memory",
         "id": "test_memory"
     }
@@ -395,13 +399,13 @@ def test_create_widget_memory(mock_all_widgets):
     mock_all_widgets['memory'].assert_called_once()
 
 
-def test_create_widget_network(mock_all_widgets):
+def test_create_widget_network(mock_all_widgets: Dict[str, Mock]) -> None:
     """Тест создания Network виджета."""
     from main import SteelClockApp
 
     app = SteelClockApp(config_path="/nonexistent/config.json")
 
-    config = {
+    config: WidgetConfig = {
         "type": "network",
         "id": "test_network",
         "properties": {"interface": "eth0"}
@@ -413,13 +417,13 @@ def test_create_widget_network(mock_all_widgets):
     mock_all_widgets['network'].assert_called_once()
 
 
-def test_create_widget_disk(mock_all_widgets):
+def test_create_widget_disk(mock_all_widgets: Dict[str, Mock]) -> None:
     """Тест создания Disk виджета."""
     from main import SteelClockApp
 
     app = SteelClockApp(config_path="/nonexistent/config.json")
 
-    config = {
+    config: WidgetConfig = {
         "type": "disk",
         "id": "test_disk",
         "properties": {"disk_name": "sda"}
@@ -431,13 +435,13 @@ def test_create_widget_disk(mock_all_widgets):
     mock_all_widgets['disk'].assert_called_once()
 
 
-def test_create_widget_keyboard(mock_all_widgets):
+def test_create_widget_keyboard(mock_all_widgets: Dict[str, Mock]) -> None:
     """Тест создания Keyboard виджета."""
     from main import SteelClockApp
 
     app = SteelClockApp(config_path="/nonexistent/config.json")
 
-    config = {
+    config: WidgetConfig = {
         "type": "keyboard",
         "id": "test_keyboard"
     }
@@ -448,13 +452,13 @@ def test_create_widget_keyboard(mock_all_widgets):
     mock_all_widgets['keyboard'].assert_called_once()
 
 
-def test_create_widget_unknown_type():
+def test_create_widget_unknown_type() -> None:
     """Тест создания виджета неизвестного типа."""
     from main import SteelClockApp
 
     app = SteelClockApp(config_path="/nonexistent/config.json")
 
-    config = {
+    config: WidgetConfig = {
         "type": "unknown_widget",
         "id": "test"
     }
@@ -464,7 +468,7 @@ def test_create_widget_unknown_type():
     assert widget is None
 
 
-def test_create_widget_with_exception(mock_all_widgets):
+def test_create_widget_with_exception(mock_all_widgets: Dict[str, Mock]) -> None:
     """Тест создания виджета когда конструктор вызывает ошибку."""
     from main import SteelClockApp
 
@@ -472,7 +476,7 @@ def test_create_widget_with_exception(mock_all_widgets):
 
     app = SteelClockApp(config_path="/nonexistent/config.json")
 
-    config = {
+    config: WidgetConfig = {
         "type": "clock",
         "id": "test_clock"
     }
@@ -486,7 +490,7 @@ def test_create_widget_with_exception(mock_all_widgets):
 # Тесты run() и shutdown()
 # ===========================
 
-def test_steelclock_app_run(temp_config_file, mock_api, mock_components):
+def test_steelclock_app_run(temp_config_file: str, mock_api: Mock, mock_components: Dict[str, Mock]) -> None:
     """Тест run() метода."""
     from main import SteelClockApp
 
@@ -496,7 +500,7 @@ def test_steelclock_app_run(temp_config_file, mock_api, mock_components):
     # Запускаем в отдельном потоке и останавливаем через shutdown_requested
     import threading
 
-    def run_app():
+    def run_app() -> None:
         app.run()
 
     thread = threading.Thread(target=run_app)
@@ -510,7 +514,7 @@ def test_steelclock_app_run(temp_config_file, mock_api, mock_components):
     mock_components['compositor'].start.assert_called_once()
 
 
-def test_steelclock_app_run_without_setup():
+def test_steelclock_app_run_without_setup() -> None:
     """Тест run() без предварительного setup()."""
     from main import SteelClockApp
 
@@ -520,7 +524,7 @@ def test_steelclock_app_run_without_setup():
         app.run()
 
 
-def test_steelclock_app_shutdown(temp_config_file, mock_api, mock_components):
+def test_steelclock_app_shutdown(temp_config_file: str, mock_api: Mock, mock_components: Dict[str, Mock]) -> None:
     """Тест shutdown() метода."""
     from main import SteelClockApp
 
@@ -548,7 +552,7 @@ def test_steelclock_app_shutdown(temp_config_file, mock_api, mock_components):
     assert app.shutdown_requested is True
 
 
-def test_steelclock_app_shutdown_idempotent(temp_config_file, mock_api, mock_components):
+def test_steelclock_app_shutdown_idempotent(temp_config_file: str, mock_api: Mock, mock_components: Dict[str, Mock]) -> None:
     """Тест что shutdown() идемпотентен."""
     from main import SteelClockApp
 
@@ -562,7 +566,7 @@ def test_steelclock_app_shutdown_idempotent(temp_config_file, mock_api, mock_com
     assert mock_components['compositor'].stop.call_count == 1
 
 
-def test_steelclock_app_signal_handler():
+def test_steelclock_app_signal_handler() -> None:
     """Тест обработчика сигналов."""
     from main import SteelClockApp
 
@@ -579,7 +583,7 @@ def test_steelclock_app_signal_handler():
 # Тесты main()
 # ===========================
 
-def test_main_with_config_arg(temp_config_file, mock_api, mock_components):
+def test_main_with_config_arg(temp_config_file: str, mock_api: Mock, mock_components: Dict[str, Mock]) -> None:
     """Тест main() с аргументом конфигурации."""
     from main import main
 
@@ -603,7 +607,7 @@ def test_main_with_config_arg(temp_config_file, mock_api, mock_components):
         assert call_args['config_path'] == temp_config_file
 
 
-def test_main_without_config_arg(mock_api, mock_components):
+def test_main_without_config_arg(mock_api: Mock, mock_components: Dict[str, Mock]) -> None:
     """Тест main() без аргументов (дефолтный конфиг)."""
     from main import main
 
@@ -626,7 +630,7 @@ def test_main_without_config_arg(mock_api, mock_components):
         mock_app_class.assert_called_once()
 
 
-def test_main_server_discovery_error(mock_components):
+def test_main_server_discovery_error(mock_components: Dict[str, Mock]) -> None:
     """Тест main() при ошибке discovery."""
     from main import main
     from gamesense.discovery import ServerDiscoveryError
@@ -644,7 +648,7 @@ def test_main_server_discovery_error(mock_components):
         assert exc_info.value.code == 1
 
 
-def test_main_generic_exception(mock_components):
+def test_main_generic_exception(mock_components: Dict[str, Mock]) -> None:
     """Тест main() при общей ошибке."""
     from main import main
 
@@ -665,7 +669,7 @@ def test_main_generic_exception(mock_components):
 # Integration тесты
 # ===========================
 
-def test_full_app_lifecycle(temp_config_file, mock_api, mock_components):
+def test_full_app_lifecycle(temp_config_file: str, mock_api: Mock, mock_components: Dict[str, Mock]) -> None:
     """Integration тест: полный жизненный цикл приложения."""
     from main import SteelClockApp
 
@@ -685,7 +689,7 @@ def test_full_app_lifecycle(temp_config_file, mock_api, mock_components):
     mock_components['compositor'].stop.assert_called_once()
 
 
-def test_multiple_widgets_creation(mock_api, mock_components):
+def test_multiple_widgets_creation(mock_api: Mock, mock_components: Dict[str, Mock]) -> None:
     """Integration тест: создание нескольких виджетов."""
     from main import SteelClockApp
 

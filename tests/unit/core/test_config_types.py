@@ -33,7 +33,7 @@ from core.config_types import (
 # Тесты PositionConfig
 # ===========================
 
-def test_position_config_full():
+def test_position_config_full() -> None:
     """Тест создания полной PositionConfig."""
     config: PositionConfig = {
         'x': 10,
@@ -50,7 +50,7 @@ def test_position_config_full():
     assert config['z_order'] == 5
 
 
-def test_position_config_partial():
+def test_position_config_partial() -> None:
     """Тест создания частичной PositionConfig (total=False)."""
     config: PositionConfig = {
         'x': 10,
@@ -62,7 +62,7 @@ def test_position_config_partial():
     assert 'w' not in config
 
 
-def test_position_config_empty():
+def test_position_config_empty() -> None:
     """Edge case: пустая PositionConfig допустима (total=False)."""
     config: PositionConfig = {}
 
@@ -73,7 +73,7 @@ def test_position_config_empty():
 # Тесты StyleConfig
 # ===========================
 
-def test_style_config_full():
+def test_style_config_full() -> None:
     """Тест создания полной StyleConfig."""
     config: StyleConfig = {
         'background_color': 0,
@@ -86,7 +86,7 @@ def test_style_config_full():
     assert config['border'] is True
 
 
-def test_style_config_partial():
+def test_style_config_partial() -> None:
     """Тест создания частичной StyleConfig."""
     config: StyleConfig = {
         'border': False
@@ -100,7 +100,7 @@ def test_style_config_partial():
 # Тесты DisplayConfig
 # ===========================
 
-def test_display_config_full():
+def test_display_config_full() -> None:
     """Тест создания полной DisplayConfig."""
     config: DisplayConfig = {
         'width': 128,
@@ -112,7 +112,7 @@ def test_display_config_full():
     assert config['height'] == 40
 
 
-def test_display_config_partial():
+def test_display_config_partial() -> None:
     """Тест создания частичной DisplayConfig."""
     config: DisplayConfig = {
         'width': 256
@@ -125,7 +125,7 @@ def test_display_config_partial():
 # Тесты LayoutConfig
 # ===========================
 
-def test_layout_config_basic_type():
+def test_layout_config_basic_type() -> None:
     """Тест создания LayoutConfig с basic type."""
     config: LayoutConfig = {
         'type': 'basic'
@@ -134,7 +134,7 @@ def test_layout_config_basic_type():
     assert config['type'] == 'basic'
 
 
-def test_layout_config_with_virtual_canvas():
+def test_layout_config_with_virtual_canvas() -> None:
     """Тест создания LayoutConfig с виртуальным канвасом."""
     config: LayoutConfig = {
         'type': 'viewport',
@@ -150,7 +150,7 @@ def test_layout_config_with_virtual_canvas():
 # Тесты WidgetProperties
 # ===========================
 
-def test_widget_properties_common():
+def test_widget_properties_common() -> None:
     """Тест создания WidgetProperties с общими свойствами."""
     props: WidgetProperties = {
         'update_interval': 1.0,
@@ -165,7 +165,7 @@ def test_widget_properties_common():
     assert props['font'] == 'Arial'
 
 
-def test_widget_properties_clock_specific():
+def test_widget_properties_clock_specific() -> None:
     """Тест WidgetProperties с clock-специфичными свойствами."""
     props: WidgetProperties = {
         'format': '%H:%M:%S',
@@ -175,7 +175,7 @@ def test_widget_properties_clock_specific():
     assert props['format'] == '%H:%M:%S'
 
 
-def test_widget_properties_cpu_specific():
+def test_widget_properties_cpu_specific() -> None:
     """Тест WidgetProperties с CPU-специфичными свойствами."""
     props: WidgetProperties = {
         'display_mode': 'bar_horizontal',
@@ -188,7 +188,7 @@ def test_widget_properties_cpu_specific():
     assert props['max_cores'] == 8
 
 
-def test_widget_properties_network_specific():
+def test_widget_properties_network_specific() -> None:
     """Тест WidgetProperties с network-специфичными свойствами."""
     props: WidgetProperties = {
         'interface': 'eth0',
@@ -204,7 +204,7 @@ def test_widget_properties_network_specific():
     assert props['rx_color'] == 200
 
 
-def test_widget_properties_disk_specific():
+def test_widget_properties_disk_specific() -> None:
     """Тест WidgetProperties с disk-специфичными свойствами."""
     props: WidgetProperties = {
         'disk_name': 'sda',
@@ -215,7 +215,7 @@ def test_widget_properties_disk_specific():
     assert props['disk_name'] == 'sda'
 
 
-def test_widget_properties_keyboard_specific():
+def test_widget_properties_keyboard_specific() -> None:
     """Тест WidgetProperties с keyboard-специфичными свойствами."""
     props: WidgetProperties = {
         'spacing': 10,
@@ -237,7 +237,7 @@ def test_widget_properties_keyboard_specific():
 # Тесты WidgetConfig
 # ===========================
 
-def test_widget_config_full():
+def test_widget_config_full() -> None:
     """Тест создания полной WidgetConfig."""
     config: WidgetConfig = {
         'type': 'clock',
@@ -267,7 +267,7 @@ def test_widget_config_full():
     assert config['properties']['format'] == '%H:%M'
 
 
-def test_widget_config_minimal():
+def test_widget_config_minimal() -> None:
     """Тест создания минимальной WidgetConfig."""
     config: WidgetConfig = {
         'type': 'cpu'
@@ -277,7 +277,7 @@ def test_widget_config_minimal():
     assert 'id' not in config
 
 
-def test_widget_config_disabled():
+def test_widget_config_disabled() -> None:
     """Тест создания отключённого виджета."""
     config: WidgetConfig = {
         'type': 'network',
@@ -291,7 +291,7 @@ def test_widget_config_disabled():
 # Тесты SteelClockConfig
 # ===========================
 
-def test_steelclock_config_full():
+def test_steelclock_config_full() -> None:
     """Тест создания полной SteelClockConfig."""
     config: SteelClockConfig = {
         'game_name': 'STEELCLOCK',
@@ -323,7 +323,7 @@ def test_steelclock_config_full():
     assert config['refresh_rate_ms'] == 100
 
 
-def test_steelclock_config_minimal():
+def test_steelclock_config_minimal() -> None:
     """Тест создания минимальной SteelClockConfig."""
     config: SteelClockConfig = {
         'widgets': []
@@ -332,7 +332,7 @@ def test_steelclock_config_minimal():
     assert config['widgets'] == []
 
 
-def test_steelclock_config_with_multiple_widgets():
+def test_steelclock_config_with_multiple_widgets() -> None:
     """Integration тест: конфигурация с несколькими виджетами."""
     config: SteelClockConfig = {
         'game_name': 'TEST',
@@ -364,7 +364,7 @@ def test_steelclock_config_with_multiple_widgets():
 # Тесты APIResponse
 # ===========================
 
-def test_api_response_error():
+def test_api_response_error() -> None:
     """Тест создания APIResponse с ошибкой."""
     response: APIResponse = {
         'error': 'Not found'
@@ -373,7 +373,7 @@ def test_api_response_error():
     assert response['error'] == 'Not found'
 
 
-def test_api_response_message():
+def test_api_response_message() -> None:
     """Тест создания APIResponse с сообщением."""
     response: APIResponse = {
         'message': 'Success'
@@ -382,7 +382,7 @@ def test_api_response_message():
     assert response['message'] == 'Success'
 
 
-def test_api_response_empty():
+def test_api_response_empty() -> None:
     """Edge case: пустой APIResponse."""
     response: APIResponse = {}
 
@@ -393,7 +393,7 @@ def test_api_response_empty():
 # Integration тесты
 # ===========================
 
-def test_realistic_config_example():
+def test_realistic_config_example() -> None:
     """Integration тест: реалистичный пример полной конфигурации."""
     config: SteelClockConfig = {
         'game_name': 'STEELCLOCK',
@@ -501,7 +501,7 @@ def test_realistic_config_example():
     assert config['widgets'][3]['position']['y'] == 28
 
 
-def test_viewport_mode_config_example():
+def test_viewport_mode_config_example() -> None:
     """Integration тест: конфигурация с viewport режимом."""
     config: SteelClockConfig = {
         'game_name': 'STEELCLOCK',
@@ -543,7 +543,7 @@ def test_viewport_mode_config_example():
     assert config['widgets'][1]['position']['x'] == 128
 
 
-def test_all_widget_types_config():
+def test_all_widget_types_config() -> None:
     """Integration тест: конфигурация со всеми типами виджетов."""
     config: SteelClockConfig = {
         'widgets': [

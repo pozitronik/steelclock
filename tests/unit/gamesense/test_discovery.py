@@ -29,7 +29,7 @@ from gamesense.discovery import (
 # Тесты discover_server
 # =============================================================================
 
-def test_discover_server_success():
+def test_discover_server_success() -> None:
     """
     Тест успешного обнаружения сервера.
 
@@ -53,7 +53,7 @@ def test_discover_server_success():
             assert isinstance(port, int)
 
 
-def test_discover_server_custom_port():
+def test_discover_server_custom_port() -> None:
     """
     Тест обнаружения сервера с нестандартным портом.
 
@@ -73,7 +73,7 @@ def test_discover_server_custom_port():
             assert port == 12345
 
 
-def test_discover_server_ipv6_address():
+def test_discover_server_ipv6_address() -> None:
     """
     Тест обнаружения сервера с IPv6 адресом.
 
@@ -93,7 +93,7 @@ def test_discover_server_ipv6_address():
             assert port == 51248
 
 
-def test_discover_server_config_not_found():
+def test_discover_server_config_not_found() -> None:
     """
     Тест когда _find_core_props_path возвращает None.
 
@@ -109,7 +109,7 @@ def test_discover_server_config_not_found():
         assert "SteelSeries Engine 3 installed" in str(exc_info.value)
 
 
-def test_discover_server_config_does_not_exist():
+def test_discover_server_config_does_not_exist() -> None:
     """
     Тест когда путь найден, но файл не существует.
 
@@ -118,7 +118,7 @@ def test_discover_server_config_does_not_exist():
     with patch('gamesense.discovery._find_core_props_path') as mock_find:
         mock_path = Mock(spec=Path)
         mock_path.exists.return_value = False
-        mock_path.__str__ = lambda self: "/path/to/coreProps.json"
+        mock_path.__str__ = lambda *args: "/path/to/coreProps.json"  # type: ignore[method-assign]
         mock_find.return_value = mock_path
 
         with pytest.raises(ServerDiscoveryError) as exc_info:
@@ -127,7 +127,7 @@ def test_discover_server_config_does_not_exist():
         assert "Config file not found" in str(exc_info.value)
 
 
-def test_discover_server_invalid_json():
+def test_discover_server_invalid_json() -> None:
     """
     Тест когда файл содержит невалидный JSON.
 
@@ -147,7 +147,7 @@ def test_discover_server_invalid_json():
             assert "Invalid JSON" in str(exc_info.value)
 
 
-def test_discover_server_missing_address_field():
+def test_discover_server_missing_address_field() -> None:
     """
     Тест когда JSON не содержит поле 'address'.
 
@@ -167,7 +167,7 @@ def test_discover_server_missing_address_field():
             assert "No 'address' field" in str(exc_info.value)
 
 
-def test_discover_server_address_without_colon():
+def test_discover_server_address_without_colon() -> None:
     """
     Тест когда адрес не содержит двоеточие.
 
@@ -187,7 +187,7 @@ def test_discover_server_address_without_colon():
             assert "Invalid address format" in str(exc_info.value)
 
 
-def test_discover_server_invalid_port_number():
+def test_discover_server_invalid_port_number() -> None:
     """
     Тест когда порт не является числом.
 
@@ -207,7 +207,7 @@ def test_discover_server_invalid_port_number():
             assert "Invalid port number" in str(exc_info.value)
 
 
-def test_discover_server_empty_address():
+def test_discover_server_empty_address() -> None:
     """
     Тест когда адрес пустая строка.
 
@@ -227,7 +227,7 @@ def test_discover_server_empty_address():
             assert "No 'address' field" in str(exc_info.value)
 
 
-def test_discover_server_file_read_error():
+def test_discover_server_file_read_error() -> None:
     """
     Тест когда файл не может быть прочитан.
 
@@ -249,7 +249,7 @@ def test_discover_server_file_read_error():
 # Тесты _find_core_props_path
 # =============================================================================
 
-def test_find_core_props_path_windows_programdata():
+def test_find_core_props_path_windows_programdata() -> None:
     """
     Тест поиска пути через PROGRAMDATA переменную окружения (Windows).
 
@@ -271,7 +271,7 @@ def test_find_core_props_path_windows_programdata():
             assert 'coreProps.json' in str(result)
 
 
-def test_find_core_props_path_windows_fallback():
+def test_find_core_props_path_windows_fallback() -> None:
     """
     Тест поиска пути через fallback Windows путь.
 
@@ -279,7 +279,7 @@ def test_find_core_props_path_windows_fallback():
     """
     with patch.dict('os.environ', {}, clear=True):
         with patch('pathlib.Path.exists'):
-            def exists_side_effect(self):
+            def exists_side_effect(self: Path) -> bool:
                 # Только C:/ProgramData путь существует
                 return 'C:/ProgramData' in str(self)
 
@@ -291,7 +291,7 @@ def test_find_core_props_path_windows_fallback():
                     assert 'C:/ProgramData' in str(result)
 
 
-def test_find_core_props_path_macos():
+def test_find_core_props_path_macos() -> None:
     """
     Тест поиска пути на macOS.
 
@@ -299,7 +299,7 @@ def test_find_core_props_path_macos():
     """
     with patch.dict('os.environ', {}, clear=True):
         with patch('pathlib.Path.exists'):
-            def exists_side_effect(self):
+            def exists_side_effect(self: Path) -> bool:
                 # Только macOS путь существует
                 return '/Library/Application Support' in str(self)
 
@@ -311,7 +311,7 @@ def test_find_core_props_path_macos():
                     assert 'Application Support' in str(result)
 
 
-def test_find_core_props_path_not_found():
+def test_find_core_props_path_not_found() -> None:
     """
     Тест когда coreProps.json не найден ни в одном из путей.
 
@@ -324,7 +324,7 @@ def test_find_core_props_path_not_found():
             assert result is None
 
 
-def test_find_core_props_path_programdata_priority():
+def test_find_core_props_path_programdata_priority() -> None:
     """
     Тест приоритета PROGRAMDATA переменной над fallback путём.
 
@@ -343,7 +343,7 @@ def test_find_core_props_path_programdata_priority():
 # Тесты get_server_url
 # =============================================================================
 
-def test_get_server_url_success():
+def test_get_server_url_success() -> None:
     """
     Тест успешного получения URL сервера.
 
@@ -361,7 +361,7 @@ def test_get_server_url_success():
         mock_discover.assert_called_once()
 
 
-def test_get_server_url_custom_host_port():
+def test_get_server_url_custom_host_port() -> None:
     """
     Тест получения URL с нестандартным хостом и портом.
 
@@ -375,7 +375,7 @@ def test_get_server_url_custom_host_port():
         assert url == "http://192.168.1.100:12345"
 
 
-def test_get_server_url_ipv6():
+def test_get_server_url_ipv6() -> None:
     """
     Тест получения URL с IPv6 адресом.
 
@@ -389,7 +389,7 @@ def test_get_server_url_ipv6():
         assert url == "http://::1:51248"
 
 
-def test_get_server_url_propagates_error():
+def test_get_server_url_propagates_error() -> None:
     """
     Тест что get_server_url прокидывает ошибки из discover_server.
 
@@ -408,7 +408,7 @@ def test_get_server_url_propagates_error():
 # Тесты интеграции (без моков нижнего уровня)
 # =============================================================================
 
-def test_full_discovery_flow():
+def test_full_discovery_flow() -> None:
     """
     Тест полного flow обнаружения сервера.
 
@@ -425,7 +425,7 @@ def test_full_discovery_flow():
                 assert url == "http://127.0.0.1:51248"
 
 
-def test_full_discovery_flow_with_error():
+def test_full_discovery_flow_with_error() -> None:
     """
     Тест полного flow с ошибкой на каждом уровне.
 

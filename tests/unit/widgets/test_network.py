@@ -24,7 +24,7 @@ from widgets.network import NetworkWidget
 # Тесты инициализации
 # =============================================================================
 
-def test_network_init_requires_psutil():
+def test_network_init_requires_psutil() -> None:
     """
     Тест инициализации требует psutil.
 
@@ -37,7 +37,7 @@ def test_network_init_requires_psutil():
         assert "psutil library is required" in str(exc_info.value)
 
 
-def test_network_init_default_values():
+def test_network_init_default_values() -> None:
     """
     Тест инициализации с дефолтными значениями.
 
@@ -64,7 +64,7 @@ def test_network_init_default_values():
         assert len(widget._tx_history) == 0
 
 
-def test_network_init_custom_values():
+def test_network_init_custom_values() -> None:
     """
     Тест инициализации с кастомными значениями.
 
@@ -95,7 +95,7 @@ def test_network_init_custom_values():
 
 
 @pytest.mark.parametrize("mode", ["text", "bar_horizontal", "bar_vertical", "graph"])
-def test_network_init_all_display_modes(mode):
+def test_network_init_all_display_modes(mode: str) -> None:
     """
     Параметризованный тест проверяет все 4 режима отображения.
 
@@ -110,7 +110,7 @@ def test_network_init_all_display_modes(mode):
         assert widget.display_mode == mode
 
 
-def test_network_init_dynamic_scaling():
+def test_network_init_dynamic_scaling() -> None:
     """
     Тест инициализации с динамическим масштабированием.
 
@@ -123,7 +123,7 @@ def test_network_init_dynamic_scaling():
         assert widget.max_speed_mbps == -1.0
 
 
-def test_network_init_fixed_scaling():
+def test_network_init_fixed_scaling() -> None:
     """
     Тест инициализации с фиксированным масштабированием.
 
@@ -141,7 +141,7 @@ def test_network_init_fixed_scaling():
 # Тесты update()
 # =============================================================================
 
-def test_network_update_first_call_returns_zero():
+def test_network_update_first_call_returns_zero() -> None:
     """
     Тест первого вызова update() возвращает нулевую скорость.
 
@@ -165,7 +165,7 @@ def test_network_update_first_call_returns_zero():
         assert widget._prev_time is not None
 
 
-def test_network_update_calculates_speed():
+def test_network_update_calculates_speed() -> None:
     """
     Тест расчёта скорости на основе дельты байтов.
 
@@ -198,7 +198,7 @@ def test_network_update_calculates_speed():
         assert widget._current_tx_speed == 64000.0
 
 
-def test_network_update_missing_interface():
+def test_network_update_missing_interface() -> None:
     """
     Тест update() когда интерфейс не существует.
 
@@ -216,7 +216,7 @@ def test_network_update_missing_interface():
         assert widget._warned_interface is True
 
 
-def test_network_update_negative_delta_clamped():
+def test_network_update_negative_delta_clamped() -> None:
     """
     Тест что отрицательная дельта (сброс счётчика) обрабатывается.
 
@@ -249,7 +249,7 @@ def test_network_update_negative_delta_clamped():
         assert widget._current_tx_speed == 0.0
 
 
-def test_network_update_zero_time_delta():
+def test_network_update_zero_time_delta() -> None:
     """
     Тест update() когда time_delta = 0 (мгновенный вызов).
 
@@ -278,7 +278,7 @@ def test_network_update_zero_time_delta():
 # Тесты истории для graph режима
 # =============================================================================
 
-def test_network_update_graph_mode_adds_to_history():
+def test_network_update_graph_mode_adds_to_history() -> None:
     """
     Тест что в graph режиме данные добавляются в историю.
 
@@ -313,7 +313,7 @@ def test_network_update_graph_mode_adds_to_history():
         assert widget._tx_history[1] == 64000.0
 
 
-def test_network_update_graph_mode_respects_max_length():
+def test_network_update_graph_mode_respects_max_length() -> None:
     """
     Тест что deque соблюдает maxlen.
 
@@ -338,7 +338,7 @@ def test_network_update_graph_mode_respects_max_length():
         assert len(widget._tx_history) == 3
 
 
-def test_network_update_non_graph_mode_no_history():
+def test_network_update_non_graph_mode_no_history() -> None:
     """
     Тест что в не-graph режимах история не сохраняется.
 
@@ -366,7 +366,7 @@ def test_network_update_non_graph_mode_no_history():
 # Тесты обработки ошибок
 # =============================================================================
 
-def test_network_update_handles_psutil_error():
+def test_network_update_handles_psutil_error() -> None:
     """
     Тест обработки исключения при вызове psutil.
 
@@ -392,7 +392,7 @@ def test_network_update_handles_psutil_error():
     ("mbps", 1310720.0, "10.0"),       # 1310720 bytes = 10 megabits
     ("gbps", 134217728.0, "1.00"),     # 134217728 bytes = 1 gigabit
 ])
-def test_network_format_speed_units(unit, bytes_per_sec, expected):
+def test_network_format_speed_units(unit: str, bytes_per_sec: float, expected: str) -> None:
     """
     Параметризованный тест форматирования скорости в разных единицах.
 
@@ -408,7 +408,7 @@ def test_network_format_speed_units(unit, bytes_per_sec, expected):
 # Тесты расчёта процента скорости
 # =============================================================================
 
-def test_network_get_speed_percentage_fixed_scaling():
+def test_network_get_speed_percentage_fixed_scaling() -> None:
     """
     Тест расчёта процента с фиксированным масштабом.
 
@@ -424,7 +424,7 @@ def test_network_get_speed_percentage_fixed_scaling():
         assert percentage == pytest.approx(50.0, abs=0.1)
 
 
-def test_network_get_speed_percentage_dynamic_scaling():
+def test_network_get_speed_percentage_dynamic_scaling() -> None:
     """
     Тест расчёта процента с динамическим масштабом.
 
@@ -443,7 +443,7 @@ def test_network_get_speed_percentage_dynamic_scaling():
         assert percentage == pytest.approx(50.0, abs=0.1)
 
 
-def test_network_get_speed_percentage_over_100():
+def test_network_get_speed_percentage_over_100() -> None:
     """
     Тест что процент ограничен 100%.
 
@@ -463,7 +463,7 @@ def test_network_get_speed_percentage_over_100():
 # Тесты render() общие
 # =============================================================================
 
-def test_network_render_returns_image():
+def test_network_render_returns_image() -> None:
     """
     Тест что render() возвращает PIL Image.
 
@@ -481,7 +481,7 @@ def test_network_render_returns_image():
         assert image.size == (128, 40)
 
 
-def test_network_render_calls_update_if_needed():
+def test_network_render_calls_update_if_needed() -> None:
     """
     Тест что render() вызывает update() если данных нет.
 
@@ -506,7 +506,7 @@ def test_network_render_calls_update_if_needed():
         assert widget._current_tx_speed is not None
 
 
-def test_network_render_with_border():
+def test_network_render_with_border() -> None:
     """
     Тест рендеринга с рамкой виджета.
 
@@ -523,7 +523,7 @@ def test_network_render_with_border():
         assert image is not None
 
 
-def test_network_render_with_alpha_channel():
+def test_network_render_with_alpha_channel() -> None:
     """
     Тест рендеринга с альфа-каналом.
 
@@ -544,7 +544,7 @@ def test_network_render_with_alpha_channel():
 # Тесты render() в text режиме
 # =============================================================================
 
-def test_network_render_text_mode():
+def test_network_render_text_mode() -> None:
     """
     Тест рендеринга в text режиме.
 
@@ -565,7 +565,7 @@ def test_network_render_text_mode():
 # Тесты render() в bar_horizontal режиме
 # =============================================================================
 
-def test_network_render_bar_horizontal():
+def test_network_render_bar_horizontal() -> None:
     """
     Тест рендеринга в bar_horizontal режиме.
 
@@ -585,7 +585,7 @@ def test_network_render_bar_horizontal():
         assert any(p > 0 for p in pixels)
 
 
-def test_network_render_bar_horizontal_zero_speed():
+def test_network_render_bar_horizontal_zero_speed() -> None:
     """
     Тест bar_horizontal при нулевой скорости.
 
@@ -604,7 +604,7 @@ def test_network_render_bar_horizontal_zero_speed():
         assert all(p == 0 for p in pixels)
 
 
-def test_network_render_bar_horizontal_max_speed():
+def test_network_render_bar_horizontal_max_speed() -> None:
     """
     Тест bar_horizontal при максимальной скорости.
 
@@ -625,7 +625,7 @@ def test_network_render_bar_horizontal_max_speed():
         assert white_pixels > 100
 
 
-def test_network_render_bar_horizontal_with_border():
+def test_network_render_bar_horizontal_with_border() -> None:
     """
     Тест bar_horizontal с рамками вокруг баров.
 
@@ -646,7 +646,7 @@ def test_network_render_bar_horizontal_with_border():
 # Тесты render() в bar_vertical режиме
 # =============================================================================
 
-def test_network_render_bar_vertical():
+def test_network_render_bar_vertical() -> None:
     """
     Тест рендеринга в bar_vertical режиме.
 
@@ -669,7 +669,7 @@ def test_network_render_bar_vertical():
 # Тесты render() в graph режиме
 # =============================================================================
 
-def test_network_render_graph_with_history():
+def test_network_render_graph_with_history() -> None:
     """
     Тест рендеринга graph режима с данными.
 
@@ -689,7 +689,7 @@ def test_network_render_graph_with_history():
         assert image.size == (128, 40)
 
 
-def test_network_render_graph_empty_history():
+def test_network_render_graph_empty_history() -> None:
     """
     Тест graph режима с пустой историей.
 
@@ -711,7 +711,7 @@ def test_network_render_graph_empty_history():
         assert image.size == (128, 40)
 
 
-def test_network_render_graph_insufficient_data():
+def test_network_render_graph_insufficient_data() -> None:
     """
     Тест graph режима с недостаточным количеством данных.
 
@@ -736,7 +736,7 @@ def test_network_render_graph_insufficient_data():
 # Тесты get_update_interval
 # =============================================================================
 
-def test_network_get_update_interval_default():
+def test_network_get_update_interval_default() -> None:
     """
     Тест get_update_interval возвращает дефолтное значение.
 
@@ -747,7 +747,7 @@ def test_network_get_update_interval_default():
         assert widget.get_update_interval() == 1.0
 
 
-def test_network_get_update_interval_custom():
+def test_network_get_update_interval_custom() -> None:
     """
     Тест get_update_interval возвращает кастомное значение.
 
@@ -762,7 +762,7 @@ def test_network_get_update_interval_custom():
 # Тесты edge cases и стилизации
 # =============================================================================
 
-def test_network_render_with_padding():
+def test_network_render_with_padding() -> None:
     """
     Тест рендеринга с отступами.
 
@@ -779,7 +779,7 @@ def test_network_render_with_padding():
         assert image is not None
 
 
-def test_network_render_different_sizes():
+def test_network_render_different_sizes() -> None:
     """
     Тест рендеринга с разными размерами виджета.
 
@@ -796,7 +796,7 @@ def test_network_render_different_sizes():
             assert image.size == size
 
 
-def test_network_render_unknown_display_mode():
+def test_network_render_unknown_display_mode() -> None:
     """
     Тест рендеринга с неизвестным режимом.
 
@@ -818,7 +818,7 @@ def test_network_render_unknown_display_mode():
 # Integration тесты
 # =============================================================================
 
-def test_network_full_workflow():
+def test_network_full_workflow() -> None:
     """
     Integration тест полного жизненного цикла виджета.
 
@@ -860,7 +860,7 @@ def test_network_full_workflow():
         assert widget._current_tx_speed == 64000.0
 
 
-def test_network_multiple_updates_and_renders():
+def test_network_multiple_updates_and_renders() -> None:
     """
     Integration тест с несколькими циклами update/render.
 
@@ -889,7 +889,7 @@ def test_network_multiple_updates_and_renders():
         assert len(widget._rx_history) == 5
 
 
-def test_network_realistic_usage_patterns():
+def test_network_realistic_usage_patterns() -> None:
     """
     Тест с реалистичными паттернами использования сети.
 

@@ -8,7 +8,9 @@
 - Фикстуры для контроля времени
 """
 
-from typing import Any, Dict
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, Generator
 from unittest.mock import Mock, patch
 
 import pytest
@@ -20,7 +22,7 @@ from PIL import Image
 # =============================================================================
 
 @pytest.fixture
-def mock_psutil():
+def mock_psutil() -> Generator[Dict[str, Any], None, None]:
     """
     Базовый мок для psutil со стандартными значениями.
 
@@ -75,7 +77,7 @@ def mock_psutil():
 
 
 @pytest.fixture
-def mock_psutil_cpu_per_core():
+def mock_psutil_cpu_per_core() -> Generator[Mock, None, None]:
     """Мок для psutil.cpu_percent с per-core данными."""
     with patch('psutil.cpu_percent') as mock:
         mock.return_value = [25.0, 50.0, 75.0, 100.0]
@@ -87,7 +89,7 @@ def mock_psutil_cpu_per_core():
 # =============================================================================
 
 @pytest.fixture
-def mock_requests_session():
+def mock_requests_session() -> Generator[Mock, None, None]:
     """
     Мок для requests.Session с успешными ответами API.
 
@@ -111,7 +113,7 @@ def mock_requests_session():
 
 
 @pytest.fixture
-def mock_gamesense_discovery():
+def mock_gamesense_discovery() -> Generator[Mock, None, None]:
     """Мок для server discovery, возвращает тестовый URL."""
     with patch('gamesense.discovery.get_server_url') as mock:
         mock.return_value = 'http://127.0.0.1:12345'
@@ -123,7 +125,7 @@ def mock_gamesense_discovery():
 # =============================================================================
 
 @pytest.fixture
-def mock_windows_keyboard():
+def mock_windows_keyboard() -> Generator[Mock, None, None]:
     """
     Мок для Windows ctypes keyboard API.
 
@@ -141,14 +143,13 @@ def mock_windows_keyboard():
 # =============================================================================
 
 @pytest.fixture
-def fixed_time():
+def fixed_time() -> Generator[datetime, None, None]:
     """
     Фиксирует время для тестов.
 
     Returns:
         datetime: Фиксированная дата/время: 2025-11-15 12:34:56
     """
-    from datetime import datetime
     from unittest.mock import patch
 
     fixed_datetime = datetime(2025, 11, 15, 12, 34, 56)
@@ -164,19 +165,19 @@ def fixed_time():
 # =============================================================================
 
 @pytest.fixture
-def blank_image_128x40():
+def blank_image_128x40() -> Image.Image:
     """Создаёт пустое чёрное изображение 128x40."""
     return Image.new('L', (128, 40), color=0)
 
 
 @pytest.fixture
-def blank_image_128x40_white():
+def blank_image_128x40_white() -> Image.Image:
     """Создаёт пустое белое изображение 128x40."""
     return Image.new('L', (128, 40), color=255)
 
 
 @pytest.fixture
-def blank_image_with_alpha():
+def blank_image_with_alpha() -> Image.Image:
     """Создаёт пустое изображение с альфа-каналом."""
     return Image.new('LA', (128, 40), color=(0, 128))
 
@@ -251,7 +252,7 @@ def cpu_widget_config() -> Dict[str, Any]:
 # =============================================================================
 
 @pytest.fixture
-def temp_config_file(tmp_path, valid_config_dict):
+def temp_config_file(tmp_path: Path, valid_config_dict: Dict[str, Any]) -> Path:
     """
     Создаёт временный файл конфигурации.
 
@@ -274,7 +275,7 @@ def temp_config_file(tmp_path, valid_config_dict):
 # =============================================================================
 
 @pytest.fixture
-def mock_windows_platform():
+def mock_windows_platform() -> Generator[Mock, None, None]:
     """Мок для platform.system() возвращающий Windows."""
     with patch('platform.system') as mock:
         mock.return_value = 'Windows'
@@ -282,7 +283,7 @@ def mock_windows_platform():
 
 
 @pytest.fixture
-def mock_linux_platform():
+def mock_linux_platform() -> Generator[Mock, None, None]:
     """Мок для platform.system() возвращающий Linux."""
     with patch('platform.system') as mock:
         mock.return_value = 'Linux'
@@ -293,7 +294,7 @@ def mock_linux_platform():
 # Утилитарные функции для тестов
 # =============================================================================
 
-def assert_image_size(image: Image.Image, width: int, height: int):
+def assert_image_size(image: Image.Image, width: int, height: int) -> None:
     """
     Проверяет размер изображения.
 
@@ -309,7 +310,7 @@ def assert_image_size(image: Image.Image, width: int, height: int):
         f"Expected {width}x{height}, got {image.size[0]}x{image.size[1]}"
 
 
-def assert_image_mode(image: Image.Image, mode: str):
+def assert_image_mode(image: Image.Image, mode: str) -> None:
     """
     Проверяет цветовой режим изображения.
 

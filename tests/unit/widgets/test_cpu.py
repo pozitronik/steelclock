@@ -24,7 +24,7 @@ from widgets.cpu import CPUWidget
 # Тесты инициализации
 # =============================================================================
 
-def test_cpu_init_requires_psutil():
+def test_cpu_init_requires_psutil() -> None:
     """
     Тест что CPU widget требует psutil.
 
@@ -37,7 +37,7 @@ def test_cpu_init_requires_psutil():
         assert "psutil library is required" in str(exc_info.value)
 
 
-def test_cpu_init_default_values():
+def test_cpu_init_default_values() -> None:
     """
     Тест инициализации CPU widget с дефолтными параметрами.
 
@@ -62,7 +62,7 @@ def test_cpu_init_default_values():
         assert len(widget._usage_history) == 0
 
 
-def test_cpu_init_custom_values():
+def test_cpu_init_custom_values() -> None:
     """
     Тест инициализации CPU widget с кастомными параметрами.
 
@@ -93,7 +93,7 @@ def test_cpu_init_custom_values():
         assert widget.font_size == 14
 
 
-def test_cpu_init_gets_core_count():
+def test_cpu_init_gets_core_count() -> None:
     """
     Тест что инициализация получает количество ядер из psutil.
 
@@ -109,7 +109,7 @@ def test_cpu_init_gets_core_count():
 
 
 @pytest.mark.parametrize("mode", ["text", "bar_horizontal", "bar_vertical", "graph"])
-def test_cpu_init_all_display_modes(mode):
+def test_cpu_init_all_display_modes(mode: str) -> None:
     """
     Тест инициализации со всеми режимами отображения.
 
@@ -127,7 +127,7 @@ def test_cpu_init_all_display_modes(mode):
 # Тесты update() - aggregate mode
 # =============================================================================
 
-def test_cpu_update_aggregate_mode():
+def test_cpu_update_aggregate_mode() -> None:
     """
     Тест update() в aggregate режиме.
 
@@ -148,7 +148,7 @@ def test_cpu_update_aggregate_mode():
         assert isinstance(widget._current_usage, float)
 
 
-def test_cpu_update_aggregate_clamps_high_values():
+def test_cpu_update_aggregate_clamps_high_values() -> None:
     """
     Тест что update() ограничивает значения > 100%.
 
@@ -164,7 +164,7 @@ def test_cpu_update_aggregate_clamps_high_values():
         assert widget._current_usage == 100.0
 
 
-def test_cpu_update_aggregate_clamps_negative_values():
+def test_cpu_update_aggregate_clamps_negative_values() -> None:
     """
     Тест что update() ограничивает отрицательные значения.
 
@@ -180,7 +180,7 @@ def test_cpu_update_aggregate_clamps_negative_values():
         assert widget._current_usage == 0.0
 
 
-def test_cpu_update_aggregate_zero_percent():
+def test_cpu_update_aggregate_zero_percent() -> None:
     """
     Тест update() с 0% загрузкой.
 
@@ -196,7 +196,7 @@ def test_cpu_update_aggregate_zero_percent():
         assert widget._current_usage == 0.0
 
 
-def test_cpu_update_aggregate_100_percent():
+def test_cpu_update_aggregate_100_percent() -> None:
     """
     Тест update() с 100% загрузкой.
 
@@ -216,7 +216,7 @@ def test_cpu_update_aggregate_100_percent():
 # Тесты update() - per-core mode
 # =============================================================================
 
-def test_cpu_update_per_core_mode():
+def test_cpu_update_per_core_mode() -> None:
     """
     Тест update() в per-core режиме.
 
@@ -238,7 +238,7 @@ def test_cpu_update_per_core_mode():
         assert len(widget._current_usage) == 4
 
 
-def test_cpu_update_per_core_clamps_values():
+def test_cpu_update_per_core_clamps_values() -> None:
     """
     Тест что update() ограничивает значения per-core.
 
@@ -254,7 +254,7 @@ def test_cpu_update_per_core_clamps_values():
         assert widget._current_usage == [0.0, 50.0, 100.0, 100.0]
 
 
-def test_cpu_update_per_core_different_core_counts():
+def test_cpu_update_per_core_different_core_counts() -> None:
     """
     Тест update() с различным количеством ядер.
 
@@ -269,6 +269,7 @@ def test_cpu_update_per_core_different_core_counts():
             widget = CPUWidget(per_core=True)
             widget.update()
 
+            assert isinstance(widget._current_usage, list)
             assert len(widget._current_usage) == core_count
 
 
@@ -276,7 +277,7 @@ def test_cpu_update_per_core_different_core_counts():
 # Тесты update() - graph mode history
 # =============================================================================
 
-def test_cpu_update_graph_mode_adds_to_history():
+def test_cpu_update_graph_mode_adds_to_history() -> None:
     """
     Тест что update() добавляет значения в историю в graph режиме.
 
@@ -297,7 +298,7 @@ def test_cpu_update_graph_mode_adds_to_history():
         assert list(widget._usage_history) == [0.0, 20.0, 40.0]
 
 
-def test_cpu_update_graph_mode_respects_max_length():
+def test_cpu_update_graph_mode_respects_max_length() -> None:
     """
     Тест что история ограничена maxlen.
 
@@ -318,7 +319,7 @@ def test_cpu_update_graph_mode_respects_max_length():
         assert list(widget._usage_history) == [20.0, 30.0, 40.0]
 
 
-def test_cpu_update_non_graph_mode_no_history():
+def test_cpu_update_non_graph_mode_no_history() -> None:
     """
     Тест что в non-graph режимах история не добавляется.
 
@@ -338,7 +339,7 @@ def test_cpu_update_non_graph_mode_no_history():
 # Тесты update() - error handling
 # =============================================================================
 
-def test_cpu_update_handles_psutil_error_aggregate():
+def test_cpu_update_handles_psutil_error_aggregate() -> None:
     """
     Тест обработки ошибки psutil в aggregate режиме.
 
@@ -354,7 +355,7 @@ def test_cpu_update_handles_psutil_error_aggregate():
         assert widget._current_usage == 0.0
 
 
-def test_cpu_update_handles_psutil_error_per_core():
+def test_cpu_update_handles_psutil_error_per_core() -> None:
     """
     Тест обработки ошибки psutil в per-core режиме.
 
@@ -374,7 +375,7 @@ def test_cpu_update_handles_psutil_error_per_core():
 # Тесты render()
 # =============================================================================
 
-def test_cpu_render_returns_image():
+def test_cpu_render_returns_image() -> None:
     """
     Тест что render() возвращает PIL Image.
 
@@ -396,7 +397,7 @@ def test_cpu_render_returns_image():
         assert image.size == (128, 40)
 
 
-def test_cpu_render_calls_update_if_needed():
+def test_cpu_render_calls_update_if_needed() -> None:
     """
     Тест что render() вызывает update() если данные не установлены.
 
@@ -416,7 +417,7 @@ def test_cpu_render_calls_update_if_needed():
         assert widget._current_usage == 75.0
 
 
-def test_cpu_render_with_border():
+def test_cpu_render_with_border() -> None:
     """
     Тест рендеринга с рамкой.
 
@@ -435,7 +436,7 @@ def test_cpu_render_with_border():
         assert isinstance(image, Image.Image)
 
 
-def test_cpu_render_with_alpha_channel():
+def test_cpu_render_with_alpha_channel() -> None:
     """
     Тест рендеринга с альфа-каналом (прозрачность).
 
@@ -458,7 +459,7 @@ def test_cpu_render_with_alpha_channel():
 # Тесты _render_text()
 # =============================================================================
 
-def test_cpu_render_text_aggregate():
+def test_cpu_render_text_aggregate() -> None:
     """
     Тест рендеринга в text режиме (aggregate).
 
@@ -478,7 +479,7 @@ def test_cpu_render_text_aggregate():
         # Текст "67" должен быть отрендерен (без десятичных)
 
 
-def test_cpu_render_text_per_core():
+def test_cpu_render_text_per_core() -> None:
     """
     Тест рендеринга в text режиме (per-core).
 
@@ -501,7 +502,7 @@ def test_cpu_render_text_per_core():
 # Тесты _render_bar_horizontal()
 # =============================================================================
 
-def test_cpu_render_bar_horizontal_aggregate():
+def test_cpu_render_bar_horizontal_aggregate() -> None:
     """
     Тест рендеринга горизонтального бара (aggregate).
 
@@ -523,7 +524,7 @@ def test_cpu_render_bar_horizontal_aggregate():
         assert any(p == 255 for p in pixels) or any(p == (255, 255) for p in pixels)
 
 
-def test_cpu_render_bar_horizontal_per_core():
+def test_cpu_render_bar_horizontal_per_core() -> None:
     """
     Тест рендеринга горизонтальных баров (per-core).
 
@@ -542,7 +543,7 @@ def test_cpu_render_bar_horizontal_per_core():
         assert isinstance(image, Image.Image)
 
 
-def test_cpu_render_bar_horizontal_zero_percent():
+def test_cpu_render_bar_horizontal_zero_percent() -> None:
     """
     Тест рендеринга бара с 0% загрузкой.
 
@@ -561,7 +562,7 @@ def test_cpu_render_bar_horizontal_zero_percent():
         assert isinstance(image, Image.Image)
 
 
-def test_cpu_render_bar_horizontal_100_percent():
+def test_cpu_render_bar_horizontal_100_percent() -> None:
     """
     Тест рендеринга бара с 100% загрузкой.
 
@@ -584,7 +585,7 @@ def test_cpu_render_bar_horizontal_100_percent():
 # Тесты _render_bar_vertical()
 # =============================================================================
 
-def test_cpu_render_bar_vertical_aggregate():
+def test_cpu_render_bar_vertical_aggregate() -> None:
     """
     Тест рендеринга вертикального бара (aggregate).
 
@@ -603,7 +604,7 @@ def test_cpu_render_bar_vertical_aggregate():
         assert isinstance(image, Image.Image)
 
 
-def test_cpu_render_bar_vertical_per_core():
+def test_cpu_render_bar_vertical_per_core() -> None:
     """
     Тест рендеринга вертикальных баров (per-core).
 
@@ -626,7 +627,7 @@ def test_cpu_render_bar_vertical_per_core():
 # Тесты _render_graph()
 # =============================================================================
 
-def test_cpu_render_graph_with_history():
+def test_cpu_render_graph_with_history() -> None:
     """
     Тест рендеринга графика с историей.
 
@@ -649,7 +650,7 @@ def test_cpu_render_graph_with_history():
         assert len(widget._usage_history) == 5
 
 
-def test_cpu_render_graph_empty_history():
+def test_cpu_render_graph_empty_history() -> None:
     """
     Тест рендеринга графика без истории.
 
@@ -672,7 +673,7 @@ def test_cpu_render_graph_empty_history():
 # Тесты get_update_interval()
 # =============================================================================
 
-def test_cpu_get_update_interval_default():
+def test_cpu_get_update_interval_default() -> None:
     """
     Тест get_update_interval() с дефолтным значением.
 
@@ -685,7 +686,7 @@ def test_cpu_get_update_interval_default():
         assert widget.get_update_interval() == 1.0
 
 
-def test_cpu_get_update_interval_custom():
+def test_cpu_get_update_interval_custom() -> None:
     """
     Тест get_update_interval() с кастомным значением.
 
@@ -702,7 +703,7 @@ def test_cpu_get_update_interval_custom():
 # Тесты стилизации и edge cases
 # =============================================================================
 
-def test_cpu_render_with_padding():
+def test_cpu_render_with_padding() -> None:
     """
     Тест рендеринга с padding.
 
@@ -721,7 +722,7 @@ def test_cpu_render_with_padding():
         assert isinstance(image, Image.Image)
 
 
-def test_cpu_render_different_sizes():
+def test_cpu_render_different_sizes() -> None:
     """
     Тест рендеринга с различными размерами.
 
@@ -741,7 +742,7 @@ def test_cpu_render_different_sizes():
             assert image.size == (width, height)
 
 
-def test_cpu_render_unknown_display_mode():
+def test_cpu_render_unknown_display_mode() -> None:
     """
     Тест рендеринга с неизвестным display_mode.
 
@@ -765,7 +766,7 @@ def test_cpu_render_unknown_display_mode():
 # Интеграционные тесты
 # =============================================================================
 
-def test_cpu_full_workflow_aggregate():
+def test_cpu_full_workflow_aggregate() -> None:
     """
     Тест полного workflow CPU widget в aggregate режиме.
 
@@ -792,7 +793,7 @@ def test_cpu_full_workflow_aggregate():
         assert image.size == (128, 40)
 
 
-def test_cpu_full_workflow_per_core():
+def test_cpu_full_workflow_per_core() -> None:
     """
     Тест полного workflow CPU widget в per-core режиме.
 
@@ -809,13 +810,14 @@ def test_cpu_full_workflow_per_core():
         widget.set_size(256, 40)
 
         widget.update()
+        assert isinstance(widget._current_usage, list)
         assert len(widget._current_usage) == 8
 
         image = widget.render()
         assert image.size == (256, 40)
 
 
-def test_cpu_multiple_updates_and_renders():
+def test_cpu_multiple_updates_and_renders() -> None:
     """
     Тест множественных обновлений и рендеров.
 

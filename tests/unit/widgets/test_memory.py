@@ -24,7 +24,7 @@ from widgets.memory import MemoryWidget
 # Тесты инициализации
 # =============================================================================
 
-def test_memory_init_requires_psutil():
+def test_memory_init_requires_psutil() -> None:
     """
     Тест что Memory widget требует psutil.
 
@@ -37,7 +37,7 @@ def test_memory_init_requires_psutil():
         assert "psutil library is required" in str(exc_info.value)
 
 
-def test_memory_init_default_values():
+def test_memory_init_default_values() -> None:
     """
     Тест инициализации Memory widget с дефолтными параметрами.
 
@@ -57,7 +57,7 @@ def test_memory_init_default_values():
         assert len(widget._usage_history) == 0
 
 
-def test_memory_init_custom_values():
+def test_memory_init_custom_values() -> None:
     """
     Тест инициализации Memory widget с кастомными параметрами.
 
@@ -85,7 +85,7 @@ def test_memory_init_custom_values():
 
 
 @pytest.mark.parametrize("mode", ["text", "bar_horizontal", "bar_vertical", "graph"])
-def test_memory_init_all_display_modes(mode):
+def test_memory_init_all_display_modes(mode: str) -> None:
     """
     Тест инициализации со всеми режимами отображения.
 
@@ -101,7 +101,7 @@ def test_memory_init_all_display_modes(mode):
 # Тесты update()
 # =============================================================================
 
-def test_memory_update_success():
+def test_memory_update_success() -> None:
     """
     Тест успешного update().
 
@@ -123,7 +123,7 @@ def test_memory_update_success():
         assert isinstance(widget._current_usage, float)
 
 
-def test_memory_update_clamps_high_values():
+def test_memory_update_clamps_high_values() -> None:
     """
     Тест что update() ограничивает значения > 100%.
 
@@ -140,7 +140,7 @@ def test_memory_update_clamps_high_values():
         assert widget._current_usage == 100.0
 
 
-def test_memory_update_clamps_negative_values():
+def test_memory_update_clamps_negative_values() -> None:
     """
     Тест что update() ограничивает отрицательные значения.
 
@@ -157,7 +157,7 @@ def test_memory_update_clamps_negative_values():
         assert widget._current_usage == 0.0
 
 
-def test_memory_update_zero_percent():
+def test_memory_update_zero_percent() -> None:
     """
     Тест update() с 0% загрузкой.
 
@@ -174,7 +174,7 @@ def test_memory_update_zero_percent():
         assert widget._current_usage == 0.0
 
 
-def test_memory_update_100_percent():
+def test_memory_update_100_percent() -> None:
     """
     Тест update() с 100% загрузкой.
 
@@ -195,7 +195,7 @@ def test_memory_update_100_percent():
 # Тесты update() - graph mode history
 # =============================================================================
 
-def test_memory_update_graph_mode_adds_to_history():
+def test_memory_update_graph_mode_adds_to_history() -> None:
     """
     Тест что update() добавляет значения в историю в graph режиме.
 
@@ -215,7 +215,7 @@ def test_memory_update_graph_mode_adds_to_history():
         assert list(widget._usage_history) == [0.0, 20.0, 40.0]
 
 
-def test_memory_update_graph_mode_respects_max_length():
+def test_memory_update_graph_mode_respects_max_length() -> None:
     """
     Тест что история ограничена maxlen.
 
@@ -236,7 +236,7 @@ def test_memory_update_graph_mode_respects_max_length():
         assert list(widget._usage_history) == [20.0, 30.0, 40.0]
 
 
-def test_memory_update_non_graph_mode_no_history():
+def test_memory_update_non_graph_mode_no_history() -> None:
     """
     Тест что в non-graph режимах история не добавляется.
 
@@ -257,7 +257,7 @@ def test_memory_update_non_graph_mode_no_history():
 # Тесты update() - error handling
 # =============================================================================
 
-def test_memory_update_handles_psutil_error():
+def test_memory_update_handles_psutil_error() -> None:
     """
     Тест обработки ошибки psutil.
 
@@ -276,7 +276,7 @@ def test_memory_update_handles_psutil_error():
 # Тесты render()
 # =============================================================================
 
-def test_memory_render_returns_image():
+def test_memory_render_returns_image() -> None:
     """
     Тест что render() возвращает PIL Image.
 
@@ -299,7 +299,7 @@ def test_memory_render_returns_image():
         assert image.size == (128, 40)
 
 
-def test_memory_render_calls_update_if_needed():
+def test_memory_render_calls_update_if_needed() -> None:
     """
     Тест что render() вызывает update() если данные не установлены.
 
@@ -320,7 +320,7 @@ def test_memory_render_calls_update_if_needed():
         assert widget._current_usage == 75.0
 
 
-def test_memory_render_with_border():
+def test_memory_render_with_border() -> None:
     """
     Тест рендеринга с рамкой.
 
@@ -340,7 +340,7 @@ def test_memory_render_with_border():
         assert isinstance(image, Image.Image)
 
 
-def test_memory_render_with_alpha_channel():
+def test_memory_render_with_alpha_channel() -> None:
     """
     Тест рендеринга с альфа-каналом (прозрачность).
 
@@ -364,7 +364,7 @@ def test_memory_render_with_alpha_channel():
 # Тесты _render_text()
 # =============================================================================
 
-def test_memory_render_text_mode():
+def test_memory_render_text_mode() -> None:
     """
     Тест рендеринга в text режиме.
 
@@ -388,7 +388,7 @@ def test_memory_render_text_mode():
 # Тесты _render_bar_horizontal()
 # =============================================================================
 
-def test_memory_render_bar_horizontal():
+def test_memory_render_bar_horizontal() -> None:
     """
     Тест рендеринга горизонтального бара.
 
@@ -411,7 +411,7 @@ def test_memory_render_bar_horizontal():
         assert any(p == 255 for p in pixels) or any(p == (255, 255) for p in pixels)
 
 
-def test_memory_render_bar_horizontal_zero_percent():
+def test_memory_render_bar_horizontal_zero_percent() -> None:
     """
     Тест рендеринга бара с 0% загрузкой.
 
@@ -431,7 +431,7 @@ def test_memory_render_bar_horizontal_zero_percent():
         assert isinstance(image, Image.Image)
 
 
-def test_memory_render_bar_horizontal_100_percent():
+def test_memory_render_bar_horizontal_100_percent() -> None:
     """
     Тест рендеринга бара с 100% загрузкой.
 
@@ -455,7 +455,7 @@ def test_memory_render_bar_horizontal_100_percent():
 # Тесты _render_bar_vertical()
 # =============================================================================
 
-def test_memory_render_bar_vertical():
+def test_memory_render_bar_vertical() -> None:
     """
     Тест рендеринга вертикального бара.
 
@@ -479,7 +479,7 @@ def test_memory_render_bar_vertical():
 # Тесты _render_graph()
 # =============================================================================
 
-def test_memory_render_graph_with_history():
+def test_memory_render_graph_with_history() -> None:
     """
     Тест рендеринга графика с историей.
 
@@ -502,7 +502,7 @@ def test_memory_render_graph_with_history():
         assert len(widget._usage_history) == 5
 
 
-def test_memory_render_graph_empty_history():
+def test_memory_render_graph_empty_history() -> None:
     """
     Тест рендеринга графика без истории.
 
@@ -526,7 +526,7 @@ def test_memory_render_graph_empty_history():
 # Тесты get_update_interval()
 # =============================================================================
 
-def test_memory_get_update_interval_default():
+def test_memory_get_update_interval_default() -> None:
     """
     Тест get_update_interval() с дефолтным значением.
 
@@ -537,7 +537,7 @@ def test_memory_get_update_interval_default():
         assert widget.get_update_interval() == 1.0
 
 
-def test_memory_get_update_interval_custom():
+def test_memory_get_update_interval_custom() -> None:
     """
     Тест get_update_interval() с кастомным значением.
 
@@ -552,7 +552,7 @@ def test_memory_get_update_interval_custom():
 # Тесты стилизации и edge cases
 # =============================================================================
 
-def test_memory_render_with_padding():
+def test_memory_render_with_padding() -> None:
     """
     Тест рендеринга с padding.
 
@@ -572,7 +572,7 @@ def test_memory_render_with_padding():
         assert isinstance(image, Image.Image)
 
 
-def test_memory_render_different_sizes():
+def test_memory_render_different_sizes() -> None:
     """
     Тест рендеринга с различными размерами.
 
@@ -593,7 +593,7 @@ def test_memory_render_different_sizes():
             assert image.size == (width, height)
 
 
-def test_memory_render_unknown_display_mode():
+def test_memory_render_unknown_display_mode() -> None:
     """
     Тест рендеринга с неизвестным display_mode.
 
@@ -618,7 +618,7 @@ def test_memory_render_unknown_display_mode():
 # Интеграционные тесты
 # =============================================================================
 
-def test_memory_full_workflow():
+def test_memory_full_workflow() -> None:
     """
     Тест полного workflow Memory widget.
 
@@ -645,7 +645,7 @@ def test_memory_full_workflow():
         assert image.size == (128, 40)
 
 
-def test_memory_multiple_updates_and_renders():
+def test_memory_multiple_updates_and_renders() -> None:
     """
     Тест множественных обновлений и рендеров.
 
@@ -668,7 +668,7 @@ def test_memory_multiple_updates_and_renders():
         assert len(widget._usage_history) == 10
 
 
-def test_memory_realistic_usage_patterns():
+def test_memory_realistic_usage_patterns() -> None:
     """
     Тест с реалистичными паттернами использования памяти.
 

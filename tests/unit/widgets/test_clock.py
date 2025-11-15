@@ -27,7 +27,7 @@ from widgets.clock import ClockWidget
 # Тесты инициализации
 # =============================================================================
 
-def test_clock_init_default_values():
+def test_clock_init_default_values() -> None:
     """
     Тест инициализации Clock widget с дефолтными параметрами.
 
@@ -51,7 +51,7 @@ def test_clock_init_default_values():
     assert widget.padding == 0
 
 
-def test_clock_init_custom_values():
+def test_clock_init_custom_values() -> None:
     """
     Тест инициализации Clock widget с кастомными параметрами.
 
@@ -86,7 +86,7 @@ def test_clock_init_custom_values():
     assert widget.padding == 5
 
 
-def test_clock_init_sets_time_to_none():
+def test_clock_init_sets_time_to_none() -> None:
     """
     Тест что инициализация устанавливает _current_time в None.
 
@@ -102,7 +102,7 @@ def test_clock_init_sets_time_to_none():
 # Тесты update()
 # =============================================================================
 
-def test_clock_update_sets_current_time():
+def test_clock_update_sets_current_time() -> None:
     """
     Тест что update() обновляет текущее время.
 
@@ -121,7 +121,7 @@ def test_clock_update_sets_current_time():
         assert widget._formatted_time == "12:34:56"
 
 
-def test_clock_update_with_custom_format():
+def test_clock_update_with_custom_format() -> None:
     """
     Тест update() с различными форматами времени.
 
@@ -144,7 +144,7 @@ def test_clock_update_with_custom_format():
     ("%Y-%m-%d", "2025-11-15"),
     ("%a %d %b %Y", "Sat 15 Nov 2025"),
 ])
-def test_clock_update_various_formats(format_str, expected):
+def test_clock_update_various_formats(format_str: str, expected: str) -> None:
     """
     Тест update() с различными форматами strftime.
 
@@ -160,7 +160,7 @@ def test_clock_update_various_formats(format_str, expected):
         assert widget._formatted_time == expected
 
 
-def test_clock_update_handles_error():
+def test_clock_update_handles_error() -> None:
     """
     Тест что update() обрабатывает ошибки форматирования.
 
@@ -182,7 +182,7 @@ def test_clock_update_handles_error():
 # Тесты render()
 # =============================================================================
 
-def test_clock_render_returns_image():
+def test_clock_render_returns_image() -> None:
     """
     Тест что render() возвращает PIL Image.
 
@@ -203,7 +203,7 @@ def test_clock_render_returns_image():
         assert image.size == (128, 40)
 
 
-def test_clock_render_calls_update_if_needed():
+def test_clock_render_calls_update_if_needed() -> None:
     """
     Тест что render() вызывает update() если время не установлено.
 
@@ -222,7 +222,7 @@ def test_clock_render_calls_update_if_needed():
         assert widget._formatted_time == "12:34"
 
 
-def test_clock_render_with_black_background():
+def test_clock_render_with_black_background() -> None:
     """
     Тест рендеринга с чёрным фоном.
 
@@ -242,7 +242,7 @@ def test_clock_render_with_black_background():
         assert image.mode in ['L', 'LA']
 
 
-def test_clock_render_with_white_background():
+def test_clock_render_with_white_background() -> None:
     """
     Тест рендеринга с белым фоном.
 
@@ -262,7 +262,7 @@ def test_clock_render_with_white_background():
         assert image.mode in ['L', 'LA']
 
 
-def test_clock_render_with_border():
+def test_clock_render_with_border() -> None:
     """
     Тест рендеринга с рамкой.
 
@@ -283,7 +283,7 @@ def test_clock_render_with_border():
         assert image.size == (128, 40)
 
 
-def test_clock_render_with_alpha_channel():
+def test_clock_render_with_alpha_channel() -> None:
     """
     Тест рендеринга с альфа-каналом (прозрачность).
 
@@ -302,7 +302,7 @@ def test_clock_render_with_alpha_channel():
         assert image.mode == 'LA'  # Grayscale с альфа
 
 
-def test_clock_render_different_sizes():
+def test_clock_render_different_sizes() -> None:
     """
     Тест рендеринга с различными размерами.
 
@@ -327,7 +327,7 @@ def test_clock_render_different_sizes():
     ("center", "center"),
     ("right", "bottom"),
 ])
-def test_clock_render_with_alignment(h_align, v_align):
+def test_clock_render_with_alignment(h_align: str, v_align: str) -> None:
     """
     Тест рендеринга с различным выравниванием.
 
@@ -349,7 +349,7 @@ def test_clock_render_with_alignment(h_align, v_align):
         assert isinstance(image, Image.Image)
 
 
-def test_clock_render_with_padding():
+def test_clock_render_with_padding() -> None:
     """
     Тест рендеринга с отступами.
 
@@ -372,7 +372,7 @@ def test_clock_render_with_padding():
 # Тесты get_update_interval()
 # =============================================================================
 
-def test_get_update_interval_default():
+def test_get_update_interval_default() -> None:
     """
     Тест get_update_interval() с дефолтным значением.
 
@@ -382,7 +382,7 @@ def test_get_update_interval_default():
     assert widget.get_update_interval() == 1.0
 
 
-def test_get_update_interval_custom():
+def test_get_update_interval_custom() -> None:
     """
     Тест get_update_interval() с кастомным значением.
 
@@ -396,7 +396,7 @@ def test_get_update_interval_custom():
 # Тесты set_format()
 # =============================================================================
 
-def test_set_format_changes_format_string():
+def test_set_format_changes_format_string() -> None:
     """
     Тест set_format() изменяет формат времени.
 
@@ -420,7 +420,7 @@ def test_set_format_changes_format_string():
         assert widget._formatted_time == "12:34"
 
 
-def test_set_format_multiple_times():
+def test_set_format_multiple_times() -> None:
     """
     Тест множественных вызовов set_format().
 
@@ -446,7 +446,7 @@ def test_set_format_multiple_times():
 # Тесты get_current_time_string()
 # =============================================================================
 
-def test_get_current_time_string_after_update():
+def test_get_current_time_string_after_update() -> None:
     """
     Тест get_current_time_string() возвращает отформатированное время.
 
@@ -462,7 +462,7 @@ def test_get_current_time_string_after_update():
         assert widget.get_current_time_string() == "12:34"
 
 
-def test_get_current_time_string_before_update():
+def test_get_current_time_string_before_update() -> None:
     """
     Тест get_current_time_string() до вызова update().
 
@@ -473,7 +473,7 @@ def test_get_current_time_string_before_update():
     assert widget.get_current_time_string() == ""
 
 
-def test_get_current_time_string_after_error():
+def test_get_current_time_string_after_error() -> None:
     """
     Тест get_current_time_string() после ошибки в update().
 
@@ -494,7 +494,7 @@ def test_get_current_time_string_after_error():
 # Edge cases и интеграционные тесты
 # =============================================================================
 
-def test_clock_full_workflow():
+def test_clock_full_workflow() -> None:
     """
     Тест полного workflow Clock widget.
 
@@ -526,7 +526,7 @@ def test_clock_full_workflow():
         assert widget.get_current_time_string() == "15.11.2025"
 
 
-def test_clock_midnight_time():
+def test_clock_midnight_time() -> None:
     """
     Тест отображения полуночи (00:00:00).
 
@@ -542,7 +542,7 @@ def test_clock_midnight_time():
         assert widget.get_current_time_string() == "00:00:00"
 
 
-def test_clock_noon_time():
+def test_clock_noon_time() -> None:
     """
     Тест отображения полудня (12:00:00).
 
@@ -558,7 +558,7 @@ def test_clock_noon_time():
         assert widget.get_current_time_string() == "12:00 PM"
 
 
-def test_clock_year_change():
+def test_clock_year_change() -> None:
     """
     Тест отображения смены года.
 

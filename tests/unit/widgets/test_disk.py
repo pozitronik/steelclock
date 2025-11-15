@@ -25,7 +25,7 @@ from widgets.disk import DiskWidget
 # Тесты инициализации
 # =============================================================================
 
-def test_disk_init_requires_psutil():
+def test_disk_init_requires_psutil() -> None:
     """
     Тест инициализации требует psutil.
 
@@ -38,7 +38,7 @@ def test_disk_init_requires_psutil():
         assert "psutil library is required" in str(exc_info.value)
 
 
-def test_disk_init_default_values():
+def test_disk_init_default_values() -> None:
     """
     Тест инициализации с дефолтными значениями.
 
@@ -65,7 +65,7 @@ def test_disk_init_default_values():
         assert len(widget._write_history) == 0
 
 
-def test_disk_init_custom_values():
+def test_disk_init_custom_values() -> None:
     """
     Тест инициализации с кастомными значениями.
 
@@ -96,7 +96,7 @@ def test_disk_init_custom_values():
 
 
 @pytest.mark.parametrize("mode", ["text", "bar_horizontal", "bar_vertical", "graph"])
-def test_disk_init_all_display_modes(mode):
+def test_disk_init_all_display_modes(mode: str) -> None:
     """
     Параметризованный тест проверяет все 4 режима отображения.
 
@@ -113,7 +113,7 @@ def test_disk_init_all_display_modes(mode):
         assert widget.display_mode == mode
 
 
-def test_disk_init_dynamic_scaling():
+def test_disk_init_dynamic_scaling() -> None:
     """
     Тест инициализации с динамическим масштабированием.
 
@@ -129,7 +129,7 @@ def test_disk_init_dynamic_scaling():
         assert widget._peak_write_speed == 1.0
 
 
-def test_disk_init_fixed_scaling():
+def test_disk_init_fixed_scaling() -> None:
     """
     Тест инициализации с фиксированным масштабированием.
 
@@ -147,7 +147,7 @@ def test_disk_init_fixed_scaling():
 # Тесты автовыбора диска
 # =============================================================================
 
-def test_disk_auto_select_first_disk():
+def test_disk_auto_select_first_disk() -> None:
     """
     Тест автовыбора первого доступного диска.
 
@@ -173,7 +173,7 @@ def test_disk_auto_select_first_disk():
 # Тесты update()
 # =============================================================================
 
-def test_disk_update_first_call_initializes():
+def test_disk_update_first_call_initializes() -> None:
     """
     Тест первого вызова update() инициализирует счётчики.
 
@@ -197,7 +197,7 @@ def test_disk_update_first_call_initializes():
         assert widget._last_update_time == 100.0
 
 
-def test_disk_update_calculates_speed():
+def test_disk_update_calculates_speed() -> None:
     """
     Тест расчёта скорости на основе дельты байтов.
 
@@ -232,7 +232,7 @@ def test_disk_update_calculates_speed():
         assert widget._current_write_speed == pytest.approx(expected_write_speed, rel=0.01)
 
 
-def test_disk_update_missing_disk():
+def test_disk_update_missing_disk() -> None:
     """
     Тест update() когда диск не найден.
 
@@ -252,7 +252,7 @@ def test_disk_update_missing_disk():
         assert widget._current_write_speed == 0.0
 
 
-def test_disk_update_negative_delta_clamped():
+def test_disk_update_negative_delta_clamped() -> None:
     """
     Тест что отрицательная дельта (сброс счётчика) обрабатывается.
 
@@ -285,7 +285,7 @@ def test_disk_update_negative_delta_clamped():
         assert widget._current_write_speed == 0.0
 
 
-def test_disk_update_zero_time_delta():
+def test_disk_update_zero_time_delta() -> None:
     """
     Тест update() когда time_delta = 0 (мгновенный вызов).
 
@@ -308,7 +308,7 @@ def test_disk_update_zero_time_delta():
         # (вторая update не вычисляет скорость при time_delta=0)
 
 
-def test_disk_update_tracks_peak_speeds():
+def test_disk_update_tracks_peak_speeds() -> None:
     """
     Тест что update() отслеживает пиковые скорости для динамического масштабирования.
 
@@ -343,7 +343,7 @@ def test_disk_update_tracks_peak_speeds():
 # Тесты истории для graph режима
 # =============================================================================
 
-def test_disk_update_graph_mode_adds_to_history():
+def test_disk_update_graph_mode_adds_to_history() -> None:
     """
     Тест что в graph режиме данные добавляются в историю.
 
@@ -374,7 +374,7 @@ def test_disk_update_graph_mode_adds_to_history():
         assert len(widget._write_history) >= 1
 
 
-def test_disk_update_graph_mode_respects_max_length():
+def test_disk_update_graph_mode_respects_max_length() -> None:
     """
     Тест что deque соблюдает maxlen.
 
@@ -399,7 +399,7 @@ def test_disk_update_graph_mode_respects_max_length():
         assert len(widget._write_history) <= 3
 
 
-def test_disk_update_non_graph_mode_no_history():
+def test_disk_update_non_graph_mode_no_history() -> None:
     """
     Тест что в не-graph режимах история не сохраняется.
 
@@ -427,7 +427,7 @@ def test_disk_update_non_graph_mode_no_history():
 # Тесты обработки ошибок
 # =============================================================================
 
-def test_disk_update_handles_psutil_error():
+def test_disk_update_handles_psutil_error() -> None:
     """
     Тест обработки исключения при вызове psutil.
 
@@ -453,7 +453,7 @@ def test_disk_update_handles_psutil_error():
     (100 * 1024 * 1024, "100.0M"),      # 100 MB/s
     (1500 * 1024 * 1024, "1.5G"),       # 1.5 GB/s
 ])
-def test_disk_format_speed_units(bytes_per_sec, expected):
+def test_disk_format_speed_units(bytes_per_sec: int, expected: str) -> None:
     """
     Параметризованный тест форматирования скорости в K/M/G.
 
@@ -471,7 +471,7 @@ def test_disk_format_speed_units(bytes_per_sec, expected):
 # Тесты расчёта процента скорости
 # =============================================================================
 
-def test_disk_get_speed_percentage_fixed_scaling():
+def test_disk_get_speed_percentage_fixed_scaling() -> None:
     """
     Тест расчёта процента с фиксированным масштабом.
 
@@ -489,7 +489,7 @@ def test_disk_get_speed_percentage_fixed_scaling():
         assert percentage == pytest.approx(50.0, abs=0.1)
 
 
-def test_disk_get_speed_percentage_dynamic_scaling():
+def test_disk_get_speed_percentage_dynamic_scaling() -> None:
     """
     Тест расчёта процента с динамическим масштабом.
 
@@ -509,7 +509,7 @@ def test_disk_get_speed_percentage_dynamic_scaling():
         assert percentage == pytest.approx(50.0, abs=0.1)
 
 
-def test_disk_get_speed_percentage_over_100():
+def test_disk_get_speed_percentage_over_100() -> None:
     """
     Тест что процент ограничен 100%.
 
@@ -531,7 +531,7 @@ def test_disk_get_speed_percentage_over_100():
 # Тесты render() общие
 # =============================================================================
 
-def test_disk_render_returns_image():
+def test_disk_render_returns_image() -> None:
     """
     Тест что render() возвращает PIL Image.
 
@@ -549,7 +549,7 @@ def test_disk_render_returns_image():
         assert image.size == (128, 40)
 
 
-def test_disk_render_with_border():
+def test_disk_render_with_border() -> None:
     """
     Тест рендеринга с рамкой виджета.
 
@@ -566,7 +566,7 @@ def test_disk_render_with_border():
         assert image is not None
 
 
-def test_disk_render_with_alpha_channel():
+def test_disk_render_with_alpha_channel() -> None:
     """
     Тест рендеринга с альфа-каналом.
 
@@ -587,7 +587,7 @@ def test_disk_render_with_alpha_channel():
 # Тесты render() в text режиме
 # =============================================================================
 
-def test_disk_render_text_mode():
+def test_disk_render_text_mode() -> None:
     """
     Тест рендеринга в text режиме.
 
@@ -610,7 +610,7 @@ def test_disk_render_text_mode():
 # Тесты render() в bar_horizontal режиме
 # =============================================================================
 
-def test_disk_render_bar_horizontal():
+def test_disk_render_bar_horizontal() -> None:
     """
     Тест рендеринга в bar_horizontal режиме.
 
@@ -631,7 +631,7 @@ def test_disk_render_bar_horizontal():
         assert any(p > 0 for p in pixels)
 
 
-def test_disk_render_bar_horizontal_zero_speed():
+def test_disk_render_bar_horizontal_zero_speed() -> None:
     """
     Тест bar_horizontal при нулевой скорости.
 
@@ -651,7 +651,7 @@ def test_disk_render_bar_horizontal_zero_speed():
         assert all(p == 0 for p in pixels)
 
 
-def test_disk_render_bar_horizontal_max_speed():
+def test_disk_render_bar_horizontal_max_speed() -> None:
     """
     Тест bar_horizontal при максимальной скорости.
 
@@ -676,7 +676,7 @@ def test_disk_render_bar_horizontal_max_speed():
 # Тесты render() в bar_vertical режиме
 # =============================================================================
 
-def test_disk_render_bar_vertical():
+def test_disk_render_bar_vertical() -> None:
     """
     Тест рендеринга в bar_vertical режиме.
 
@@ -701,7 +701,7 @@ def test_disk_render_bar_vertical():
 # Тесты render() в graph режиме
 # =============================================================================
 
-def test_disk_render_graph_with_history():
+def test_disk_render_graph_with_history() -> None:
     """
     Тест рендеринга graph режима с данными.
 
@@ -723,7 +723,7 @@ def test_disk_render_graph_with_history():
         assert image.size == (128, 40)
 
 
-def test_disk_render_graph_empty_history():
+def test_disk_render_graph_empty_history() -> None:
     """
     Тест graph режима с пустой историей.
 
@@ -745,7 +745,7 @@ def test_disk_render_graph_empty_history():
         assert image.size == (128, 40)
 
 
-def test_disk_render_graph_insufficient_data():
+def test_disk_render_graph_insufficient_data() -> None:
     """
     Тест graph режима с недостаточным количеством данных.
 
@@ -770,7 +770,7 @@ def test_disk_render_graph_insufficient_data():
 # Тесты get_update_interval
 # =============================================================================
 
-def test_disk_get_update_interval_default():
+def test_disk_get_update_interval_default() -> None:
     """
     Тест get_update_interval возвращает дефолтное значение.
 
@@ -783,7 +783,7 @@ def test_disk_get_update_interval_default():
         assert widget.get_update_interval() == 1.0
 
 
-def test_disk_get_update_interval_custom():
+def test_disk_get_update_interval_custom() -> None:
     """
     Тест get_update_interval возвращает кастомное значение.
 
@@ -800,7 +800,7 @@ def test_disk_get_update_interval_custom():
 # Тесты edge cases и стилизации
 # =============================================================================
 
-def test_disk_render_with_padding():
+def test_disk_render_with_padding() -> None:
     """
     Тест рендеринга с отступами.
 
@@ -817,7 +817,7 @@ def test_disk_render_with_padding():
         assert image is not None
 
 
-def test_disk_render_different_sizes():
+def test_disk_render_different_sizes() -> None:
     """
     Тест рендеринга с разными размерами виджета.
 
@@ -834,7 +834,7 @@ def test_disk_render_different_sizes():
             assert image.size == size
 
 
-def test_disk_render_unknown_display_mode():
+def test_disk_render_unknown_display_mode() -> None:
     """
     Тест рендеринга с неизвестным режимом.
 
@@ -856,7 +856,7 @@ def test_disk_render_unknown_display_mode():
 # Integration тесты
 # =============================================================================
 
-def test_disk_full_workflow():
+def test_disk_full_workflow() -> None:
     """
     Integration тест полного жизненного цикла виджета.
 
@@ -898,7 +898,7 @@ def test_disk_full_workflow():
         assert widget._current_write_speed > 0
 
 
-def test_disk_multiple_updates_and_renders():
+def test_disk_multiple_updates_and_renders() -> None:
     """
     Integration тест с несколькими циклами update/render.
 

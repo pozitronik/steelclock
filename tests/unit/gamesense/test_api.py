@@ -30,7 +30,7 @@ from gamesense.api import GameSenseAPI, GameSenseAPIError
 # Тесты инициализации
 # =============================================================================
 
-def test_api_init_default_values():
+def test_api_init_default_values() -> None:
     """
     Тест инициализации API с дефолтными параметрами.
 
@@ -53,7 +53,7 @@ def test_api_init_default_values():
         assert api.session.headers['Content-Type'] == 'application/json'
 
 
-def test_api_init_custom_values():
+def test_api_init_custom_values() -> None:
     """
     Тест инициализации API с кастомными параметрами.
 
@@ -71,7 +71,7 @@ def test_api_init_custom_values():
         assert api.game_display_name == "Test Game Display"
 
 
-def test_api_init_calls_get_server_url():
+def test_api_init_calls_get_server_url() -> None:
     """
     Тест что инициализация вызывает get_server_url для discovery.
 
@@ -90,7 +90,7 @@ def test_api_init_calls_get_server_url():
 # Тесты register_game
 # =============================================================================
 
-def test_register_game_success():
+def test_register_game_success() -> None:
     """
     Тест успешной регистрации игры.
 
@@ -122,7 +122,7 @@ def test_register_game_success():
             assert payload['developer'] == "TestDev"
 
 
-def test_register_game_default_developer():
+def test_register_game_default_developer() -> None:
     """
     Тест регистрации игры с дефолтным developer.
 
@@ -145,7 +145,7 @@ def test_register_game_default_developer():
             assert payload['developer'] == "Custom"
 
 
-def test_register_game_http_400_error():
+def test_register_game_http_400_error() -> None:
     """
     Тест регистрации игры с HTTP 400 (Bad Request).
 
@@ -168,7 +168,7 @@ def test_register_game_http_400_error():
             assert "HTTP 400" in str(exc_info.value)
 
 
-def test_register_game_http_500_error():
+def test_register_game_http_500_error() -> None:
     """
     Тест регистрации игры с HTTP 500 (Internal Server Error).
 
@@ -191,7 +191,7 @@ def test_register_game_http_500_error():
             assert "HTTP 500" in str(exc_info.value)
 
 
-def test_register_game_timeout():
+def test_register_game_timeout() -> None:
     """
     Тест регистрации игры с timeout.
 
@@ -213,7 +213,7 @@ def test_register_game_timeout():
             assert result is True  # _post вернёт None при timeout, но это считается успехом
 
 
-def test_register_game_connection_error():
+def test_register_game_connection_error() -> None:
     """
     Тест регистрации игры с connection error.
 
@@ -237,7 +237,7 @@ def test_register_game_connection_error():
 # Тесты bind_screen_event
 # =============================================================================
 
-def test_bind_screen_event_success():
+def test_bind_screen_event_success() -> None:
     """
     Тест успешного биндинга события на экран.
 
@@ -266,7 +266,7 @@ def test_bind_screen_event_success():
             assert payload['handlers'][0]['datas'][0]['has-text'] is False
 
 
-def test_bind_screen_event_custom_device_type():
+def test_bind_screen_event_custom_device_type() -> None:
     """
     Тест биндинга события с кастомным типом устройства.
 
@@ -289,7 +289,7 @@ def test_bind_screen_event_custom_device_type():
             assert payload['handlers'][0]['device-type'] == "screened-256x80"
 
 
-def test_bind_screen_event_http_error():
+def test_bind_screen_event_http_error() -> None:
     """
     Тест биндинга события с HTTP ошибкой.
 
@@ -316,7 +316,7 @@ def test_bind_screen_event_http_error():
 # Тесты send_screen_data
 # =============================================================================
 
-def test_send_screen_data_success():
+def test_send_screen_data_success() -> None:
     """
     Тест успешной отправки bitmap данных на экран.
 
@@ -344,7 +344,7 @@ def test_send_screen_data_success():
             assert 'image-data-128x40' in payload['data']['frame']
 
 
-def test_send_screen_data_with_actual_image():
+def test_send_screen_data_with_actual_image() -> None:
     """
     Тест отправки реальных bitmap данных (не все нули).
 
@@ -367,7 +367,7 @@ def test_send_screen_data_with_actual_image():
             assert result is True
 
 
-def test_send_screen_data_invalid_size_too_small():
+def test_send_screen_data_invalid_size_too_small() -> None:
     """
     Тест отправки bitmap с недостаточным размером.
 
@@ -386,7 +386,7 @@ def test_send_screen_data_invalid_size_too_small():
         assert "expected 640 bytes, got 639" in str(exc_info.value)
 
 
-def test_send_screen_data_invalid_size_too_large():
+def test_send_screen_data_invalid_size_too_large() -> None:
     """
     Тест отправки bitmap с избыточным размером.
 
@@ -405,7 +405,7 @@ def test_send_screen_data_invalid_size_too_large():
         assert "expected 640 bytes, got 641" in str(exc_info.value)
 
 
-def test_send_screen_data_empty_bitmap():
+def test_send_screen_data_empty_bitmap() -> None:
     """
     Тест отправки пустого bitmap.
 
@@ -422,7 +422,7 @@ def test_send_screen_data_empty_bitmap():
         assert "expected 640 bytes, got 0" in str(exc_info.value)
 
 
-def test_send_screen_data_http_error():
+def test_send_screen_data_http_error() -> None:
     """
     Тест отправки данных с HTTP ошибкой.
 
@@ -446,7 +446,7 @@ def test_send_screen_data_http_error():
             assert "HTTP 404" in str(exc_info.value)
 
 
-def test_send_screen_data_timeout():
+def test_send_screen_data_timeout() -> None:
     """
     Тест отправки данных с timeout.
 
@@ -466,7 +466,7 @@ def test_send_screen_data_timeout():
             assert result is True
 
 
-def test_send_screen_data_connection_error():
+def test_send_screen_data_connection_error() -> None:
     """
     Тест отправки данных с connection error.
 
@@ -491,7 +491,7 @@ def test_send_screen_data_connection_error():
 # Тесты heartbeat
 # =============================================================================
 
-def test_heartbeat_success():
+def test_heartbeat_success() -> None:
     """
     Тест успешного heartbeat.
 
@@ -516,7 +516,7 @@ def test_heartbeat_success():
             assert payload['game'] == "TEST"
 
 
-def test_heartbeat_http_error():
+def test_heartbeat_http_error() -> None:
     """
     Тест heartbeat с HTTP ошибкой.
 
@@ -541,7 +541,7 @@ def test_heartbeat_http_error():
 # Тесты remove_game
 # =============================================================================
 
-def test_remove_game_success():
+def test_remove_game_success() -> None:
     """
     Тест успешного удаления игры.
 
@@ -566,7 +566,7 @@ def test_remove_game_success():
             assert payload['game'] == "TEST"
 
 
-def test_remove_game_http_error_ignored():
+def test_remove_game_http_error_ignored() -> None:
     """
     Тест удаления игры с HTTP ошибкой - ошибки игнорируются.
 
@@ -593,7 +593,7 @@ def test_remove_game_http_error_ignored():
 # Тесты context manager
 # =============================================================================
 
-def test_context_manager_calls_remove_game():
+def test_context_manager_calls_remove_game() -> None:
     """
     Тест что context manager вызывает remove_game при выходе.
 
@@ -618,7 +618,7 @@ def test_context_manager_calls_remove_game():
             assert 'remove_game' in last_call_url
 
 
-def test_context_manager_closes_session():
+def test_context_manager_closes_session() -> None:
     """
     Тест что context manager закрывает session.
 
@@ -641,7 +641,7 @@ def test_context_manager_closes_session():
                 assert mock_close.called
 
 
-def test_context_manager_handles_exception_in_exit():
+def test_context_manager_handles_exception_in_exit() -> None:
     """
     Тест что context manager игнорирует исключения в __exit__.
 
@@ -668,7 +668,7 @@ def test_context_manager_handles_exception_in_exit():
 # Тесты _post (внутренний метод)
 # =============================================================================
 
-def test_post_returns_json_on_success():
+def test_post_returns_json_on_success() -> None:
     """
     Тест что _post возвращает JSON при успешном ответе.
 
@@ -689,7 +689,7 @@ def test_post_returns_json_on_success():
             assert result == {'result': 'success', 'value': 42}
 
 
-def test_post_returns_none_on_empty_response():
+def test_post_returns_none_on_empty_response() -> None:
     """
     Тест что _post возвращает None при пустом ответе.
 
@@ -710,7 +710,7 @@ def test_post_returns_none_on_empty_response():
             assert result is None
 
 
-def test_post_returns_none_on_timeout():
+def test_post_returns_none_on_timeout() -> None:
     """
     Тест что _post возвращает None при timeout.
 
@@ -728,7 +728,7 @@ def test_post_returns_none_on_timeout():
             assert result is None
 
 
-def test_post_wraps_non_dict_json_response():
+def test_post_wraps_non_dict_json_response() -> None:
     """
     Тест что _post оборачивает non-dict JSON в dict.
 

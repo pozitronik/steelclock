@@ -7,8 +7,10 @@
 - Утилиты для создания моковых данных
 """
 
-import pytest
+from typing import Any, Callable, Generator, Tuple
 from unittest.mock import Mock, patch
+
+import pytest
 
 
 # =============================================================================
@@ -16,14 +18,14 @@ from unittest.mock import Mock, patch
 # =============================================================================
 
 @pytest.fixture
-def psutil_cpu_mock_factory():
+def psutil_cpu_mock_factory() -> Callable[..., Mock]:
     """
     Фабрика для создания моков psutil.cpu_percent с разными значениями.
 
     Returns:
         Callable: Функция для создания мока с заданным значением CPU
     """
-    def create_cpu_mock(value: float = 50.0, per_core: bool = False):
+    def create_cpu_mock(value: float = 50.0, per_core: bool = False) -> Mock:
         """
         Args:
             value: Значение CPU usage (или список для per-core)
@@ -39,9 +41,9 @@ def psutil_cpu_mock_factory():
 
 
 @pytest.fixture
-def psutil_memory_mock_factory():
+def psutil_memory_mock_factory() -> Callable[..., Mock]:
     """Фабрика для создания моков psutil.virtual_memory."""
-    def create_memory_mock(percent: float = 60.0):
+    def create_memory_mock(percent: float = 60.0) -> Mock:
         """Args: percent: Memory usage в процентах"""
         with patch('psutil.virtual_memory') as mock:
             mock.return_value = Mock(
@@ -55,9 +57,9 @@ def psutil_memory_mock_factory():
 
 
 @pytest.fixture
-def psutil_network_mock_factory():
+def psutil_network_mock_factory() -> Callable[..., Mock]:
     """Фабрика для создания моков psutil.net_io_counters."""
-    def create_network_mock(bytes_sent: int = 1000, bytes_recv: int = 2000, interface: str = 'Ethernet'):
+    def create_network_mock(bytes_sent: int = 1000, bytes_recv: int = 2000, interface: str = 'Ethernet') -> Mock:
         """
         Args:
             bytes_sent: Отправленные байты
@@ -78,9 +80,9 @@ def psutil_network_mock_factory():
 
 
 @pytest.fixture
-def psutil_disk_mock_factory():
+def psutil_disk_mock_factory() -> Callable[..., Mock]:
     """Фабрика для создания моков psutil.disk_io_counters."""
-    def create_disk_mock(read_bytes: int = 5000, write_bytes: int = 3000, disk_name: str = 'PhysicalDrive0'):
+    def create_disk_mock(read_bytes: int = 5000, write_bytes: int = 3000, disk_name: str = 'PhysicalDrive0') -> Mock:
         """
         Args:
             read_bytes: Прочитанные байты
@@ -105,7 +107,7 @@ def psutil_disk_mock_factory():
 # =============================================================================
 
 @pytest.fixture
-def mock_successful_api_response():
+def mock_successful_api_response() -> Mock:
     """Мок успешного HTTP ответа от GameSense API."""
     response = Mock()
     response.status_code = 200
@@ -115,7 +117,7 @@ def mock_successful_api_response():
 
 
 @pytest.fixture
-def mock_api_error_response():
+def mock_api_error_response() -> Mock:
     """Мок HTTP ответа с ошибкой 400."""
     response = Mock()
     response.status_code = 400
@@ -125,7 +127,7 @@ def mock_api_error_response():
 
 
 @pytest.fixture
-def mock_api_timeout_response():
+def mock_api_timeout_response() -> Mock:
     """Мок для симуляции timeout."""
     import requests
     mock = Mock()
@@ -134,7 +136,7 @@ def mock_api_timeout_response():
 
 
 @pytest.fixture
-def mock_api_connection_error():
+def mock_api_connection_error() -> Mock:
     """Мок для симуляции connection error."""
     import requests
     mock = Mock()
@@ -147,7 +149,7 @@ def mock_api_connection_error():
 # =============================================================================
 
 @pytest.fixture
-def mock_font_truetype():
+def mock_font_truetype() -> Generator[Mock, None, None]:
     """Мок для PIL ImageFont.truetype."""
     with patch('PIL.ImageFont.truetype') as mock:
         # Возвращаем мок font object
@@ -158,7 +160,7 @@ def mock_font_truetype():
 
 
 @pytest.fixture
-def mock_font_load_default():
+def mock_font_load_default() -> Generator[Mock, None, None]:
     """Мок для PIL ImageFont.load_default."""
     with patch('PIL.ImageFont.load_default') as mock:
         font_mock = Mock()
@@ -172,7 +174,7 @@ def mock_font_load_default():
 # =============================================================================
 
 @pytest.fixture
-def mock_font_path_exists():
+def mock_font_path_exists() -> Generator[Tuple[Mock, Mock], None, None]:
     """Мок для os.path.exists/isfile - шрифт найден."""
     with patch('os.path.isfile') as mock_isfile, \
          patch('pathlib.Path.exists') as mock_exists:
@@ -182,7 +184,7 @@ def mock_font_path_exists():
 
 
 @pytest.fixture
-def mock_font_path_missing():
+def mock_font_path_missing() -> Generator[Tuple[Mock, Mock], None, None]:
     """Мок для os.path.exists/isfile - шрифт не найден."""
     with patch('os.path.isfile') as mock_isfile, \
          patch('pathlib.Path.exists') as mock_exists:
@@ -196,7 +198,7 @@ def mock_font_path_missing():
 # =============================================================================
 
 @pytest.fixture
-def mock_keyboard_all_off():
+def mock_keyboard_all_off() -> Generator[Mock, None, None]:
     """Мок ctypes для всех клавиш в состоянии OFF."""
     with patch('ctypes.windll') as mock_windll:
         mock_windll.user32.GetKeyState.return_value = 0  # OFF
@@ -204,10 +206,10 @@ def mock_keyboard_all_off():
 
 
 @pytest.fixture
-def mock_keyboard_caps_on():
+def mock_keyboard_caps_on() -> Generator[Mock, None, None]:
     """Мок ctypes с Caps Lock в состоянии ON."""
     with patch('ctypes.windll') as mock_windll:
-        def get_key_state(vk_code):
+        def get_key_state(vk_code: int) -> int:
             if vk_code == 0x14:  # VK_CAPITAL (Caps Lock)
                 return 1  # ON
             return 0  # OFF для остальных
@@ -221,7 +223,7 @@ def mock_keyboard_caps_on():
 # =============================================================================
 
 @pytest.fixture
-def mock_threading_no_delay():
+def mock_threading_no_delay() -> Generator[Mock, None, None]:
     """Мок для threading.Event.wait - пропускает задержки."""
     with patch('threading.Event.wait') as mock_wait:
         # wait() сразу возвращается без ожидания
@@ -230,7 +232,7 @@ def mock_threading_no_delay():
 
 
 @pytest.fixture
-def mock_time_no_sleep():
+def mock_time_no_sleep() -> Generator[Mock, None, None]:
     """Мок для time.sleep - пропускает задержки."""
     with patch('time.sleep') as mock_sleep:
         # sleep() ничего не делает

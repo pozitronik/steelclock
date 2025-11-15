@@ -27,7 +27,7 @@ from utils.bitmap import create_blank_image
 # Тесты render_single_line_text
 # =============================================================================
 
-def test_render_single_line_text_basic():
+def test_render_single_line_text_basic() -> None:
     """
     Тест базового рендеринга одной строки текста.
 
@@ -42,7 +42,7 @@ def test_render_single_line_text_basic():
 
 
 @pytest.mark.parametrize("h_align", ["left", "center", "right"])
-def test_render_single_line_text_horizontal_align(h_align):
+def test_render_single_line_text_horizontal_align(h_align: str) -> None:
     """
     Параметризованный тест горизонтального выравнивания.
 
@@ -56,7 +56,7 @@ def test_render_single_line_text_horizontal_align(h_align):
 
 
 @pytest.mark.parametrize("v_align", ["top", "center", "bottom"])
-def test_render_single_line_text_vertical_align(v_align):
+def test_render_single_line_text_vertical_align(v_align: str) -> None:
     """
     Параметризованный тест вертикального выравнивания.
 
@@ -69,7 +69,7 @@ def test_render_single_line_text_vertical_align(v_align):
     assert any(p > 0 for p in pixels)
 
 
-def test_render_single_line_text_with_padding():
+def test_render_single_line_text_with_padding() -> None:
     """
     Тест рендеринга с отступами.
 
@@ -82,7 +82,7 @@ def test_render_single_line_text_with_padding():
     assert any(p > 0 for p in pixels)
 
 
-def test_render_single_line_text_with_color():
+def test_render_single_line_text_with_color() -> None:
     """
     Тест рендеринга с кастомным цветом.
 
@@ -95,7 +95,7 @@ def test_render_single_line_text_with_color():
     assert any(p > 0 for p in pixels)
 
 
-def test_render_single_line_text_with_alpha_channel():
+def test_render_single_line_text_with_alpha_channel() -> None:
     """
     Тест рендеринга на изображение с альфа-каналом.
 
@@ -107,7 +107,7 @@ def test_render_single_line_text_with_alpha_channel():
     assert image.mode == 'LA'
 
 
-def test_render_single_line_text_empty_string():
+def test_render_single_line_text_empty_string() -> None:
     """
     Edge case: рендеринг пустой строки.
 
@@ -121,7 +121,7 @@ def test_render_single_line_text_empty_string():
     assert all(p == 0 for p in pixels)
 
 
-def test_render_single_line_text_long_text():
+def test_render_single_line_text_long_text() -> None:
     """
     Edge case: рендеринг очень длинного текста.
 
@@ -134,7 +134,7 @@ def test_render_single_line_text_long_text():
     assert any(p > 0 for p in pixels)
 
 
-def test_render_single_line_text_with_font_size():
+def test_render_single_line_text_with_font_size() -> None:
     """
     Тест рендеринга с кастомным размером шрифта.
 
@@ -151,7 +151,7 @@ def test_render_single_line_text_with_font_size():
 # Тесты render_multi_line_text
 # =============================================================================
 
-def test_render_multi_line_text_basic():
+def test_render_multi_line_text_basic() -> None:
     """
     Тест рендеринга нескольких строк текста.
 
@@ -169,7 +169,7 @@ def test_render_multi_line_text_basic():
     assert any(p > 0 for p in pixels)
 
 
-def test_render_multi_line_text_empty_list():
+def test_render_multi_line_text_empty_list() -> None:
     """
     Edge case: рендеринг пустого списка строк.
 
@@ -182,7 +182,7 @@ def test_render_multi_line_text_empty_list():
     assert all(p == 0 for p in pixels)
 
 
-def test_render_multi_line_text_single_line():
+def test_render_multi_line_text_single_line() -> None:
     """
     Тест рендеринга одной строки через multi_line функцию.
 
@@ -197,7 +197,7 @@ def test_render_multi_line_text_single_line():
 
 
 @pytest.mark.parametrize("h_align", ["left", "center", "right"])
-def test_render_multi_line_text_horizontal_align(h_align):
+def test_render_multi_line_text_horizontal_align(h_align: str) -> None:
     """
     Параметризованный тест горизонтального выравнивания блока.
 
@@ -212,7 +212,7 @@ def test_render_multi_line_text_horizontal_align(h_align):
 
 
 @pytest.mark.parametrize("v_align", ["top", "center", "bottom"])
-def test_render_multi_line_text_vertical_align(v_align):
+def test_render_multi_line_text_vertical_align(v_align: str) -> None:
     """
     Параметризованный тест вертикального выравнивания блока.
 
@@ -226,7 +226,7 @@ def test_render_multi_line_text_vertical_align(v_align):
     assert any(p > 0 for p in pixels)
 
 
-def test_render_multi_line_text_with_line_spacing():
+def test_render_multi_line_text_with_line_spacing() -> None:
     """
     Тест рендеринга с кастомным промежутком между строками.
 
@@ -240,7 +240,7 @@ def test_render_multi_line_text_with_line_spacing():
     assert any(p > 0 for p in pixels)
 
 
-def test_render_multi_line_text_different_colors():
+def test_render_multi_line_text_different_colors() -> None:
     """
     Тест что каждая строка может иметь свой цвет.
 
@@ -258,7 +258,7 @@ def test_render_multi_line_text_different_colors():
     assert any(p > 0 for p in pixels)
 
 
-def test_render_multi_line_text_with_padding():
+def test_render_multi_line_text_with_padding() -> None:
     """
     Тест рендеринга многострочного текста с отступами.
 
@@ -272,7 +272,7 @@ def test_render_multi_line_text_with_padding():
     assert any(p > 0 for p in pixels)
 
 
-def test_render_multi_line_text_many_lines():
+def test_render_multi_line_text_many_lines() -> None:
     """
     Edge case: рендеринг большого количества строк.
 
@@ -286,7 +286,7 @@ def test_render_multi_line_text_many_lines():
     assert any(p > 0 for p in pixels)
 
 
-def test_render_multi_line_text_with_alpha_channel():
+def test_render_multi_line_text_with_alpha_channel() -> None:
     """
     Тест рендеринга на изображение с альфа-каналом.
 
@@ -303,7 +303,7 @@ def test_render_multi_line_text_with_alpha_channel():
 # Тесты render_grid_text
 # =============================================================================
 
-def test_render_grid_text_basic():
+def test_render_grid_text_basic() -> None:
     """
     Тест рендеринга сетки значений.
 
@@ -317,7 +317,7 @@ def test_render_grid_text_basic():
     assert any(p > 0 for p in pixels)
 
 
-def test_render_grid_text_empty_list():
+def test_render_grid_text_empty_list() -> None:
     """
     Edge case: рендеринг пустого списка значений.
 
@@ -330,7 +330,7 @@ def test_render_grid_text_empty_list():
     assert all(p == 0 for p in pixels)
 
 
-def test_render_grid_text_single_value():
+def test_render_grid_text_single_value() -> None:
     """
     Тест рендеринга одного значения.
 
@@ -343,21 +343,21 @@ def test_render_grid_text_single_value():
     assert any(p > 0 for p in pixels)
 
 
-def test_render_grid_text_integer_values():
+def test_render_grid_text_integer_values() -> None:
     """
     Тест рендеринга целых чисел (decimal_places=0).
 
     Проверяет форматирование без десятичных знаков.
     """
     image = create_blank_image(128, 40)
-    values = [10, 20, 30, 40]
+    values = [10.0, 20.0, 30.0, 40.0]
     render_grid_text(image, values, decimal_places=0)
 
     pixels = list(image.getdata())
     assert any(p > 0 for p in pixels)
 
 
-def test_render_grid_text_decimal_values():
+def test_render_grid_text_decimal_values() -> None:
     """
     Тест рендеринга дробных чисел с decimal_places.
 
@@ -371,7 +371,7 @@ def test_render_grid_text_decimal_values():
     assert any(p > 0 for p in pixels)
 
 
-def test_render_grid_text_perfect_square():
+def test_render_grid_text_perfect_square() -> None:
     """
     Тест рендеринга идеального квадрата (4, 9, 16 значений).
 
@@ -385,7 +385,7 @@ def test_render_grid_text_perfect_square():
     assert any(p > 0 for p in pixels)
 
 
-def test_render_grid_text_non_square():
+def test_render_grid_text_non_square() -> None:
     """
     Тест рендеринга не идеального квадрата (5, 6, 7 значений).
 
@@ -399,7 +399,7 @@ def test_render_grid_text_non_square():
     assert any(p > 0 for p in pixels)
 
 
-def test_render_grid_text_many_values():
+def test_render_grid_text_many_values() -> None:
     """
     Тест рендеринга большого количества значений.
 
@@ -413,7 +413,7 @@ def test_render_grid_text_many_values():
     assert any(p > 0 for p in pixels)
 
 
-def test_render_grid_text_with_padding():
+def test_render_grid_text_with_padding() -> None:
     """
     Тест рендеринга сетки с отступами.
 
@@ -427,7 +427,7 @@ def test_render_grid_text_with_padding():
     assert any(p > 0 for p in pixels)
 
 
-def test_render_grid_text_with_color():
+def test_render_grid_text_with_color() -> None:
     """
     Тест рендеринга сетки с кастомным цветом.
 
@@ -441,7 +441,7 @@ def test_render_grid_text_with_color():
     assert any(p > 0 for p in pixels)
 
 
-def test_render_grid_text_with_alpha_channel():
+def test_render_grid_text_with_alpha_channel() -> None:
     """
     Тест рендеринга на изображение с альфа-каналом.
 
@@ -458,7 +458,7 @@ def test_render_grid_text_with_alpha_channel():
 # Тесты measure_text_size
 # =============================================================================
 
-def test_measure_text_size_basic():
+def test_measure_text_size_basic() -> None:
     """
     Тест измерения размера текста.
 
@@ -472,7 +472,7 @@ def test_measure_text_size_basic():
     assert height > 0
 
 
-def test_measure_text_size_empty_string():
+def test_measure_text_size_empty_string() -> None:
     """
     Edge case: измерение пустой строки.
 
@@ -486,7 +486,7 @@ def test_measure_text_size_empty_string():
     assert height == 0  # Пустая строка имеет высоту 0
 
 
-def test_measure_text_size_long_text():
+def test_measure_text_size_long_text() -> None:
     """
     Тест измерения длинного текста.
 
@@ -497,7 +497,7 @@ def test_measure_text_size_long_text():
     assert width > height
 
 
-def test_measure_text_size_with_font_size():
+def test_measure_text_size_with_font_size() -> None:
     """
     Тест что размер шрифта влияет на результат.
 
@@ -510,7 +510,7 @@ def test_measure_text_size_with_font_size():
     assert height_large > height_small
 
 
-def test_measure_text_size_same_font_same_size():
+def test_measure_text_size_same_font_same_size() -> None:
     """
     Тест что одинаковый текст дает одинаковый размер.
 
@@ -522,7 +522,7 @@ def test_measure_text_size_same_font_same_size():
     assert size1 == size2
 
 
-def test_measure_text_size_different_texts():
+def test_measure_text_size_different_texts() -> None:
     """
     Тест что разные тексты дают разные размеры.
 
@@ -538,7 +538,7 @@ def test_measure_text_size_different_texts():
 # Integration тесты
 # =============================================================================
 
-def test_text_renderer_full_workflow():
+def test_text_renderer_full_workflow() -> None:
     """
     Integration тест использования всех функций рендеринга.
 
@@ -566,7 +566,7 @@ def test_text_renderer_full_workflow():
     assert any(p > 0 for p in pixels)
 
 
-def test_text_renderer_all_alignments():
+def test_text_renderer_all_alignments() -> None:
     """
     Integration тест всех комбинаций выравнивания.
 
@@ -585,7 +585,7 @@ def test_text_renderer_all_alignments():
             assert any(p > 0 for p in pixels), f"Failed for {h_align}/{v_align}"
 
 
-def test_text_renderer_different_image_sizes():
+def test_text_renderer_different_image_sizes() -> None:
     """
     Integration тест рендеринга на изображения разных размеров.
 

@@ -13,6 +13,8 @@ Unit tests для LayoutManager - управление размещением в
 - Alpha channel support
 """
 
+from typing import Any, Callable, Tuple
+
 import pytest
 from unittest.mock import Mock
 from PIL import Image
@@ -26,7 +28,7 @@ from core.widget import Widget
 # ===========================
 
 @pytest.fixture
-def mock_widget():
+def mock_widget() -> Mock:
     """Фикстура создающая mock виджет с базовыми методами."""
     widget = Mock(spec=Widget)
     widget.name = "TestWidget"
@@ -40,9 +42,9 @@ def mock_widget():
 
 
 @pytest.fixture
-def mock_widget_factory():
+def mock_widget_factory() -> Callable[..., Mock]:
     """Фабрика для создания множества mock виджетов."""
-    def create_widget(name: str = "Widget", size: tuple = (64, 20)):
+    def create_widget(name: str = "Widget", size: Tuple[int, int] = (64, 20)) -> Mock:
         widget = Mock(spec=Widget)
         widget.name = name
         widget.get_preferred_size.return_value = size
@@ -56,7 +58,7 @@ def mock_widget_factory():
 # Тесты инициализации
 # ===========================
 
-def test_layout_manager_init_default_values():
+def test_layout_manager_init_default_values() -> None:
     """Тест инициализации с дефолтными значениями (базовый режим)."""
     manager = LayoutManager()
 
@@ -70,7 +72,7 @@ def test_layout_manager_init_default_values():
     assert len(manager.layouts) == 0
 
 
-def test_layout_manager_init_custom_size():
+def test_layout_manager_init_custom_size() -> None:
     """Тест инициализации с кастомным размером (базовый режим)."""
     manager = LayoutManager(width=256, height=80, background_color=255)
 
@@ -82,7 +84,7 @@ def test_layout_manager_init_custom_size():
     assert manager.viewport_mode is False
 
 
-def test_layout_manager_init_viewport_mode():
+def test_layout_manager_init_viewport_mode() -> None:
     """Тест инициализации в viewport режиме (виртуальный канвас больше дисплея)."""
     manager = LayoutManager(
         width=128,
@@ -101,13 +103,13 @@ def test_layout_manager_init_viewport_mode():
     assert manager.viewport.height == 40
 
 
-def test_layout_manager_width_property():
+def test_layout_manager_width_property() -> None:
     """Тест property width возвращает virtual_width."""
     manager = LayoutManager(virtual_width=256)
     assert manager.width == 256
 
 
-def test_layout_manager_height_property():
+def test_layout_manager_height_property() -> None:
     """Тест property height возвращает virtual_height."""
     manager = LayoutManager(virtual_height=80)
     assert manager.height == 80
@@ -117,7 +119,7 @@ def test_layout_manager_height_property():
 # Тесты add_widget
 # ===========================
 
-def test_layout_manager_add_widget_with_explicit_size(mock_widget):
+def test_layout_manager_add_widget_with_explicit_size(mock_widget: Mock) -> None:
     """Тест добавления виджета с явно указанным размером."""
     manager = LayoutManager()
 
@@ -138,7 +140,7 @@ def test_layout_manager_add_widget_with_explicit_size(mock_widget):
     mock_widget.set_size.assert_called_once_with(50, 30)
 
 
-def test_layout_manager_add_widget_with_preferred_size(mock_widget):
+def test_layout_manager_add_widget_with_preferred_size(mock_widget: Mock) -> None:
     """Тест добавления виджета с preferred size (w/h = None)."""
     manager = LayoutManager()
 
@@ -153,7 +155,7 @@ def test_layout_manager_add_widget_with_preferred_size(mock_widget):
     mock_widget.set_size.assert_called_once_with(64, 20)
 
 
-def test_layout_manager_add_widget_partial_preferred_size(mock_widget):
+def test_layout_manager_add_widget_partial_preferred_size(mock_widget: Mock) -> None:
     """Тест добавления виджета с частично указанным размером."""
     manager = LayoutManager()
 
@@ -165,7 +167,7 @@ def test_layout_manager_add_widget_partial_preferred_size(mock_widget):
     assert layout.h == 20  # from preferred
 
 
-def test_layout_manager_add_widget_z_order_sorting(mock_widget_factory):
+def test_layout_manager_add_widget_z_order_sorting(mock_widget_factory: Callable[..., Mock]) -> None:
     """Тест сортировки виджетов по z_order."""
     manager = LayoutManager()
 
@@ -184,7 +186,7 @@ def test_layout_manager_add_widget_z_order_sorting(mock_widget_factory):
     assert manager.layouts[2].widget == widget3  # z_order=10
 
 
-def test_layout_manager_add_widget_scale_in_viewport_mode(mock_widget):
+def test_layout_manager_add_widget_scale_in_viewport_mode(mock_widget: Mock) -> None:
     """Тест что scale применяется только в viewport режиме."""
     manager_viewport = LayoutManager(virtual_width=256, virtual_height=80)
     manager_basic = LayoutManager()
@@ -212,7 +214,7 @@ def test_layout_manager_add_widget_scale_in_viewport_mode(mock_widget):
 # Тесты remove_widget
 # ===========================
 
-def test_layout_manager_remove_widget_success(mock_widget_factory):
+def test_layout_manager_remove_widget_success(mock_widget_factory: Callable[..., Mock]) -> None:
     """Тест удаления существующего виджета."""
     manager = LayoutManager()
 
@@ -231,7 +233,7 @@ def test_layout_manager_remove_widget_success(mock_widget_factory):
     assert manager.layouts[0].widget == widget2
 
 
-def test_layout_manager_remove_widget_not_found(mock_widget):
+def test_layout_manager_remove_widget_not_found(mock_widget: Mock) -> None:
     """Тест удаления несуществующего виджета."""
     manager = LayoutManager()
 
@@ -241,7 +243,7 @@ def test_layout_manager_remove_widget_not_found(mock_widget):
     assert len(manager) == 0
 
 
-def test_layout_manager_remove_widget_from_multiple(mock_widget_factory):
+def test_layout_manager_remove_widget_from_multiple(mock_widget_factory: Callable[..., Mock]) -> None:
     """Тест удаления конкретного виджета из нескольких."""
     manager = LayoutManager()
 
@@ -261,7 +263,7 @@ def test_layout_manager_remove_widget_from_multiple(mock_widget_factory):
 # Тесты composite (базовый режим)
 # ===========================
 
-def test_layout_manager_composite_basic_mode_empty():
+def test_layout_manager_composite_basic_mode_empty() -> None:
     """Тест composite пустого layout (базовый режим)."""
     manager = LayoutManager(width=128, height=40, background_color=0)
 
@@ -274,7 +276,7 @@ def test_layout_manager_composite_basic_mode_empty():
     assert all(p == 0 for p in pixels)
 
 
-def test_layout_manager_composite_basic_mode_single_widget(mock_widget):
+def test_layout_manager_composite_basic_mode_single_widget(mock_widget: Mock) -> None:
     """Тест composite одного виджета (базовый режим)."""
     manager = LayoutManager()
 
@@ -286,7 +288,7 @@ def test_layout_manager_composite_basic_mode_single_widget(mock_widget):
     mock_widget.render.assert_called_once()
 
 
-def test_layout_manager_composite_basic_mode_multiple_widgets(mock_widget_factory):
+def test_layout_manager_composite_basic_mode_multiple_widgets(mock_widget_factory: Callable[..., Mock]) -> None:
     """Тест composite нескольких виджетов (базовый режим)."""
     manager = LayoutManager()
 
@@ -303,7 +305,7 @@ def test_layout_manager_composite_basic_mode_multiple_widgets(mock_widget_factor
     widget2.render.assert_called_once()
 
 
-def test_layout_manager_composite_widget_visibility(mock_widget_factory):
+def test_layout_manager_composite_widget_visibility(mock_widget_factory: Callable[..., Mock]) -> None:
     """Тест что невидимые виджеты не рендерятся."""
     manager = LayoutManager()
 
@@ -322,7 +324,7 @@ def test_layout_manager_composite_widget_visibility(mock_widget_factory):
     widget2.render.assert_not_called()
 
 
-def test_layout_manager_composite_widget_resize(mock_widget):
+def test_layout_manager_composite_widget_resize(mock_widget: Mock) -> None:
     """Тест что виджет ресайзится если размер не совпадает."""
     manager = LayoutManager()
 
@@ -335,7 +337,7 @@ def test_layout_manager_composite_widget_resize(mock_widget):
     assert image.size == (128, 40)
 
 
-def test_layout_manager_composite_alpha_channel_support(mock_widget):
+def test_layout_manager_composite_alpha_channel_support(mock_widget: Mock) -> None:
     """Тест поддержки альфа-канала при композитинге."""
     manager = LayoutManager(background_color=0)
 
@@ -351,7 +353,7 @@ def test_layout_manager_composite_alpha_channel_support(mock_widget):
     # Альфа-композитинг должен отработать без ошибок
 
 
-def test_layout_manager_composite_widget_render_error(mock_widget_factory):
+def test_layout_manager_composite_widget_render_error(mock_widget_factory: Callable[..., Mock]) -> None:
     """Тест обработки ошибки при рендеринге виджета."""
     manager = LayoutManager()
 
@@ -379,7 +381,7 @@ def test_layout_manager_composite_widget_render_error(mock_widget_factory):
 # Тесты composite (viewport режим)
 # ===========================
 
-def test_layout_manager_composite_viewport_mode_apply_viewport_true(mock_widget):
+def test_layout_manager_composite_viewport_mode_apply_viewport_true(mock_widget: Mock) -> None:
     """Тест composite в viewport режиме с apply_viewport=True."""
     manager = LayoutManager(
         width=128,
@@ -396,7 +398,7 @@ def test_layout_manager_composite_viewport_mode_apply_viewport_true(mock_widget)
     assert image.size == (128, 40)
 
 
-def test_layout_manager_composite_viewport_mode_apply_viewport_false(mock_widget):
+def test_layout_manager_composite_viewport_mode_apply_viewport_false(mock_widget: Mock) -> None:
     """Тест composite в viewport режиме с apply_viewport=False."""
     manager = LayoutManager(
         width=128,
@@ -413,7 +415,7 @@ def test_layout_manager_composite_viewport_mode_apply_viewport_false(mock_widget
     assert image.size == (256, 80)
 
 
-def test_layout_manager_composite_viewport_culling(mock_widget_factory):
+def test_layout_manager_composite_viewport_culling(mock_widget_factory: Callable[..., Mock]) -> None:
     """Тест что виджеты вне viewport не рендерятся (culling optimization)."""
     manager = LayoutManager(
         width=128,
@@ -439,7 +441,7 @@ def test_layout_manager_composite_viewport_culling(mock_widget_factory):
     widget_outside.render.assert_not_called()
 
 
-def test_layout_manager_composite_widget_scale_in_viewport_mode(mock_widget):
+def test_layout_manager_composite_widget_scale_in_viewport_mode(mock_widget: Mock) -> None:
     """Тест применения локального scale виджета в viewport режиме."""
     manager = LayoutManager(
         width=128,
@@ -461,7 +463,7 @@ def test_layout_manager_composite_widget_scale_in_viewport_mode(mock_widget):
 # Тесты _apply_viewport
 # ===========================
 
-def test_layout_manager_apply_viewport_no_viewport():
+def test_layout_manager_apply_viewport_no_viewport() -> None:
     """Тест _apply_viewport без viewport (базовый режим)."""
     manager = LayoutManager()  # basic mode
 
@@ -472,11 +474,12 @@ def test_layout_manager_apply_viewport_no_viewport():
     assert result == test_canvas
 
 
-def test_layout_manager_apply_viewport_with_zoom():
+def test_layout_manager_apply_viewport_with_zoom() -> None:
     """Тест _apply_viewport с zoom."""
     manager = LayoutManager(virtual_width=256, virtual_height=80)
 
     # Устанавливаем zoom
+    assert manager.viewport is not None
     manager.viewport.set_zoom(2.0)
 
     test_canvas = Image.new('L', (256, 80), color=100)
@@ -486,11 +489,12 @@ def test_layout_manager_apply_viewport_with_zoom():
     assert result.size == (128, 40)
 
 
-def test_layout_manager_apply_viewport_crop_simple():
+def test_layout_manager_apply_viewport_crop_simple() -> None:
     """Тест _apply_viewport с простым crop."""
     manager = LayoutManager(virtual_width=256, virtual_height=80)
 
     # Скроллим viewport
+    assert manager.viewport is not None
     manager.viewport.scroll_to(50, 20)
 
     test_canvas = Image.new('L', (256, 80), color=100)
@@ -499,11 +503,12 @@ def test_layout_manager_apply_viewport_crop_simple():
     assert result.size == (128, 40)
 
 
-def test_layout_manager_apply_viewport_crop_partial_outside():
+def test_layout_manager_apply_viewport_crop_partial_outside() -> None:
     """Тест _apply_viewport когда viewport частично выходит за границы."""
     manager = LayoutManager(virtual_width=200, virtual_height=60)
 
     # Скроллим так чтобы viewport частично вышел за границы
+    assert manager.viewport is not None
     manager.viewport.scroll_to(150, 40)
 
     test_canvas = Image.new('L', (200, 60), color=100)
@@ -512,11 +517,12 @@ def test_layout_manager_apply_viewport_crop_partial_outside():
     assert result.size == (128, 40)
 
 
-def test_layout_manager_apply_viewport_completely_outside():
+def test_layout_manager_apply_viewport_completely_outside() -> None:
     """Edge case: viewport полностью вне виртуального канваса."""
     manager = LayoutManager(virtual_width=256, virtual_height=80)
 
     # Скроллим viewport полностью за пределы
+    assert manager.viewport is not None
     manager.viewport.scroll_to(300, 100)
 
     test_canvas = Image.new('L', (256, 80), color=100)
@@ -530,7 +536,7 @@ def test_layout_manager_apply_viewport_completely_outside():
 # Тесты set_virtual_size
 # ===========================
 
-def test_layout_manager_set_virtual_size():
+def test_layout_manager_set_virtual_size() -> None:
     """Тест изменения размера виртуального канваса."""
     manager = LayoutManager(width=128, height=40)
 
@@ -544,7 +550,7 @@ def test_layout_manager_set_virtual_size():
     assert manager.viewport is not None
 
 
-def test_layout_manager_set_virtual_size_to_display_size():
+def test_layout_manager_set_virtual_size_to_display_size() -> None:
     """Тест установки virtual size равного display size (выход из viewport режима)."""
     manager = LayoutManager(
         width=128,
@@ -560,7 +566,7 @@ def test_layout_manager_set_virtual_size_to_display_size():
     assert manager.viewport_mode is False
 
 
-def test_layout_manager_set_virtual_size_creates_viewport():
+def test_layout_manager_set_virtual_size_creates_viewport() -> None:
     """Тест что set_virtual_size создаёт viewport при переходе в viewport режим."""
     manager = LayoutManager()
 
@@ -577,7 +583,7 @@ def test_layout_manager_set_virtual_size_creates_viewport():
 # Тесты constrain_viewport
 # ===========================
 
-def test_layout_manager_constrain_viewport_basic_mode():
+def test_layout_manager_constrain_viewport_basic_mode() -> None:
     """Тест constrain_viewport в базовом режиме (no-op)."""
     manager = LayoutManager()
 
@@ -585,10 +591,11 @@ def test_layout_manager_constrain_viewport_basic_mode():
     manager.constrain_viewport()
 
 
-def test_layout_manager_constrain_viewport_with_zoom():
+def test_layout_manager_constrain_viewport_with_zoom() -> None:
     """Тест constrain_viewport с zoom."""
     manager = LayoutManager(virtual_width=256, virtual_height=80)
 
+    assert manager.viewport is not None
     manager.viewport.set_zoom(2.0)
     manager.viewport.scroll_to(1000, 1000)  # Вне границ
 
@@ -608,7 +615,7 @@ def test_layout_manager_constrain_viewport_with_zoom():
 # Тесты get_widget_at
 # ===========================
 
-def test_layout_manager_get_widget_at_found(mock_widget):
+def test_layout_manager_get_widget_at_found(mock_widget: Mock) -> None:
     """Тест get_widget_at когда виджет найден."""
     manager = LayoutManager()
 
@@ -620,7 +627,7 @@ def test_layout_manager_get_widget_at_found(mock_widget):
     assert widget == mock_widget
 
 
-def test_layout_manager_get_widget_at_not_found(mock_widget):
+def test_layout_manager_get_widget_at_not_found(mock_widget: Mock) -> None:
     """Тест get_widget_at когда виджет не найден."""
     manager = LayoutManager()
 
@@ -632,7 +639,7 @@ def test_layout_manager_get_widget_at_not_found(mock_widget):
     assert widget is None
 
 
-def test_layout_manager_get_widget_at_overlapping_widgets(mock_widget_factory):
+def test_layout_manager_get_widget_at_overlapping_widgets(mock_widget_factory: Callable[..., Mock]) -> None:
     """Тест get_widget_at с перекрывающимися виджетами (должен вернуть верхний)."""
     manager = LayoutManager()
 
@@ -649,7 +656,7 @@ def test_layout_manager_get_widget_at_overlapping_widgets(mock_widget_factory):
     assert widget == widget2
 
 
-def test_layout_manager_get_widget_at_invisible_widget(mock_widget):
+def test_layout_manager_get_widget_at_invisible_widget(mock_widget: Mock) -> None:
     """Тест get_widget_at пропускает невидимые виджеты."""
     manager = LayoutManager()
 
@@ -662,7 +669,7 @@ def test_layout_manager_get_widget_at_invisible_widget(mock_widget):
     assert widget is None
 
 
-def test_layout_manager_get_widget_at_edge_cases(mock_widget):
+def test_layout_manager_get_widget_at_edge_cases(mock_widget: Mock) -> None:
     """Edge case: проверка границ виджета."""
     manager = LayoutManager()
 
@@ -682,7 +689,7 @@ def test_layout_manager_get_widget_at_edge_cases(mock_widget):
 # Тесты set_widget_visibility
 # ===========================
 
-def test_layout_manager_set_widget_visibility_show_hide(mock_widget):
+def test_layout_manager_set_widget_visibility_show_hide(mock_widget: Mock) -> None:
     """Тест set_widget_visibility для показа/скрытия виджета."""
     manager = LayoutManager()
 
@@ -700,7 +707,7 @@ def test_layout_manager_set_widget_visibility_show_hide(mock_widget):
     assert manager.layouts[0].visible is True
 
 
-def test_layout_manager_set_widget_visibility_nonexistent_widget(mock_widget):
+def test_layout_manager_set_widget_visibility_nonexistent_widget(mock_widget: Mock) -> None:
     """Тест set_widget_visibility для несуществующего виджета (не должно вызвать ошибку)."""
     manager = LayoutManager()
 
@@ -712,7 +719,7 @@ def test_layout_manager_set_widget_visibility_nonexistent_widget(mock_widget):
 # Тесты clear и __len__
 # ===========================
 
-def test_layout_manager_clear(mock_widget_factory):
+def test_layout_manager_clear(mock_widget_factory: Callable[..., Mock]) -> None:
     """Тест clear удаляет все виджеты."""
     manager = LayoutManager()
 
@@ -728,7 +735,7 @@ def test_layout_manager_clear(mock_widget_factory):
     assert len(manager.layouts) == 0
 
 
-def test_layout_manager_len(mock_widget_factory):
+def test_layout_manager_len(mock_widget_factory: Callable[..., Mock]) -> None:
     """Тест __len__ возвращает количество виджетов."""
     manager = LayoutManager()
 
@@ -741,7 +748,7 @@ def test_layout_manager_len(mock_widget_factory):
     assert len(manager) == 3
 
 
-def test_layout_manager_clear_empty():
+def test_layout_manager_clear_empty() -> None:
     """Edge case: clear на пустом layout."""
     manager = LayoutManager()
 
@@ -754,7 +761,7 @@ def test_layout_manager_clear_empty():
 # Integration тесты
 # ===========================
 
-def test_layout_manager_full_workflow(mock_widget_factory):
+def test_layout_manager_full_workflow(mock_widget_factory: Callable[..., Mock]) -> None:
     """Integration тест: полный workflow добавления, композиции и удаления виджетов."""
     manager = LayoutManager(width=128, height=40)
 
@@ -787,7 +794,7 @@ def test_layout_manager_full_workflow(mock_widget_factory):
     assert len(manager) == 0
 
 
-def test_layout_manager_viewport_workflow(mock_widget_factory):
+def test_layout_manager_viewport_workflow(mock_widget_factory: Callable[..., Mock]) -> None:
     """Integration тест: работа с viewport (scroll, zoom)."""
     manager = LayoutManager(
         width=128,
@@ -804,6 +811,7 @@ def test_layout_manager_viewport_workflow(mock_widget_factory):
     widget.render.assert_not_called()
 
     # Скроллим к виджету
+    assert manager.viewport is not None
     manager.viewport.scroll_to(100, 30)
     manager.composite(apply_viewport=True)
     widget.render.assert_called_once()
@@ -816,7 +824,7 @@ def test_layout_manager_viewport_workflow(mock_widget_factory):
     assert image3.size == (128, 40)
 
 
-def test_layout_manager_z_order_rendering(mock_widget_factory):
+def test_layout_manager_z_order_rendering(mock_widget_factory: Callable[..., Mock]) -> None:
     """Integration тест: проверка правильного порядка рендеринга по z_order."""
     manager = LayoutManager()
 

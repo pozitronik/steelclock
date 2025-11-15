@@ -53,7 +53,7 @@ class ConcreteWidget(Widget):
 # Тесты инициализации
 # =============================================================================
 
-def test_widget_init_default_values():
+def test_widget_init_default_values() -> None:
     """
     Тест инициализации Widget с дефолтными значениями.
 
@@ -70,7 +70,7 @@ def test_widget_init_default_values():
     assert widget.get_update_interval() == 1.0
 
 
-def test_widget_init_custom_values():
+def test_widget_init_custom_values() -> None:
     """
     Тест инициализации Widget с кастомными значениями.
 
@@ -85,7 +85,7 @@ def test_widget_init_custom_values():
     assert widget.get_update_interval() == 0.5
 
 
-def test_widget_init_zero_interval():
+def test_widget_init_zero_interval() -> None:
     """
     Тест инициализации с нулевым интервалом обновления.
 
@@ -95,7 +95,7 @@ def test_widget_init_zero_interval():
     assert widget.get_update_interval() == 0.0
 
 
-def test_widget_init_negative_interval():
+def test_widget_init_negative_interval() -> None:
     """
     Тест инициализации с отрицательным интервалом.
 
@@ -109,7 +109,7 @@ def test_widget_init_negative_interval():
 # Тесты методов размера
 # =============================================================================
 
-def test_get_preferred_size_default():
+def test_get_preferred_size_default() -> None:
     """
     Тест get_preferred_size с дефолтными размерами.
 
@@ -122,7 +122,7 @@ def test_get_preferred_size_default():
     assert height == 40
 
 
-def test_set_size_changes_dimensions():
+def test_set_size_changes_dimensions() -> None:
     """
     Тест set_size изменяет внутренние размеры виджета.
 
@@ -141,7 +141,7 @@ def test_set_size_changes_dimensions():
     assert height == 20
 
 
-def test_set_size_zero_dimensions():
+def test_set_size_zero_dimensions() -> None:
     """
     Тест set_size с нулевыми размерами.
 
@@ -154,7 +154,7 @@ def test_set_size_zero_dimensions():
     assert widget._height == 0
 
 
-def test_set_size_very_large_dimensions():
+def test_set_size_very_large_dimensions() -> None:
     """
     Тест set_size с очень большими размерами.
 
@@ -171,7 +171,7 @@ def test_set_size_very_large_dimensions():
 # Тесты строкового представления
 # =============================================================================
 
-def test_widget_str_representation():
+def test_widget_str_representation() -> None:
     """
     Тест строкового представления виджета.
 
@@ -182,7 +182,7 @@ def test_widget_str_representation():
     assert "my_widget" in str(widget)
 
 
-def test_widget_repr_representation():
+def test_widget_repr_representation() -> None:
     """
     Тест __repr__ представления виджета.
 
@@ -199,7 +199,7 @@ def test_widget_repr_representation():
 # Тесты абстрактных методов (negative tests)
 # =============================================================================
 
-def test_cannot_instantiate_abstract_widget():
+def test_cannot_instantiate_abstract_widget() -> None:
     """
     Тест что нельзя создать экземпляр абстрактного Widget напрямую.
 
@@ -215,7 +215,7 @@ def test_cannot_instantiate_abstract_widget():
 # Тесты render() конкретной реализации
 # =============================================================================
 
-def test_concrete_widget_render_returns_image():
+def test_concrete_widget_render_returns_image() -> None:
     """
     Тест что конкретная реализация render() возвращает PIL Image.
 
@@ -232,7 +232,7 @@ def test_concrete_widget_render_returns_image():
     assert image.size == (64, 32)
 
 
-def test_concrete_widget_update_no_error():
+def test_concrete_widget_update_no_error() -> None:
     """
     Тест что конкретная реализация update() выполняется без ошибок.
 

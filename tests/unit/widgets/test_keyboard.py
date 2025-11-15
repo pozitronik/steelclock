@@ -16,7 +16,7 @@ Unit tests для widgets.keyboard - виджет индикации состо�
 """
 
 import pytest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from PIL import Image
 from widgets.keyboard import KeyboardWidget
 
@@ -25,7 +25,7 @@ from widgets.keyboard import KeyboardWidget
 # Тесты инициализации
 # =============================================================================
 
-def test_keyboard_init_default_values():
+def test_keyboard_init_default_values() -> None:
     """
     Тест инициализации с дефолтными значениями.
 
@@ -46,7 +46,7 @@ def test_keyboard_init_default_values():
     assert widget.caps_lock_off == ""
 
 
-def test_keyboard_init_custom_values():
+def test_keyboard_init_custom_values() -> None:
     """
     Тест инициализации с кастомными значениями.
 
@@ -79,7 +79,7 @@ def test_keyboard_init_custom_values():
     assert widget.spacing == 5
 
 
-def test_keyboard_init_empty_symbols():
+def test_keyboard_init_empty_symbols() -> None:
     """
     Тест инициализации с пустыми символами.
 
@@ -103,7 +103,7 @@ def test_keyboard_init_empty_symbols():
 # =============================================================================
 
 @patch('widgets.keyboard.KEYBOARD_SUPPORT', False)
-def test_keyboard_get_key_state_no_support():
+def test_keyboard_get_key_state_no_support() -> None:
     """
     Тест получения состояния клавиши без поддержки.
 
@@ -115,7 +115,7 @@ def test_keyboard_get_key_state_no_support():
     assert state is False
 
 
-def test_keyboard_get_key_state_logic():
+def test_keyboard_get_key_state_logic() -> None:
     """
     Тест логики битовой маски в _get_key_state.
 
@@ -136,7 +136,7 @@ def test_keyboard_get_key_state_logic():
 # Тесты update()
 # =============================================================================
 
-def test_keyboard_update_all_locks_on():
+def test_keyboard_update_all_locks_on() -> None:
     """
     Тест update() когда все lock клавиши включены.
 
@@ -152,7 +152,7 @@ def test_keyboard_update_all_locks_on():
         assert widget._scroll_lock_state is True
 
 
-def test_keyboard_update_all_locks_off():
+def test_keyboard_update_all_locks_off() -> None:
     """
     Тест update() когда все lock клавиши выключены.
 
@@ -168,7 +168,7 @@ def test_keyboard_update_all_locks_off():
         assert widget._scroll_lock_state is False
 
 
-def test_keyboard_update_mixed_states():
+def test_keyboard_update_mixed_states() -> None:
     """
     Тест update() со смешанными состояниями клавиш.
 
@@ -176,7 +176,7 @@ def test_keyboard_update_mixed_states():
     """
     widget = KeyboardWidget()
 
-    def get_key_state_side_effect(vk_code):
+    def get_key_state_side_effect(vk_code: int) -> bool:
         if vk_code == KeyboardWidget.VK_CAPITAL:  # Caps Lock ON
             return True
         elif vk_code == KeyboardWidget.VK_NUMLOCK:  # Num Lock OFF
@@ -195,7 +195,7 @@ def test_keyboard_update_mixed_states():
 
 @patch('widgets.keyboard.platform.system')
 @patch('widgets.keyboard.KEYBOARD_SUPPORT', True)
-def test_keyboard_update_handles_error(mock_system):
+def test_keyboard_update_handles_error(mock_system: Mock) -> None:
     """
     Тест обработки ошибок во время update().
 
@@ -215,7 +215,7 @@ def test_keyboard_update_handles_error(mock_system):
 # Тесты render() общие
 # =============================================================================
 
-def test_keyboard_render_returns_image():
+def test_keyboard_render_returns_image() -> None:
     """
     Тест что render() возвращает PIL Image.
 
@@ -230,7 +230,7 @@ def test_keyboard_render_returns_image():
     assert image.size == (128, 40)
 
 
-def test_keyboard_render_with_border():
+def test_keyboard_render_with_border() -> None:
     """
     Тест рендеринга с рамкой виджета.
 
@@ -244,7 +244,7 @@ def test_keyboard_render_with_border():
     assert image is not None
 
 
-def test_keyboard_render_with_alpha_channel():
+def test_keyboard_render_with_alpha_channel() -> None:
     """
     Тест рендеринга с альфа-каналом.
 
@@ -262,7 +262,7 @@ def test_keyboard_render_with_alpha_channel():
 # Тесты render() с разными состояниями клавиш
 # =============================================================================
 
-def test_keyboard_render_all_locks_on():
+def test_keyboard_render_all_locks_on() -> None:
     """
     Тест рендеринга когда все клавиши включены.
 
@@ -285,7 +285,7 @@ def test_keyboard_render_all_locks_on():
     assert isinstance(image, Image.Image)
 
 
-def test_keyboard_render_all_locks_off():
+def test_keyboard_render_all_locks_off() -> None:
     """
     Тест рендеринга когда все клавиши выключены.
 
@@ -309,7 +309,7 @@ def test_keyboard_render_all_locks_off():
     assert isinstance(image, Image.Image)
 
 
-def test_keyboard_render_mixed_states():
+def test_keyboard_render_mixed_states() -> None:
     """
     Тест рендеринга со смешанными состояниями.
 
@@ -334,7 +334,7 @@ def test_keyboard_render_mixed_states():
     assert isinstance(image, Image.Image)
 
 
-def test_keyboard_render_with_off_symbols():
+def test_keyboard_render_with_off_symbols() -> None:
     """
     Тест рендеринга с OFF символами (не скрыты).
 
@@ -365,7 +365,7 @@ def test_keyboard_render_with_off_symbols():
 # =============================================================================
 
 @pytest.mark.parametrize("h_align", ["left", "center", "right"])
-def test_keyboard_render_horizontal_align(h_align):
+def test_keyboard_render_horizontal_align(h_align: str) -> None:
     """
     Параметризованный тест горизонтального выравнивания.
 
@@ -386,7 +386,7 @@ def test_keyboard_render_horizontal_align(h_align):
 
 
 @pytest.mark.parametrize("v_align", ["top", "center", "bottom"])
-def test_keyboard_render_vertical_align(v_align):
+def test_keyboard_render_vertical_align(v_align: str) -> None:
     """
     Параметризованный тест вертикального выравнивания.
 
@@ -410,7 +410,7 @@ def test_keyboard_render_vertical_align(v_align):
 # Тесты spacing
 # =============================================================================
 
-def test_keyboard_render_with_spacing():
+def test_keyboard_render_with_spacing() -> None:
     """
     Тест рендеринга с промежутком между индикаторами.
 
@@ -432,7 +432,7 @@ def test_keyboard_render_with_spacing():
     assert isinstance(image, Image.Image)
 
 
-def test_keyboard_render_zero_spacing():
+def test_keyboard_render_zero_spacing() -> None:
     """
     Тест рендеринга без промежутков.
 
@@ -456,7 +456,7 @@ def test_keyboard_render_zero_spacing():
 # Тесты цветов
 # =============================================================================
 
-def test_keyboard_render_different_on_off_colors():
+def test_keyboard_render_different_on_off_colors() -> None:
     """
     Тест рендеринга с разными цветами для ON/OFF.
 
@@ -482,7 +482,7 @@ def test_keyboard_render_different_on_off_colors():
 # Тесты get_update_interval
 # =============================================================================
 
-def test_keyboard_get_update_interval_default():
+def test_keyboard_get_update_interval_default() -> None:
     """
     Тест get_update_interval возвращает дефолтное значение.
 
@@ -492,7 +492,7 @@ def test_keyboard_get_update_interval_default():
     assert widget.get_update_interval() == 0.2
 
 
-def test_keyboard_get_update_interval_custom():
+def test_keyboard_get_update_interval_custom() -> None:
     """
     Тест get_update_interval возвращает кастомное значение.
 
@@ -506,7 +506,7 @@ def test_keyboard_get_update_interval_custom():
 # Тесты edge cases и стилизации
 # =============================================================================
 
-def test_keyboard_render_with_padding():
+def test_keyboard_render_with_padding() -> None:
     """
     Тест рендеринга с отступами.
 
@@ -524,7 +524,7 @@ def test_keyboard_render_with_padding():
     assert image is not None
 
 
-def test_keyboard_render_different_sizes():
+def test_keyboard_render_different_sizes() -> None:
     """
     Тест рендеринга с разными размерами виджета.
 
@@ -539,7 +539,7 @@ def test_keyboard_render_different_sizes():
         assert image.size == size
 
 
-def test_keyboard_render_single_indicator():
+def test_keyboard_render_single_indicator() -> None:
     """
     Тест рендеринга с одним индикатором.
 
@@ -560,7 +560,7 @@ def test_keyboard_render_single_indicator():
     assert isinstance(image, Image.Image)
 
 
-def test_keyboard_render_no_indicators():
+def test_keyboard_render_no_indicators() -> None:
     """
     Тест рендеринга без индикаторов.
 
@@ -581,7 +581,7 @@ def test_keyboard_render_no_indicators():
     assert isinstance(image, Image.Image)
 
 
-def test_keyboard_render_unicode_symbols():
+def test_keyboard_render_unicode_symbols() -> None:
     """
     Тест рендеринга с Unicode символами.
 
@@ -606,7 +606,7 @@ def test_keyboard_render_unicode_symbols():
 # Integration тесты
 # =============================================================================
 
-def test_keyboard_full_workflow():
+def test_keyboard_full_workflow() -> None:
     """
     Integration тест полного жизненного цикла виджета.
 
@@ -625,7 +625,7 @@ def test_keyboard_full_workflow():
     widget.set_size(128, 40)
 
     # Caps = ON, Num = OFF, Scroll = ON
-    def get_key_state_side_effect(vk_code):
+    def get_key_state_side_effect(vk_code: int) -> bool:
         if vk_code == KeyboardWidget.VK_CAPITAL:
             return True
         elif vk_code == KeyboardWidget.VK_NUMLOCK:
@@ -648,7 +648,7 @@ def test_keyboard_full_workflow():
     assert isinstance(image, Image.Image)
 
 
-def test_keyboard_multiple_updates_and_renders():
+def test_keyboard_multiple_updates_and_renders() -> None:
     """
     Integration тест с несколькими циклами update/render.
 

@@ -22,7 +22,7 @@ from core.viewport import Viewport
 # Тесты инициализации
 # =============================================================================
 
-def test_viewport_init_default_values():
+def test_viewport_init_default_values() -> None:
     """
     Тест инициализации с дефолтными значениями.
 
@@ -37,7 +37,7 @@ def test_viewport_init_default_values():
     assert vp.zoom == 1.0
 
 
-def test_viewport_init_custom_values():
+def test_viewport_init_custom_values() -> None:
     """
     Тест инициализации с кастомными значениями.
 
@@ -52,7 +52,7 @@ def test_viewport_init_custom_values():
     assert vp.zoom == 2.0
 
 
-def test_viewport_init_zero_size():
+def test_viewport_init_zero_size() -> None:
     """
     Edge case: Инициализация с нулевым размером.
 
@@ -68,7 +68,7 @@ def test_viewport_init_zero_size():
 # Тесты scroll_to
 # =============================================================================
 
-def test_viewport_scroll_to_positive_coords():
+def test_viewport_scroll_to_positive_coords() -> None:
     """
     Тест scroll_to с положительными координатами.
 
@@ -81,7 +81,7 @@ def test_viewport_scroll_to_positive_coords():
     assert vp.offset_y == 200
 
 
-def test_viewport_scroll_to_zero():
+def test_viewport_scroll_to_zero() -> None:
     """
     Тест scroll_to к началу координат.
 
@@ -94,7 +94,7 @@ def test_viewport_scroll_to_zero():
     assert vp.offset_y == 0
 
 
-def test_viewport_scroll_to_negative_coords():
+def test_viewport_scroll_to_negative_coords() -> None:
     """
     Edge case: scroll_to с отрицательными координатами.
 
@@ -111,7 +111,7 @@ def test_viewport_scroll_to_negative_coords():
 # Тесты scroll_by
 # =============================================================================
 
-def test_viewport_scroll_by_positive_delta():
+def test_viewport_scroll_by_positive_delta() -> None:
     """
     Тест scroll_by с положительным смещением (вправо и вниз).
 
@@ -124,7 +124,7 @@ def test_viewport_scroll_by_positive_delta():
     assert vp.offset_y == 30
 
 
-def test_viewport_scroll_by_negative_delta():
+def test_viewport_scroll_by_negative_delta() -> None:
     """
     Тест scroll_by с отрицательным смещением (влево и вверх).
 
@@ -137,7 +137,7 @@ def test_viewport_scroll_by_negative_delta():
     assert vp.offset_y == 150
 
 
-def test_viewport_scroll_by_zero():
+def test_viewport_scroll_by_zero() -> None:
     """
     Edge case: scroll_by с нулевым смещением.
 
@@ -150,7 +150,7 @@ def test_viewport_scroll_by_zero():
     assert vp.offset_y == 100
 
 
-def test_viewport_scroll_by_multiple_times():
+def test_viewport_scroll_by_multiple_times() -> None:
     """
     Тест множественных последовательных scroll_by.
 
@@ -169,7 +169,7 @@ def test_viewport_scroll_by_multiple_times():
 # Тесты center_on
 # =============================================================================
 
-def test_viewport_center_on_point():
+def test_viewport_center_on_point() -> None:
     """
     Тест center_on для центрирования на точке.
 
@@ -184,7 +184,7 @@ def test_viewport_center_on_point():
     assert vp.offset_y == 80
 
 
-def test_viewport_center_on_origin():
+def test_viewport_center_on_origin() -> None:
     """
     Тест center_on в начале координат.
 
@@ -199,7 +199,7 @@ def test_viewport_center_on_origin():
     assert vp.offset_y == -20
 
 
-def test_viewport_center_on_odd_dimensions():
+def test_viewport_center_on_odd_dimensions() -> None:
     """
     Edge case: center_on с нечётными размерами viewport.
 
@@ -218,7 +218,7 @@ def test_viewport_center_on_odd_dimensions():
 # Тесты set_zoom
 # =============================================================================
 
-def test_viewport_set_zoom_normal_value():
+def test_viewport_set_zoom_normal_value() -> None:
     """
     Тест set_zoom с нормальным значением.
 
@@ -230,7 +230,7 @@ def test_viewport_set_zoom_normal_value():
     assert vp.zoom == 2.0
 
 
-def test_viewport_set_zoom_below_minimum():
+def test_viewport_set_zoom_below_minimum() -> None:
     """
     Edge case: set_zoom со значением < 0.1.
 
@@ -242,7 +242,7 @@ def test_viewport_set_zoom_below_minimum():
     assert vp.zoom == 0.1
 
 
-def test_viewport_set_zoom_above_maximum():
+def test_viewport_set_zoom_above_maximum() -> None:
     """
     Edge case: set_zoom со значением > 10.0.
 
@@ -254,7 +254,7 @@ def test_viewport_set_zoom_above_maximum():
     assert vp.zoom == 10.0
 
 
-def test_viewport_set_zoom_exactly_minimum():
+def test_viewport_set_zoom_exactly_minimum() -> None:
     """
     Тест set_zoom с точным минимумом.
 
@@ -266,7 +266,7 @@ def test_viewport_set_zoom_exactly_minimum():
     assert vp.zoom == 0.1
 
 
-def test_viewport_set_zoom_exactly_maximum():
+def test_viewport_set_zoom_exactly_maximum() -> None:
     """
     Тест set_zoom с точным максимумом.
 
@@ -278,7 +278,7 @@ def test_viewport_set_zoom_exactly_maximum():
     assert vp.zoom == 10.0
 
 
-def test_viewport_set_zoom_negative():
+def test_viewport_set_zoom_negative() -> None:
     """
     Edge case: set_zoom с отрицательным значением.
 
@@ -294,7 +294,7 @@ def test_viewport_set_zoom_negative():
 # Тесты zoom_in
 # =============================================================================
 
-def test_viewport_zoom_in_default_step():
+def test_viewport_zoom_in_default_step() -> None:
     """
     Тест zoom_in с дефолтным шагом (0.1).
 
@@ -306,7 +306,7 @@ def test_viewport_zoom_in_default_step():
     assert vp.zoom == pytest.approx(1.1)
 
 
-def test_viewport_zoom_in_custom_step():
+def test_viewport_zoom_in_custom_step() -> None:
     """
     Тест zoom_in с кастомным шагом.
 
@@ -318,7 +318,7 @@ def test_viewport_zoom_in_custom_step():
     assert vp.zoom == pytest.approx(1.5)
 
 
-def test_viewport_zoom_in_respects_maximum():
+def test_viewport_zoom_in_respects_maximum() -> None:
     """
     Edge case: zoom_in не должен превысить максимум.
 
@@ -330,7 +330,7 @@ def test_viewport_zoom_in_respects_maximum():
     assert vp.zoom == 10.0
 
 
-def test_viewport_zoom_in_multiple_times():
+def test_viewport_zoom_in_multiple_times() -> None:
     """
     Тест множественных zoom_in.
 
@@ -348,7 +348,7 @@ def test_viewport_zoom_in_multiple_times():
 # Тесты zoom_out
 # =============================================================================
 
-def test_viewport_zoom_out_default_step():
+def test_viewport_zoom_out_default_step() -> None:
     """
     Тест zoom_out с дефолтным шагом (0.1).
 
@@ -360,7 +360,7 @@ def test_viewport_zoom_out_default_step():
     assert vp.zoom == pytest.approx(0.9)
 
 
-def test_viewport_zoom_out_custom_step():
+def test_viewport_zoom_out_custom_step() -> None:
     """
     Тест zoom_out с кастомным шагом.
 
@@ -372,7 +372,7 @@ def test_viewport_zoom_out_custom_step():
     assert vp.zoom == pytest.approx(1.5)
 
 
-def test_viewport_zoom_out_respects_minimum():
+def test_viewport_zoom_out_respects_minimum() -> None:
     """
     Edge case: zoom_out не должен уйти ниже минимума.
 
@@ -384,7 +384,7 @@ def test_viewport_zoom_out_respects_minimum():
     assert vp.zoom == 0.1
 
 
-def test_viewport_zoom_out_multiple_times():
+def test_viewport_zoom_out_multiple_times() -> None:
     """
     Тест множественных zoom_out.
 
@@ -402,7 +402,7 @@ def test_viewport_zoom_out_multiple_times():
 # Тесты reset
 # =============================================================================
 
-def test_viewport_reset_from_custom_state():
+def test_viewport_reset_from_custom_state() -> None:
     """
     Тест reset после изменения состояния.
 
@@ -416,7 +416,7 @@ def test_viewport_reset_from_custom_state():
     assert vp.zoom == 1.0
 
 
-def test_viewport_reset_preserves_size():
+def test_viewport_reset_preserves_size() -> None:
     """
     Тест что reset не меняет размер viewport.
 
@@ -432,7 +432,7 @@ def test_viewport_reset_preserves_size():
     assert vp.zoom == 1.0
 
 
-def test_viewport_reset_on_default_state():
+def test_viewport_reset_on_default_state() -> None:
     """
     Edge case: reset на уже сброшенном viewport.
 
@@ -450,7 +450,7 @@ def test_viewport_reset_on_default_state():
 # Тесты get_visible_region
 # =============================================================================
 
-def test_viewport_get_visible_region_default():
+def test_viewport_get_visible_region_default() -> None:
     """
     Тест get_visible_region с дефолтным viewport.
 
@@ -462,7 +462,7 @@ def test_viewport_get_visible_region_default():
     assert region == (0, 0, 128, 40)
 
 
-def test_viewport_get_visible_region_with_offset():
+def test_viewport_get_visible_region_with_offset() -> None:
     """
     Тест get_visible_region с offset.
 
@@ -474,7 +474,7 @@ def test_viewport_get_visible_region_with_offset():
     assert region == (100, 50, 228, 90)
 
 
-def test_viewport_get_visible_region_negative_offset():
+def test_viewport_get_visible_region_negative_offset() -> None:
     """
     Edge case: get_visible_region с отрицательным offset.
 
@@ -490,7 +490,7 @@ def test_viewport_get_visible_region_negative_offset():
 # Тесты constrain_to_canvas
 # =============================================================================
 
-def test_viewport_constrain_to_canvas_no_change():
+def test_viewport_constrain_to_canvas_no_change() -> None:
     """
     Тест constrain_to_canvas когда viewport уже в пределах.
 
@@ -503,7 +503,7 @@ def test_viewport_constrain_to_canvas_no_change():
     assert vp.offset_y == 50
 
 
-def test_viewport_constrain_to_canvas_clamp_right():
+def test_viewport_constrain_to_canvas_clamp_right() -> None:
     """
     Тест constrain_to_canvas когда viewport выходит за правый край.
 
@@ -517,7 +517,7 @@ def test_viewport_constrain_to_canvas_clamp_right():
     assert vp.offset_y == 50
 
 
-def test_viewport_constrain_to_canvas_clamp_bottom():
+def test_viewport_constrain_to_canvas_clamp_bottom() -> None:
     """
     Тест constrain_to_canvas когда viewport выходит за нижний край.
 
@@ -531,7 +531,7 @@ def test_viewport_constrain_to_canvas_clamp_bottom():
     assert vp.offset_y == 260
 
 
-def test_viewport_constrain_to_canvas_clamp_left():
+def test_viewport_constrain_to_canvas_clamp_left() -> None:
     """
     Тест constrain_to_canvas когда viewport выходит за левый край.
 
@@ -544,7 +544,7 @@ def test_viewport_constrain_to_canvas_clamp_left():
     assert vp.offset_y == 50
 
 
-def test_viewport_constrain_to_canvas_clamp_top():
+def test_viewport_constrain_to_canvas_clamp_top() -> None:
     """
     Тест constrain_to_canvas когда viewport выходит за верхний край.
 
@@ -557,7 +557,7 @@ def test_viewport_constrain_to_canvas_clamp_top():
     assert vp.offset_y == 0
 
 
-def test_viewport_constrain_to_canvas_larger_than_canvas():
+def test_viewport_constrain_to_canvas_larger_than_canvas() -> None:
     """
     Edge case: viewport больше чем canvas.
 
@@ -571,7 +571,7 @@ def test_viewport_constrain_to_canvas_larger_than_canvas():
     assert vp.offset_y == 0
 
 
-def test_viewport_constrain_to_canvas_equal_size():
+def test_viewport_constrain_to_canvas_equal_size() -> None:
     """
     Edge case: viewport равен размеру canvas.
 
@@ -588,7 +588,7 @@ def test_viewport_constrain_to_canvas_equal_size():
 # Тесты is_point_visible
 # =============================================================================
 
-def test_viewport_is_point_visible_inside():
+def test_viewport_is_point_visible_inside() -> None:
     """
     Тест is_point_visible когда точка внутри viewport.
 
@@ -599,7 +599,7 @@ def test_viewport_is_point_visible_inside():
     assert vp.is_point_visible(150, 70) is True
 
 
-def test_viewport_is_point_visible_outside_left():
+def test_viewport_is_point_visible_outside_left() -> None:
     """
     Тест is_point_visible когда точка левее viewport.
 
@@ -610,7 +610,7 @@ def test_viewport_is_point_visible_outside_left():
     assert vp.is_point_visible(50, 70) is False
 
 
-def test_viewport_is_point_visible_outside_right():
+def test_viewport_is_point_visible_outside_right() -> None:
     """
     Тест is_point_visible когда точка правее viewport.
 
@@ -622,7 +622,7 @@ def test_viewport_is_point_visible_outside_right():
     assert vp.is_point_visible(230, 70) is False
 
 
-def test_viewport_is_point_visible_outside_top():
+def test_viewport_is_point_visible_outside_top() -> None:
     """
     Тест is_point_visible когда точка выше viewport.
 
@@ -633,7 +633,7 @@ def test_viewport_is_point_visible_outside_top():
     assert vp.is_point_visible(150, 20) is False
 
 
-def test_viewport_is_point_visible_outside_bottom():
+def test_viewport_is_point_visible_outside_bottom() -> None:
     """
     Тест is_point_visible когда точка ниже viewport.
 
@@ -645,7 +645,7 @@ def test_viewport_is_point_visible_outside_bottom():
     assert vp.is_point_visible(150, 95) is False
 
 
-def test_viewport_is_point_visible_on_left_edge():
+def test_viewport_is_point_visible_on_left_edge() -> None:
     """
     Edge case: точка на левом краю viewport.
 
@@ -656,7 +656,7 @@ def test_viewport_is_point_visible_on_left_edge():
     assert vp.is_point_visible(100, 70) is True
 
 
-def test_viewport_is_point_visible_on_right_edge():
+def test_viewport_is_point_visible_on_right_edge() -> None:
     """
     Edge case: точка на правом краю viewport.
 
@@ -672,7 +672,7 @@ def test_viewport_is_point_visible_on_right_edge():
 # Тесты is_rect_visible
 # =============================================================================
 
-def test_viewport_is_rect_visible_fully_inside():
+def test_viewport_is_rect_visible_fully_inside() -> None:
     """
     Тест is_rect_visible когда прямоугольник полностью внутри.
 
@@ -683,7 +683,7 @@ def test_viewport_is_rect_visible_fully_inside():
     assert vp.is_rect_visible(110, 60, 20, 10) is True
 
 
-def test_viewport_is_rect_visible_partially_left():
+def test_viewport_is_rect_visible_partially_left() -> None:
     """
     Тест is_rect_visible когда прямоугольник частично слева.
 
@@ -695,7 +695,7 @@ def test_viewport_is_rect_visible_partially_left():
     assert vp.is_rect_visible(80, 60, 40, 10) is True
 
 
-def test_viewport_is_rect_visible_partially_right():
+def test_viewport_is_rect_visible_partially_right() -> None:
     """
     Тест is_rect_visible когда прямоугольник частично справа.
 
@@ -707,7 +707,7 @@ def test_viewport_is_rect_visible_partially_right():
     assert vp.is_rect_visible(220, 60, 20, 10) is True
 
 
-def test_viewport_is_rect_visible_fully_outside_left():
+def test_viewport_is_rect_visible_fully_outside_left() -> None:
     """
     Тест is_rect_visible когда прямоугольник полностью слева.
 
@@ -719,7 +719,7 @@ def test_viewport_is_rect_visible_fully_outside_left():
     assert vp.is_rect_visible(50, 60, 40, 10) is False
 
 
-def test_viewport_is_rect_visible_fully_outside_right():
+def test_viewport_is_rect_visible_fully_outside_right() -> None:
     """
     Тест is_rect_visible когда прямоугольник полностью справа.
 
@@ -731,7 +731,7 @@ def test_viewport_is_rect_visible_fully_outside_right():
     assert vp.is_rect_visible(230, 60, 20, 10) is False
 
 
-def test_viewport_is_rect_visible_fully_outside_top():
+def test_viewport_is_rect_visible_fully_outside_top() -> None:
     """
     Тест is_rect_visible когда прямоугольник полностью сверху.
 
@@ -743,7 +743,7 @@ def test_viewport_is_rect_visible_fully_outside_top():
     assert vp.is_rect_visible(150, 20, 20, 20) is False
 
 
-def test_viewport_is_rect_visible_fully_outside_bottom():
+def test_viewport_is_rect_visible_fully_outside_bottom() -> None:
     """
     Тест is_rect_visible когда прямоугольник полностью снизу.
 
@@ -755,7 +755,7 @@ def test_viewport_is_rect_visible_fully_outside_bottom():
     assert vp.is_rect_visible(150, 100, 20, 20) is False
 
 
-def test_viewport_is_rect_visible_larger_than_viewport():
+def test_viewport_is_rect_visible_larger_than_viewport() -> None:
     """
     Edge case: прямоугольник больше viewport.
 
@@ -767,7 +767,7 @@ def test_viewport_is_rect_visible_larger_than_viewport():
     assert vp.is_rect_visible(0, 0, 1000, 1000) is True
 
 
-def test_viewport_is_rect_visible_zero_size():
+def test_viewport_is_rect_visible_zero_size() -> None:
     """
     Edge case: прямоугольник нулевого размера (точка).
 
@@ -786,7 +786,7 @@ def test_viewport_is_rect_visible_zero_size():
 # Тесты __repr__
 # =============================================================================
 
-def test_viewport_repr_default():
+def test_viewport_repr_default() -> None:
     """
     Тест строкового представления viewport.
 
@@ -801,7 +801,7 @@ def test_viewport_repr_default():
     assert "1.00" in repr_str
 
 
-def test_viewport_repr_custom():
+def test_viewport_repr_custom() -> None:
     """
     Тест __repr__ с кастомными значениями.
 
@@ -819,7 +819,7 @@ def test_viewport_repr_custom():
 # Integration тесты
 # =============================================================================
 
-def test_viewport_full_workflow():
+def test_viewport_full_workflow() -> None:
     """
     Integration тест полного жизненного цикла viewport.
 
@@ -858,7 +858,7 @@ def test_viewport_full_workflow():
     assert vp.zoom == 1.0
 
 
-def test_viewport_scrolling_and_visibility():
+def test_viewport_scrolling_and_visibility() -> None:
     """
     Integration тест scrolling и проверки видимости.
 
@@ -877,7 +877,7 @@ def test_viewport_scrolling_and_visibility():
     assert vp.is_point_visible(164, 20) is True
 
 
-def test_viewport_zoom_bounds():
+def test_viewport_zoom_bounds() -> None:
     """
     Integration тест границ zoom.
 

@@ -32,7 +32,7 @@ from utils.bitmap import (
 # Тесты resolve_font_path
 # =============================================================================
 
-def test_resolve_font_path_none_input():
+def test_resolve_font_path_none_input() -> None:
     """
     Тест resolve_font_path с None входом.
 
@@ -42,7 +42,7 @@ def test_resolve_font_path_none_input():
     assert result is None
 
 
-def test_resolve_font_path_empty_string():
+def test_resolve_font_path_empty_string() -> None:
     """
     Тест resolve_font_path с пустой строкой.
 
@@ -52,7 +52,7 @@ def test_resolve_font_path_empty_string():
     assert result is None
 
 
-def test_resolve_font_path_existing_file():
+def test_resolve_font_path_existing_file() -> None:
     """
     Тест resolve_font_path когда файл существует.
 
@@ -67,7 +67,7 @@ def test_resolve_font_path_existing_file():
         mock_isfile.assert_called_once_with("/path/to/font.ttf")
 
 
-def test_resolve_font_path_known_font_name():
+def test_resolve_font_path_known_font_name() -> None:
     """
     Тест resolve_font_path с известным именем шрифта из mapping.
 
@@ -83,7 +83,7 @@ def test_resolve_font_path_known_font_name():
         assert "arial.ttf" in result.lower()
 
 
-def test_resolve_font_path_unknown_font():
+def test_resolve_font_path_unknown_font() -> None:
     """
     Тест resolve_font_path с неизвестным именем шрифта.
 
@@ -102,7 +102,7 @@ def test_resolve_font_path_unknown_font():
         assert result is None
 
 
-def test_resolve_font_path_case_insensitive():
+def test_resolve_font_path_case_insensitive() -> None:
     """
     Тест resolve_font_path регистронезависим.
 
@@ -121,7 +121,7 @@ def test_resolve_font_path_case_insensitive():
 # Тесты load_font
 # =============================================================================
 
-def test_load_font_default_none():
+def test_load_font_default_none() -> None:
     """
     Тест load_font с None (должен загрузить default font).
 
@@ -138,7 +138,7 @@ def test_load_font_default_none():
         assert isinstance(result, Mock)
 
 
-def test_load_font_with_valid_path():
+def test_load_font_with_valid_path() -> None:
     """
     Тест load_font с валидным путём к шрифту.
 
@@ -158,7 +158,7 @@ def test_load_font_with_valid_path():
         assert result == mock_font
 
 
-def test_load_font_fallback_on_error():
+def test_load_font_fallback_on_error() -> None:
     """
     Тест load_font fallback на default при ошибке загрузки.
 
@@ -183,7 +183,7 @@ def test_load_font_fallback_on_error():
 # Тесты image_to_bytes
 # =============================================================================
 
-def test_image_to_bytes_standard_size():
+def test_image_to_bytes_standard_size() -> None:
     """
     Тест image_to_bytes с стандартным размером 128x40.
 
@@ -202,7 +202,7 @@ def test_image_to_bytes_standard_size():
     assert all(0 <= byte <= 255 for byte in result)
 
 
-def test_image_to_bytes_all_black():
+def test_image_to_bytes_all_black() -> None:
     """
     Тест image_to_bytes с полностью чёрным изображением.
 
@@ -215,7 +215,7 @@ def test_image_to_bytes_all_black():
     assert all(byte == 0 for byte in result)
 
 
-def test_image_to_bytes_all_white():
+def test_image_to_bytes_all_white() -> None:
     """
     Тест image_to_bytes с полностью белым изображением.
 
@@ -228,7 +228,7 @@ def test_image_to_bytes_all_white():
     assert all(byte == 255 for byte in result)
 
 
-def test_image_to_bytes_auto_resize():
+def test_image_to_bytes_auto_resize() -> None:
     """
     Тест image_to_bytes автоматически ресайзит изображение.
 
@@ -242,7 +242,7 @@ def test_image_to_bytes_auto_resize():
     assert len(result) == 640
 
 
-def test_image_to_bytes_rgb_to_mono_conversion():
+def test_image_to_bytes_rgb_to_mono_conversion() -> None:
     """
     Тест image_to_bytes конвертирует RGB в monochrome.
 
@@ -256,7 +256,7 @@ def test_image_to_bytes_rgb_to_mono_conversion():
     assert isinstance(result, list)
 
 
-def test_image_to_bytes_custom_dimensions():
+def test_image_to_bytes_custom_dimensions() -> None:
     """
     Тест image_to_bytes с кастомными размерами.
 
@@ -270,7 +270,7 @@ def test_image_to_bytes_custom_dimensions():
     assert len(result) == expected_size
 
 
-def test_image_to_bytes_invalid_size_raises_error():
+def test_image_to_bytes_invalid_size_raises_error() -> None:
     """
     Тест image_to_bytes с несовместимым размером вызывает ValueError.
 
@@ -289,7 +289,7 @@ def test_image_to_bytes_invalid_size_raises_error():
 # Тесты create_blank_image
 # =============================================================================
 
-def test_create_blank_image_default():
+def test_create_blank_image_default() -> None:
     """
     Тест create_blank_image с дефолтными параметрами.
 
@@ -305,7 +305,7 @@ def test_create_blank_image_default():
     assert all(p == 0 for p in pixels)
 
 
-def test_create_blank_image_white():
+def test_create_blank_image_white() -> None:
     """
     Тест create_blank_image с белым цветом.
 
@@ -317,7 +317,7 @@ def test_create_blank_image_white():
     assert all(p == 255 for p in pixels)
 
 
-def test_create_blank_image_with_alpha():
+def test_create_blank_image_with_alpha() -> None:
     """
     Тест create_blank_image с альфа-каналом.
 
@@ -329,7 +329,7 @@ def test_create_blank_image_with_alpha():
     assert img.size == (128, 40)
 
 
-def test_create_blank_image_custom_size():
+def test_create_blank_image_custom_size() -> None:
     """
     Тест create_blank_image с кастомными размерами.
 
@@ -340,7 +340,7 @@ def test_create_blank_image_custom_size():
     assert img.size == (64, 32)
 
 
-def test_create_blank_image_zero_size():
+def test_create_blank_image_zero_size() -> None:
     """
     Тест create_blank_image с нулевым размером.
 
@@ -355,7 +355,7 @@ def test_create_blank_image_zero_size():
 # Тесты draw_text
 # =============================================================================
 
-def test_draw_text_basic():
+def test_draw_text_basic() -> None:
     """
     Тест draw_text рисует текст на изображении.
 
@@ -372,7 +372,7 @@ def test_draw_text_basic():
 
 
 @pytest.mark.skip(reason="PIL font mocking requires complex getmask2() implementation")
-def test_draw_text_with_font_and_color():
+def test_draw_text_with_font_and_color() -> None:
     """
     Тест draw_text с кастомным шрифтом и цветом.
 
@@ -397,7 +397,7 @@ def test_draw_text_with_font_and_color():
 # Тесты draw_centered_text
 # =============================================================================
 
-def test_draw_centered_text():
+def test_draw_centered_text() -> None:
     """
     Тест draw_centered_text центрирует текст.
 
@@ -411,7 +411,7 @@ def test_draw_centered_text():
     assert any(p != 0 for p in pixels)
 
 
-def test_draw_centered_text_with_offset():
+def test_draw_centered_text_with_offset() -> None:
     """
     Тест draw_centered_text с вертикальным смещением.
 
@@ -436,7 +436,7 @@ def test_draw_centered_text_with_offset():
     ("left", "bottom"),
     ("right", "top"),
 ])
-def test_draw_aligned_text_all_alignments(h_align, v_align):
+def test_draw_aligned_text_all_alignments(h_align: str, v_align: str) -> None:
     """
     Тест draw_aligned_text со всеми комбинациями выравнивания.
 
@@ -455,7 +455,7 @@ def test_draw_aligned_text_all_alignments(h_align, v_align):
     assert img is not None
 
 
-def test_draw_aligned_text_with_padding():
+def test_draw_aligned_text_with_padding() -> None:
     """
     Тест draw_aligned_text с отступами.
 
@@ -472,7 +472,7 @@ def test_draw_aligned_text_with_padding():
 # Тесты draw_progress_bar
 # =============================================================================
 
-def test_draw_progress_bar_empty():
+def test_draw_progress_bar_empty() -> None:
     """
     Тест draw_progress_bar с 0% заполнения.
 
@@ -486,7 +486,7 @@ def test_draw_progress_bar_empty():
     assert img is not None
 
 
-def test_draw_progress_bar_full():
+def test_draw_progress_bar_full() -> None:
     """
     Тест draw_progress_bar с 100% заполнения.
 
@@ -501,7 +501,7 @@ def test_draw_progress_bar_full():
     assert any(p == 255 for p in pixels)
 
 
-def test_draw_progress_bar_half():
+def test_draw_progress_bar_half() -> None:
     """
     Тест draw_progress_bar с 50% заполнения.
 
@@ -514,7 +514,7 @@ def test_draw_progress_bar_half():
     assert img is not None
 
 
-def test_draw_progress_bar_no_border():
+def test_draw_progress_bar_no_border() -> None:
     """
     Тест draw_progress_bar без рамки.
 
@@ -527,7 +527,7 @@ def test_draw_progress_bar_no_border():
     assert img is not None
 
 
-def test_draw_progress_bar_over_100_percent():
+def test_draw_progress_bar_over_100_percent() -> None:
     """
     Тест draw_progress_bar с >100% заполнения.
 
@@ -541,7 +541,7 @@ def test_draw_progress_bar_over_100_percent():
     assert img is not None
 
 
-def test_draw_progress_bar_negative_percentage():
+def test_draw_progress_bar_negative_percentage() -> None:
     """
     Тест draw_progress_bar с отрицательным процентом.
 
