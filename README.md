@@ -1,7 +1,7 @@
 # SteelClock
 
 [![CI](https://github.com/pozitronik/steelclock/actions/workflows/ci.yml/badge.svg)](https://github.com/pozitronik/steelclock/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/pozitronik/steelclock/branch/main/graph/badge.svg)](https://codecov.io/gh/pozitronik/steelclock)
+[![codecov](https://codecov.io/gh/pozitronik/steelclock/branch/master/graph/badge.svg)](https://codecov.io/gh/pozitronik/steelclock)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 Customizable display manager for SteelSeries devices.
