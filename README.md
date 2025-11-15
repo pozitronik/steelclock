@@ -1,8 +1,12 @@
 # SteelClock
 
-OLED display manager for SteelSeries APEX 7 keyboard (128x40 monochrome display).
+[![CI](https://github.com/pozitonik/steelclock/workflows/CI/badge.svg)](https://github.com/pozitonik/steelclock/actions)
+[![codecov](https://codecov.io/gh/pozitonik/steelclock/branch/main/graph/badge.svg)](https://codecov.io/gh/pozitonik/steelclock)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-Transform your keyboard's OLED into a powerful system monitoring dashboard with customizable widgets, layouts, and real-time updates.
+Customizable OLED display manager for SteelSeries devices.
+
+Transform your SteelSeries OLED display into a powerful real-time system monitoring dashboard with fully customizable widgets, layouts, and styling.
 
 ## Features
 
@@ -14,17 +18,30 @@ Transform your keyboard's OLED into a powerful system monitoring dashboard with 
 - **Real-time Monitoring**: Independent update rates for each widget
 - **JSON Configuration**: Validated configuration with IDE autocomplete support
 
+## Hardware Compatibility
+
+SteelClock works with SteelSeries devices that have OLED displays and support the GameSense SDK:
+
+- **Tested**: SteelSeries Apex 7 (128x40 monochrome display)
+- **Should work**: Any SteelSeries device with OLED screen support
+
+The default configuration targets 128x40 displays but can be adjusted for different resolutions.
+
 ## Requirements
 
-- **Hardware**: SteelSeries APEX 7 keyboard with OLED display
+- **Hardware**: SteelSeries device with OLED display
 - **Software**:
-  - Python 3.8 or higher
+  - Python 3.12 or higher
   - SteelSeries Engine 3 (must be running)
   - Windows (SteelSeries Engine requirement)
 
 ## Installation
 
-1. Clone or download this repository
+1. Clone this repository:
+
+```bash
+git clone https://github.com/pozitonik/steelclock.git
+```
 
 2. Install Python dependencies:
 
@@ -32,56 +49,33 @@ Transform your keyboard's OLED into a powerful system monitoring dashboard with 
 pip install -r requirements.txt
 ```
 
-Or install manually:
-
-```bash
-pip install requests Pillow psutil
-```
-
 ## Quick Start
 
-1. **Choose a configuration** from the `configs/` folder or create your own:
-   - `config_complete_dashboard.json` - Full system monitoring dashboard
-   - `config_keyboard_demo.json` - Keyboard indicator example
-   - `config_network_demo.json` - Network monitoring
-   - See `configs/` folder for more examples
+1. Ensure SteelSeries Engine 3 is installed and running
 
-2. **Run SteelClock**:
-
-```bash
-python main.py configs/config_complete_dashboard.json
-```
-
-Or use the default config:
+2. Run SteelClock with the default configuration:
 
 ```bash
 python main.py
 ```
 
-3. **Stop SteelClock**: Press `Ctrl+C`
+Or specify a custom configuration:
+
+```bash
+python main.py config.json
+```
+
+3. Stop SteelClock: Press `Ctrl+C`
 
 ## Configuration
 
-SteelClock uses JSON configuration files. The configuration includes a **JSON Schema** for validation and IDE autocomplete.
-
-### Using JSON Schema in Your IDE
-
-To enable autocomplete and validation, add this line at the top of your config file:
-
-```json
-{
-  "$schema": "./config.schema.json",
-  "game_name": "STEELCLOCK",
-  ...
-}
-```
-
-Supported IDEs: VS Code, JetBrains IDEs, Visual Studio, and any editor with JSON Schema support.
+SteelClock uses JSON configuration files with JSON Schema support for validation and IDE autocomplete.
 
 ### Basic Configuration Structure
 
 ```json
 {
+  "$schema": "./configs/config.schema.json",
   "game_name": "STEELCLOCK",
   "game_display_name": "SteelClock",
   "refresh_rate_ms": 100,
@@ -174,7 +168,7 @@ Monitors network I/O (RX/TX).
 {
   "type": "network",
   "properties": {
-    "interface": "eth0",
+    "interface": "Ethernet",
     "display_mode": "graph",
     "max_speed_mbps": -1
   }
@@ -189,7 +183,6 @@ Monitors disk I/O (read/write).
 
 **Disk Names**:
 - **Windows**: `PhysicalDrive0`, `PhysicalDrive1`, ...
-- **Linux**: `sda`, `sdb`, `nvme0n1`, ...
 - Use `null` for auto-selection
 
 **Example**:
@@ -226,61 +219,13 @@ Shows Caps Lock, Num Lock, Scroll Lock status.
 }
 ```
 
-## Common Configuration Patterns
-
-### Dashboard Layout
-
-Split the display into sections for different widgets:
-
-```json
-"widgets": [
-  {"type": "clock", "position": {"x": 0, "y": 0, "w": 96, "h": 8}},
-  {"type": "keyboard", "position": {"x": 96, "y": 0, "w": 32, "h": 8}},
-  {"type": "cpu", "position": {"x": 0, "y": 8, "w": 32, "h": 8}},
-  {"type": "memory", "position": {"x": 32, "y": 8, "w": 32, "h": 8}},
-  {"type": "disk", "position": {"x": 64, "y": 8, "w": 64, "h": 8}},
-  {"type": "network", "position": {"x": 0, "y": 16, "w": 128, "h": 24}}
-]
-```
-
-### Transparent Overlays
-
-Use `background_opacity` to blend widgets:
-
-```json
-"style": {
-  "background_color": 0,
-  "background_opacity": 128
-}
-```
-
-### Dynamic Scaling
-
-Use `-1` for auto-scaling graphs:
-
-```json
-"properties": {
-  "display_mode": "graph",
-  "max_speed_mbps": -1
-}
-```
-
-### Emoji Support
-
-Use emoji-compatible fonts for special characters:
-
-```json
-"properties": {
-  "font": "Segoe UI Emoji",
-  "caps_lock_on": "🔼"
-}
-```
-
 ## Fonts
 
-Supported fonts include:
+The application automatically downloads a bundled TrueType font (Fixedsys Excelsior) on first use for cross-platform compatibility.
+
+Supported system fonts include:
 - **Standard**: Arial, Consolas, Courier New, Times New Roman, Verdana
-- **Emoji**: Segoe UI Emoji (Windows), Noto Color Emoji (Linux)
+- **Emoji**: Segoe UI Emoji (Windows)
 - **Custom**: Specify path to any TTF file
 
 ## Troubleshooting
@@ -297,12 +242,12 @@ Supported fonts include:
 ### Display Not Updating
 
 **Possible causes**:
-- Keyboard not connected or not recognized
+- Device not connected or not recognized
 - SteelSeries Engine not running
-- Wrong keyboard model (must be APEX 7)
+- Device doesn't support GameSense SDK
 
 **Solution**:
-- Reconnect keyboard
+- Reconnect device
 - Restart SteelSeries Engine
 - Check logs for errors
 
@@ -315,27 +260,15 @@ Supported fonts include:
 pip install -r requirements.txt
 ```
 
-### Emoji Not Displaying
-
-**Problem**: Emojis show as empty boxes
-
-**Solution**: Use emoji-compatible font:
-```json
-"properties": {
-  "font": "Segoe UI Emoji"
-}
-```
-
 ### Network Interface Not Found
 
 **Windows**: Use interface name from Network Connections (e.g., "Ethernet", "Wi-Fi")
-**Linux**: Use interface name from `ip addr` (e.g., "eth0", "wlan0")
 
 **Auto-detect**: Set `"interface": null`
 
 ### Disk Not Found
 
-**Windows**: Run SteelClock once to see available disks in logs:
+Run SteelClock once to see available disks in logs:
 ```
 Available disks: PhysicalDrive0, PhysicalDrive1
 ```
@@ -345,46 +278,29 @@ Use the disk name from logs in config:
 "disk_name": "PhysicalDrive0"
 ```
 
-### Virtual Canvas (Scrolling)
+### Running Tests
 
-Create a larger virtual canvas:
+```bash
+# Run all tests
+python -m pytest
 
-```json
-"layout": {
-  "type": "viewport",
-  "virtual_width": 256,
-  "virtual_height": 80
-}
+# Run with coverage
+python -m pytest --cov=. --cov-report=html
+
+# Run specific test file
+python -m pytest tests/unit/widgets/test_cpu.py
 ```
 
-### Z-Order Layering
+### Type Checking
 
-Stack widgets with `z_order`:
-
-```json
-"position": {
-  "x": 0, "y": 0, "w": 128, "h": 40,
-  "z_order": 10
-}
+```bash
+python -m mypy .
 ```
 
-### Multiple Instances
+### Code Style
 
-Run multiple instances of the same widget:
-
-```json
-"widgets": [
-  {"type": "disk", "id": "disk_c", "properties": {"disk_name": "PhysicalDrive0"}},
-  {"type": "disk", "id": "disk_d", "properties": {"disk_name": "PhysicalDrive1"}}
-]
-```
-
-## Logging
-
-Logs are written to stdout. To increase verbosity, edit `main.py`:
-
-```python
-logging.basicConfig(level=logging.DEBUG, ...)
+```bash
+flake8 .
 ```
 
 ## Performance Notes
@@ -392,31 +308,15 @@ logging.basicConfig(level=logging.DEBUG, ...)
 - Refresh rate is capped at 10Hz (100ms) per SteelSeries SDK recommendations
 - Each widget runs in its own thread with independent update intervals
 - Graph modes store history (default 30 samples)
-- Lower `update_interval` increases CPU usage
-
-## Project Structure
-
-```
-python/
-├── configs/
-│   ├── config.schema.json       # JSON Schema for validation
-│   ├── CONFIG_GUIDE.md          # Detailed configuration guide
-│   └── *.json                   # Example configurations
-├── main.py                      # Application entry point
-├── requirements.txt             # Python dependencies
-├── gamesense/                   # SteelSeries API client
-├── core/                        # Core application logic
-├── widgets/                     # Widget implementations
-└── utils/                       # Utility functions
-```
-
-## Support
-
-For issues, questions, or feature requests, see:
-- Configuration guide: [configs/CONFIG_GUIDE.md](configs/CONFIG_GUIDE.md)
-- Development notes: [NOTES.md](NOTES.md)
-- JSON Schema: [configs/config.schema.json](configs/config.schema.json)
+- Lower `update_interval` values increase CPU usage
 
 ## License
 
-GNU GPL 3.0
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [SteelSeries GameSense SDK](https://github.com/SteelSeries/gamesense-sdk) for device communication
+- [Pillow](https://python-pillow.org/) for image processing
+- [psutil](https://github.com/giampaolo/psutil) for system monitoring
+- [Fixedsys Excelsior](https://github.com/kika/fixedsys) for bundled font
