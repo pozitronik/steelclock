@@ -14,7 +14,7 @@ except ImportError:
     psutil = None
 
 from core.widget import Widget
-from utils.bitmap import create_blank_image
+from utils.bitmap import Color, create_blank_image, to_pil_color
 from utils.text_renderer import render_multi_line_text
 
 logger = logging.getLogger(__name__)
@@ -230,10 +230,10 @@ class DiskWidget(Widget):
         if self.border:
             draw = ImageDraw.Draw(image)
             # Рамка всегда непрозрачная (полная видимость)
-            border_color = (self.border_color, 255) if image.mode == 'LA' else self.border_color
+            border_color: Color = (self.border_color, 255) if image.mode == 'LA' else self.border_color
             draw.rectangle(
-                [0, 0, width-1, height-1],
-                outline=border_color,
+                (0, 0, width-1, height-1),
+                outline=to_pil_color(border_color),
                 fill=None
             )
 
@@ -314,8 +314,8 @@ class DiskWidget(Widget):
         draw = ImageDraw.Draw(image)
 
         # Подготавливаем цвета с полной непрозрачностью для контента
-        read_color = (self.read_color, 255) if image.mode == 'LA' else self.read_color
-        write_color = (self.write_color, 255) if image.mode == 'LA' else self.write_color
+        read_color: Color = (self.read_color, 255) if image.mode == 'LA' else self.read_color
+        write_color: Color = (self.write_color, 255) if image.mode == 'LA' else self.write_color
 
         # Вычисляем доступное пространство
         content_x = self.padding
@@ -333,22 +333,22 @@ class DiskWidget(Widget):
 
         if self.bar_border:
             draw.rectangle(
-                [content_x, read_y, content_x + content_w - 1, read_y + bar_h - spacing - 1],
-                outline=read_color,
+                (content_x, read_y, content_x + content_w - 1, read_y + bar_h - spacing - 1),
+                outline=to_pil_color(read_color),
                 fill=None
             )
             fill_w = int((content_w - 2) * (read_pct / 100.0))
             if fill_w > 0:
                 draw.rectangle(
-                    [content_x + 1, read_y + 1, content_x + fill_w, read_y + bar_h - spacing - 2],
-                    fill=read_color
+                    (content_x + 1, read_y + 1, content_x + fill_w, read_y + bar_h - spacing - 2),
+                    fill=to_pil_color(read_color)
                 )
         else:
             fill_w = int(content_w * (read_pct / 100.0))
             if fill_w > 0:
                 draw.rectangle(
-                    [content_x, read_y, content_x + fill_w - 1, read_y + bar_h - spacing - 1],
-                    fill=read_color
+                    (content_x, read_y, content_x + fill_w - 1, read_y + bar_h - spacing - 1),
+                    fill=to_pil_color(read_color)
                 )
 
         # WRITE бар (нижний)
@@ -357,22 +357,22 @@ class DiskWidget(Widget):
 
         if self.bar_border:
             draw.rectangle(
-                [content_x, write_y, content_x + content_w - 1, write_y + bar_h - 1],
-                outline=write_color,
+                (content_x, write_y, content_x + content_w - 1, write_y + bar_h - 1),
+                outline=to_pil_color(write_color),
                 fill=None
             )
             fill_w = int((content_w - 2) * (write_pct / 100.0))
             if fill_w > 0:
                 draw.rectangle(
-                    [content_x + 1, write_y + 1, content_x + fill_w, write_y + bar_h - 2],
-                    fill=write_color
+                    (content_x + 1, write_y + 1, content_x + fill_w, write_y + bar_h - 2),
+                    fill=to_pil_color(write_color)
                 )
         else:
             fill_w = int(content_w * (write_pct / 100.0))
             if fill_w > 0:
                 draw.rectangle(
-                    [content_x, write_y, content_x + fill_w - 1, write_y + bar_h - 1],
-                    fill=write_color
+                    (content_x, write_y, content_x + fill_w - 1, write_y + bar_h - 1),
+                    fill=to_pil_color(write_color)
                 )
 
     def _render_bar_vertical(self, image: Image.Image) -> None:
@@ -380,8 +380,8 @@ class DiskWidget(Widget):
         draw = ImageDraw.Draw(image)
 
         # Подготавливаем цвета с полной непрозрачностью для контента
-        read_color = (self.read_color, 255) if image.mode == 'LA' else self.read_color
-        write_color = (self.write_color, 255) if image.mode == 'LA' else self.write_color
+        read_color: Color = (self.read_color, 255) if image.mode == 'LA' else self.read_color
+        write_color: Color = (self.write_color, 255) if image.mode == 'LA' else self.write_color
 
         # Вычисляем доступное пространство
         content_x = self.padding
@@ -401,20 +401,20 @@ class DiskWidget(Widget):
 
         if self.bar_border:
             draw.rectangle(
-                [read_x, content_y, read_x + bar_w - spacing - 1, content_y + content_h - 1],
-                outline=read_color,
+                (read_x, content_y, read_x + bar_w - spacing - 1, content_y + content_h - 1),
+                outline=to_pil_color(read_color),
                 fill=None
             )
             if fill_h > 2:
                 draw.rectangle(
-                    [read_x + 1, max(fill_y, content_y + 1), read_x + bar_w - spacing - 2, content_y + content_h - 2],
-                    fill=read_color
+                    (read_x + 1, max(fill_y, content_y + 1), read_x + bar_w - spacing - 2, content_y + content_h - 2),
+                    fill=to_pil_color(read_color)
                 )
         else:
             if fill_h > 0:
                 draw.rectangle(
-                    [read_x, fill_y, read_x + bar_w - spacing - 1, content_y + content_h - 1],
-                    fill=read_color
+                    (read_x, fill_y, read_x + bar_w - spacing - 1, content_y + content_h - 1),
+                    fill=to_pil_color(read_color)
                 )
 
         # WRITE столбец (правый)
@@ -425,20 +425,20 @@ class DiskWidget(Widget):
 
         if self.bar_border:
             draw.rectangle(
-                [write_x, content_y, write_x + bar_w - 1, content_y + content_h - 1],
-                outline=write_color,
+                (write_x, content_y, write_x + bar_w - 1, content_y + content_h - 1),
+                outline=to_pil_color(write_color),
                 fill=None
             )
             if fill_h > 2:
                 draw.rectangle(
-                    [write_x + 1, max(fill_y, content_y + 1), write_x + bar_w - 2, content_y + content_h - 2],
-                    fill=write_color
+                    (write_x + 1, max(fill_y, content_y + 1), write_x + bar_w - 2, content_y + content_h - 2),
+                    fill=to_pil_color(write_color)
                 )
         else:
             if fill_h > 0:
                 draw.rectangle(
-                    [write_x, fill_y, write_x + bar_w - 1, content_y + content_h - 1],
-                    fill=write_color
+                    (write_x, fill_y, write_x + bar_w - 1, content_y + content_h - 1),
+                    fill=to_pil_color(write_color)
                 )
 
     def _render_graph(self, image: Image.Image) -> None:
@@ -450,10 +450,10 @@ class DiskWidget(Widget):
         draw = ImageDraw.Draw(image)
 
         # Подготавливаем цвета с полной непрозрачностью для контента
-        read_color = (self.read_color, 255) if image.mode == 'LA' else self.read_color
-        write_color = (self.write_color, 255) if image.mode == 'LA' else self.write_color
-        read_color_semi = (self.read_color, 85) if image.mode == 'LA' else (self.read_color // 3)
-        write_color_semi = (self.write_color, 85) if image.mode == 'LA' else (self.write_color // 3)
+        read_color: Color = (self.read_color, 255) if image.mode == 'LA' else self.read_color
+        write_color: Color = (self.write_color, 255) if image.mode == 'LA' else self.write_color
+        read_color_semi: Color = (self.read_color, 85) if image.mode == 'LA' else (self.read_color // 3)
+        write_color_semi: Color = (self.write_color, 85) if image.mode == 'LA' else (self.write_color // 3)
 
         # Вычисляем доступное пространство
         content_x = self.padding
@@ -486,20 +486,20 @@ class DiskWidget(Widget):
             fill_points = write_points.copy()
             fill_points.append((write_points[-1][0], content_y + content_h))
             fill_points.append((write_points[0][0], content_y + content_h))
-            draw.polygon(fill_points, fill=write_color_semi, outline=None)
+            draw.polygon(fill_points, fill=to_pil_color(write_color_semi), outline=None)
 
         if len(read_points) >= 2:
             fill_points = read_points.copy()
             fill_points.append((read_points[-1][0], content_y + content_h))
             fill_points.append((read_points[0][0], content_y + content_h))
-            draw.polygon(fill_points, fill=read_color_semi, outline=None)
+            draw.polygon(fill_points, fill=to_pil_color(read_color_semi), outline=None)
 
         # Рисуем линии графиков
         if len(write_points) >= 2:
-            draw.line(write_points, fill=write_color, width=1)
+            draw.line(write_points, fill=to_pil_color(write_color), width=1)
 
         if len(read_points) >= 2:
-            draw.line(read_points, fill=read_color, width=1)
+            draw.line(read_points, fill=to_pil_color(read_color), width=1)
 
     def get_update_interval(self) -> float:
         """Возвращает интервал обновления."""

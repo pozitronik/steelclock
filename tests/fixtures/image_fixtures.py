@@ -100,7 +100,7 @@ def image_with_rect() -> Image.Image:
     """Изображение с белым прямоугольником в центре."""
     img = Image.new('L', (128, 40), color=0)
     draw = ImageDraw.Draw(img)
-    draw.rectangle([32, 10, 96, 30], fill=255)
+    draw.rectangle((32, 10, 96, 30), fill=255)
     return img
 
 
@@ -109,5 +109,5 @@ def image_with_border() -> Image.Image:
     """Изображение с рамкой."""
     img = Image.new('L', (128, 40), color=0)
     draw = ImageDraw.Draw(img)
-    draw.rectangle([0, 0, 127, 39], outline=255, fill=None)
+    draw.rectangle((0, 0, 127, 39), outline=255, fill=None)
     return img

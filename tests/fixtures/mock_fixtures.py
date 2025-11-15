@@ -7,7 +7,7 @@
 - Утилиты для создания моковых данных
 """
 
-from typing import Any, Callable, Generator, Tuple
+from typing import Callable, Generator, Tuple
 from unittest.mock import Mock, patch
 
 import pytest

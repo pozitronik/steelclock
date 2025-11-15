@@ -13,7 +13,7 @@ Unit tests для LayoutManager - управление размещением в
 - Alpha channel support
 """
 
-from typing import Any, Callable, Tuple
+from typing import Callable, Tuple
 
 import pytest
 from unittest.mock import Mock

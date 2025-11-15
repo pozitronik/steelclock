@@ -8,7 +8,7 @@ import logging
 from typing import List, Optional, Tuple
 from PIL import Image, ImageDraw
 
-from utils.bitmap import load_font
+from utils.bitmap import Color, load_font, to_pil_color
 
 logger = logging.getLogger(__name__)
 
@@ -67,8 +67,8 @@ def render_single_line_text(
         y = content_y + (content_h - text_h) // 2
 
     # Текст всегда непрозрачный (полная видимость)
-    text_color = (color, 255) if image.mode == 'LA' else color
-    draw.text((x, y), text, fill=text_color, font=font_obj)
+    text_color: Color = (color, 255) if image.mode == 'LA' else color
+    draw.text((x, y), text, fill=to_pil_color(text_color), font=font_obj)
 
 
 def render_multi_line_text(
@@ -144,8 +144,8 @@ def render_multi_line_text(
             x = content_x + (content_w - width) // 2
 
         # Текст всегда непрозрачный (полная видимость)
-        text_color = (color, 255) if image.mode == 'LA' else color
-        draw.text((x, current_y), text, fill=text_color, font=font_obj)
+        text_color: Color = (color, 255) if image.mode == 'LA' else color
+        draw.text((x, current_y), text, fill=to_pil_color(text_color), font=font_obj)
         current_y += height + line_spacing
 
 
@@ -214,8 +214,8 @@ def render_grid_text(
         y = cell_y + (cell_h - text_h) // 2
 
         # Текст всегда непрозрачный (полная видимость)
-        text_color = (color, 255) if image.mode == 'LA' else color
-        draw.text((x, y), text, fill=text_color, font=font_obj)
+        text_color: Color = (color, 255) if image.mode == 'LA' else color
+        draw.text((x, y), text, fill=to_pil_color(text_color), font=font_obj)
 
 
 def measure_text_size(

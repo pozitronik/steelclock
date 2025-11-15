@@ -5,8 +5,31 @@
 
 import os
 from pathlib import Path
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Union, cast
 from PIL import Image, ImageDraw, ImageFont
+
+
+# Типы для цветов
+# Наш полный тип включает 2-tuple для LA режима, который PIL принимает в runtime
+Color = Union[int, tuple[int, int], tuple[int, int, int], tuple[int, int, int, int]]
+# Тип который PIL декларирует в своих type stubs (без поддержки LA режима)
+PilColor = Union[int, tuple[int, int, int], tuple[int, int, int, int], None]
+
+
+def to_pil_color(color: Color | None) -> PilColor:
+    """
+    Преобразует наш цвет в формат, совместимый с type stubs PIL.
+
+    PIL принимает tuple[int, int] для LA режима в runtime,
+    но type stubs это не отражают. Используем cast для обхода этого ограничения.
+
+    Args:
+        color: Цвет в любом поддерживаемом формате
+
+    Returns:
+        Цвет в формате, который удовлетворяет type checker
+    """
+    return cast(PilColor, color)
 
 
 def resolve_font_path(font: Optional[str]) -> Optional[str]:
@@ -83,7 +106,7 @@ def resolve_font_path(font: Optional[str]) -> Optional[str]:
 
 
 # fixme: strange defaults
-def load_font(font: Optional[str] = None, size: int = 10) -> ImageFont.FreeTypeFont:
+def load_font(font: Optional[str] = None, size: int = 10) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
     """
     Загружает шрифт по имени или пути.
 
@@ -323,14 +346,14 @@ def draw_progress_bar(
 
     # Рамка
     if border:
-        draw.rectangle([x, y, x + width - 1, y + height - 1], outline=255, fill=0)
+        draw.rectangle((x, y, x + width - 1, y + height - 1), outline=255, fill=0)
 
     # Заполнение
     if percentage > 0:
         fill_width = int((width - 4) * min(percentage, 1.0))
         if fill_width > 0:
             draw.rectangle(
-                [x + 2, y + 2, x + 2 + fill_width, y + height - 3],
+                (x + 2, y + 2, x + 2 + fill_width, y + height - 3),
                 fill=255
             )
 

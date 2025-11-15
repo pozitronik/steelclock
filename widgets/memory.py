@@ -13,7 +13,7 @@ except ImportError:
     psutil = None
 
 from core.widget import Widget
-from utils.bitmap import create_blank_image
+from utils.bitmap import Color, create_blank_image, to_pil_color
 from utils.text_renderer import render_single_line_text
 
 logger = logging.getLogger(__name__)
@@ -33,22 +33,22 @@ class MemoryWidget(Widget):
     """
 
     def __init__(
-        self,
-        name: str = "Memory",
-        display_mode: str = "bar_horizontal",
-        update_interval: float = 1.0,
-        history_length: int = 30,
-        font: Optional[str] = None,
-        font_size: int = 10,
-        horizontal_align: str = "center",
-        vertical_align: str = "center",
-        background_color: int = 0,
-        background_opacity: int = 255,
-        border: bool = False,
-        border_color: int = 255,
-        padding: int = 0,
-        bar_border: bool = False,
-        fill_color: int = 255
+            self,
+            name: str = "Memory",
+            display_mode: str = "bar_horizontal",
+            update_interval: float = 1.0,
+            history_length: int = 30,
+            font: Optional[str] = None,
+            font_size: int = 10,
+            horizontal_align: str = "center",
+            vertical_align: str = "center",
+            background_color: int = 0,
+            background_opacity: int = 255,
+            border: bool = False,
+            border_color: int = 255,
+            padding: int = 0,
+            bar_border: bool = False,
+            fill_color: int = 255
     ):
         """
         Инициализирует Memory Widget.
@@ -147,10 +147,10 @@ class MemoryWidget(Widget):
         if self.border:
             draw = ImageDraw.Draw(image)
             # Рамка всегда непрозрачная (полная видимость)
-            border_color = (self.border_color, 255) if image.mode == 'LA' else self.border_color
+            border_color: Color = (self.border_color, 255) if image.mode == 'LA' else self.border_color
             draw.rectangle(
-                [0, 0, width-1, height-1],
-                outline=border_color,
+                (0, 0, width - 1, height - 1),
+                outline=to_pil_color(border_color),
                 fill=None
             )
 
@@ -189,7 +189,7 @@ class MemoryWidget(Widget):
         draw = ImageDraw.Draw(image)
 
         # Подготавливаем цвета с полной непрозрачностью для контента
-        fill_color = (self.fill_color, 255) if image.mode == 'LA' else self.fill_color
+        fill_color: Color = (self.fill_color, 255) if image.mode == 'LA' else self.fill_color
 
         # Вычисляем доступное пространство
         content_x = self.padding
@@ -200,24 +200,24 @@ class MemoryWidget(Widget):
         # Один горизонтальный бар на всю ширину
         if self.bar_border:
             draw.rectangle(
-                [content_x, content_y, content_x + content_w - 1, content_y + content_h - 1],
-                outline=fill_color,
+                (content_x, content_y, content_x + content_w - 1, content_y + content_h - 1),
+                outline=to_pil_color(fill_color),
                 fill=None
             )
             # Заполнение внутри рамки
             fill_w = int((content_w - 2) * (self._current_usage / 100.0))
             if fill_w > 0:
                 draw.rectangle(
-                    [content_x + 1, content_y + 1, content_x + fill_w, content_y + content_h - 2],
-                    fill=fill_color
+                    (content_x + 1, content_y + 1, content_x + fill_w, content_y + content_h - 2),
+                    fill=to_pil_color(fill_color)
                 )
         else:
             # Заполнение без рамки
             fill_w = int(content_w * (self._current_usage / 100.0))
             if fill_w > 0:
                 draw.rectangle(
-                    [content_x, content_y, content_x + fill_w - 1, content_y + content_h - 1],
-                    fill=fill_color
+                    (content_x, content_y, content_x + fill_w - 1, content_y + content_h - 1),
+                    fill=to_pil_color(fill_color)
                 )
 
     def _render_bar_vertical(self, image: Image.Image) -> None:
@@ -226,7 +226,7 @@ class MemoryWidget(Widget):
         draw = ImageDraw.Draw(image)
 
         # Подготавливаем цвета с полной непрозрачностью для контента
-        fill_color = (self.fill_color, 255) if image.mode == 'LA' else self.fill_color
+        fill_color: Color = (self.fill_color, 255) if image.mode == 'LA' else self.fill_color
 
         # Вычисляем доступное пространство
         content_x = self.padding
@@ -240,22 +240,22 @@ class MemoryWidget(Widget):
 
         if self.bar_border:
             draw.rectangle(
-                [content_x, content_y, content_x + content_w - 1, content_y + content_h - 1],
-                outline=fill_color,
+                (content_x, content_y, content_x + content_w - 1, content_y + content_h - 1),
+                outline=to_pil_color(fill_color),
                 fill=None
             )
             # Заполнение внутри рамки (снизу вверх)
             if fill_h > 2:
                 draw.rectangle(
-                    [content_x + 1, max(fill_y, content_y + 1), content_x + content_w - 2, content_y + content_h - 2],
-                    fill=fill_color
+                    (content_x + 1, max(fill_y, content_y + 1), content_x + content_w - 2, content_y + content_h - 2),
+                    fill=to_pil_color(fill_color)
                 )
         else:
             # Заполнение без рамки (снизу вверх)
             if fill_h > 0:
                 draw.rectangle(
-                    [content_x, fill_y, content_x + content_w - 1, content_y + content_h - 1],
-                    fill=fill_color
+                    (content_x, fill_y, content_x + content_w - 1, content_y + content_h - 1),
+                    fill=to_pil_color(fill_color)
                 )
 
     def _render_graph(self, image: Image.Image) -> None:
@@ -267,8 +267,8 @@ class MemoryWidget(Widget):
         draw = ImageDraw.Draw(image)
 
         # Подготавливаем цвета с полной непрозрачностью для контента
-        fill_color = (self.fill_color, 255) if image.mode == 'LA' else self.fill_color
-        fill_color_semi = (self.fill_color, 128) if image.mode == 'LA' else (self.fill_color // 2)
+        fill_color: Color = (self.fill_color, 255) if image.mode == 'LA' else self.fill_color
+        fill_color_semi: Color = (self.fill_color, 128) if image.mode == 'LA' else (self.fill_color // 2)
 
         # Вычисляем доступное пространство
         content_x = self.padding
@@ -288,7 +288,7 @@ class MemoryWidget(Widget):
 
         # Рисуем линию
         if len(points) >= 2:
-            draw.line(points, fill=fill_color, width=1)
+            draw.line(points, fill=to_pil_color(fill_color), width=1)
 
         # Заполнение под графиком
         if len(points) >= 2:
@@ -296,7 +296,7 @@ class MemoryWidget(Widget):
             fill_points = points.copy()
             fill_points.append((points[-1][0], content_y + content_h))
             fill_points.append((points[0][0], content_y + content_h))
-            draw.polygon(fill_points, fill=fill_color_semi, outline=None)
+            draw.polygon(fill_points, fill=to_pil_color(fill_color_semi), outline=None)
 
     def get_update_interval(self) -> float:
         """Возвращает интервал обновления."""

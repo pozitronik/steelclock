@@ -8,7 +8,7 @@ from typing import Optional
 from PIL import Image, ImageDraw
 
 from core.widget import Widget
-from utils.bitmap import create_blank_image, load_font
+from utils.bitmap import Color, create_blank_image, load_font, to_pil_color
 
 logger = logging.getLogger(__name__)
 
@@ -189,10 +189,10 @@ class KeyboardWidget(Widget):
         # Рисуем рамку если нужно
         if self.border:
             draw = ImageDraw.Draw(image)
-            border_color = (self.border_color, 255) if image.mode == 'LA' else self.border_color
+            border_color: Color = (self.border_color, 255) if image.mode == 'LA' else self.border_color
             draw.rectangle(
-                [0, 0, width-1, height-1],
-                outline=border_color,
+                (0, 0, width-1, height-1),
+                outline=to_pil_color(border_color),
                 fill=None
             )
 
@@ -278,8 +278,8 @@ class KeyboardWidget(Widget):
                 y = content_y + (content_h - height) // 2
 
             # Текст всегда непрозрачный (полная видимость)
-            text_color = (color, 255) if image.mode == 'LA' else color
-            draw.text((current_x, y), symbol, fill=text_color, font=font_obj)
+            text_color: Color = (color, 255) if image.mode == 'LA' else color
+            draw.text((current_x, y), symbol, fill=to_pil_color(text_color), font=font_obj)
 
             # Сдвигаем X координату для следующего индикатора
             current_x += width + self.spacing

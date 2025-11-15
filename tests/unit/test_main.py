@@ -18,7 +18,7 @@ import signal
 import tempfile
 import time
 from pathlib import Path
-from typing import Any, Dict, Generator
+from typing import Dict, Generator
 from unittest.mock import Mock, patch
 
 import pytest
@@ -31,12 +31,11 @@ from core.config_types import WidgetConfig
 def mock_all_widgets() -> Generator[Dict[str, Mock], None, None]:
     """Автоматически мокируем все виджеты для всех тестов."""
     with patch('main.ClockWidget') as mock_clock, \
-         patch('main.CPUWidget') as mock_cpu, \
-         patch('main.MemoryWidget') as mock_memory, \
-         patch('main.NetworkWidget') as mock_network, \
-         patch('main.DiskWidget') as mock_disk, \
-         patch('main.KeyboardWidget') as mock_keyboard:
-
+            patch('main.CPUWidget') as mock_cpu, \
+            patch('main.MemoryWidget') as mock_memory, \
+            patch('main.NetworkWidget') as mock_network, \
+            patch('main.DiskWidget') as mock_disk, \
+            patch('main.KeyboardWidget') as mock_keyboard:
         # Настраиваем моки
         for mock_widget in [mock_clock, mock_cpu, mock_memory, mock_network, mock_disk, mock_keyboard]:
             instance = Mock()
@@ -112,8 +111,7 @@ def mock_api() -> Generator[Mock, None, None]:
 def mock_components() -> Generator[Dict[str, Mock], None, None]:
     """Фикстура мокирующая все основные компоненты."""
     with patch('main.LayoutManager') as mock_layout, \
-         patch('main.Compositor') as mock_comp:
-
+            patch('main.Compositor') as mock_comp:
         layout_instance = Mock()
         layout_instance.add_widget = Mock()
         mock_layout.return_value = layout_instance
@@ -588,7 +586,7 @@ def test_main_with_config_arg(temp_config_file: str, mock_api: Mock, mock_compon
     from main import main
 
     with patch('sys.argv', ['main.py', temp_config_file]), \
-         patch('main.SteelClockApp') as mock_app_class:
+            patch('main.SteelClockApp') as mock_app_class:
 
         mock_app = Mock()
         mock_app.setup = Mock()
@@ -612,8 +610,8 @@ def test_main_without_config_arg(mock_api: Mock, mock_components: Dict[str, Mock
     from main import main
 
     with patch('sys.argv', ['main.py']), \
-         patch('main.SteelClockApp') as mock_app_class, \
-         patch('main.Path'):
+            patch('main.SteelClockApp') as mock_app_class, \
+            patch('main.Path'):
 
         mock_app = Mock()
         mock_app.setup = Mock()
@@ -636,8 +634,7 @@ def test_main_server_discovery_error(mock_components: Dict[str, Mock]) -> None:
     from gamesense.discovery import ServerDiscoveryError
 
     with patch('sys.argv', ['main.py']), \
-         patch('main.SteelClockApp') as mock_app_class:
-
+            patch('main.SteelClockApp') as mock_app_class:
         mock_app = Mock()
         mock_app.setup.side_effect = ServerDiscoveryError("Discovery failed")
         mock_app_class.return_value = mock_app
@@ -653,8 +650,7 @@ def test_main_generic_exception(mock_components: Dict[str, Mock]) -> None:
     from main import main
 
     with patch('sys.argv', ['main.py']), \
-         patch('main.SteelClockApp') as mock_app_class:
-
+            patch('main.SteelClockApp') as mock_app_class:
         mock_app = Mock()
         mock_app.setup.side_effect = Exception("Fatal error")
         mock_app_class.return_value = mock_app

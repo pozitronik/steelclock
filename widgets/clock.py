@@ -8,7 +8,7 @@ from datetime import datetime
 from PIL import Image, ImageDraw
 
 from core.widget import Widget
-from utils.bitmap import create_blank_image, draw_aligned_text
+from utils.bitmap import Color, create_blank_image, draw_aligned_text, to_pil_color
 
 logger = logging.getLogger(__name__)
 
@@ -123,10 +123,10 @@ class ClockWidget(Widget):
         if self.border:
             draw = ImageDraw.Draw(image)
             # Рамка всегда непрозрачная (полная видимость)
-            border_color = (self.border_color, 255) if image.mode == 'LA' else self.border_color
+            border_color: Color = (self.border_color, 255) if image.mode == 'LA' else self.border_color
             draw.rectangle(
-                [0, 0, width-1, height-1],
-                outline=border_color,
+                (0, 0, width-1, height-1),
+                outline=to_pil_color(border_color),
                 fill=None
             )
 
