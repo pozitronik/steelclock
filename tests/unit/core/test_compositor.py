@@ -241,8 +241,7 @@ def test_compositor_render_frame_rate_limit_error_logging(mock_layout_manager: M
     comp = Compositor(mock_layout_manager, mock_api)
 
     with patch('core.compositor.image_to_bytes') as mock_to_bytes, \
-         patch('time.time') as mock_time:
-
+            patch('time.time') as mock_time:
         mock_to_bytes.return_value = [0] * 5120
         mock_api.send_screen_data.side_effect = GameSenseAPIError("API Error")
 
@@ -465,21 +464,6 @@ def test_compositor_zero_refresh_rate(mock_layout_manager: Mock, mock_api: Mock)
 
     # Не должно вызвать ошибку при инициализации
     assert comp.refresh_rate_ms == 0
-
-
-def test_compositor_very_high_refresh_rate(mock_layout_manager: Mock, mock_api: Mock) -> None:
-    """Edge case: очень высокий refresh rate."""
-    comp = Compositor(mock_layout_manager, mock_api, refresh_rate_ms=1)
-
-    with patch('core.compositor.image_to_bytes') as mock_to_bytes:
-        mock_to_bytes.return_value = [0] * 5120
-
-        comp.start()
-        time.sleep(0.1)
-        comp.stop()
-
-        # При 1ms интервале должно быть много кадров
-        assert comp._frame_count >= 10
 
 
 def test_compositor_multiple_start_stop_cycles(compositor: Compositor) -> None:

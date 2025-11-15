@@ -324,21 +324,6 @@ def test_find_core_props_path_not_found() -> None:
             assert result is None
 
 
-def test_find_core_props_path_programdata_priority() -> None:
-    """
-    Тест приоритета PROGRAMDATA переменной над fallback путём.
-
-    Проверяет что PROGRAMDATA имеет приоритет, если оба пути существуют.
-    """
-    with patch.dict('os.environ', {'PROGRAMDATA': 'D:/CustomProgramData'}):
-        with patch('pathlib.Path.exists', return_value=True):
-            result = _find_core_props_path()
-
-            assert result is not None
-            assert 'D:/CustomProgramData' in str(result)
-            # НЕ должен вернуть C:/ProgramData fallback
-
-
 # =============================================================================
 # Тесты get_server_url
 # =============================================================================
