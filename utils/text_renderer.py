@@ -245,4 +245,4 @@ def measure_text_size(
     width = bbox[2] - bbox[0]
     height = bbox[3] - bbox[1]
 
-    return (width, height)
+    return width, height
