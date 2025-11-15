@@ -4,8 +4,10 @@
 """
 
 import os
+import logging
 from pathlib import Path
 from typing import List, Tuple, Optional, Union, cast
+from urllib.request import urlretrieve
 from PIL import Image, ImageDraw, ImageFont
 
 
@@ -30,6 +32,50 @@ def to_pil_color(color: Color | None) -> PilColor:
         Цвет в формате, который удовлетворяет type checker
     """
     return cast(PilColor, color)
+
+
+def download_bundled_font() -> Optional[str]:
+    """
+    Загружает и возвращает путь к bundled шрифту для кросс-платформенного использования.
+
+    Скачивает Fixedsys Excelsior (свободная лицензия) из GitHub если файл отсутствует.
+    Используется как fallback когда системные шрифты недоступны.
+
+    Returns:
+        Optional[str]: Путь к файлу шрифта или None если загрузка не удалась
+
+    Raises:
+        Не выбрасывает исключений, возвращает None при ошибках
+    """
+    logger = logging.getLogger(__name__)
+
+    # Определяем путь к директории fonts относительно текущего файла
+    current_dir = Path(__file__).parent.parent  # utils/ -> python/
+    fonts_dir = current_dir / "fonts"
+    font_path = fonts_dir / "FSEX302.ttf"
+
+    # Если шрифт уже существует, возвращаем путь
+    if font_path.exists():
+        logger.debug(f"Bundled font found: {font_path}")
+        return str(font_path)
+
+    # Создаём директорию fonts если её нет
+    try:
+        fonts_dir.mkdir(parents=True, exist_ok=True)
+    except Exception as e:
+        logger.warning(f"Failed to create fonts directory: {e}")
+        return None
+
+    # Скачиваем шрифт
+    font_url = "https://github.com/kika/fixedsys/releases/download/v3.02.9/FSEX302.ttf"
+    try:
+        logger.info(f"Downloading bundled font from {font_url}...")
+        urlretrieve(font_url, font_path)
+        logger.info(f"Bundled font downloaded successfully: {font_path}")
+        return str(font_path)
+    except Exception as e:
+        logger.warning(f"Failed to download bundled font: {e}")
+        return None
 
 
 def resolve_font_path(font: Optional[str]) -> Optional[str]:
@@ -132,16 +178,28 @@ def load_font(font: Optional[str] = None, size: int = 10) -> ImageFont.FreeTypeF
         else:
             logger.warning(f"Font '{font}' not found, falling back to default")
 
-    # Default fallback
+    # Default fallback chain
     try:
         # Пробуем DejaVuSans как запасной вариант
         loaded = ImageFont.truetype("DejaVuSans.ttf", size)
         logger.debug(f"Loaded DejaVuSans at size {size}")
         return loaded
     except Exception:
-        # Финальный fallback на встроенный bitmap font
-        logger.warning("DejaVuSans not found, using PIL default bitmap font (size will be ignored)")
-        return ImageFont.load_default()
+        pass  # Продолжаем fallback chain
+
+    # Пробуем bundled шрифт
+    bundled_font_path = download_bundled_font()
+    if bundled_font_path:
+        try:
+            loaded = ImageFont.truetype(bundled_font_path, size)
+            logger.debug(f"Loaded bundled font at size {size}")
+            return loaded
+        except Exception as e:
+            logger.warning(f"Failed to load bundled font: {e}")
+
+    # Финальный fallback на встроенный bitmap font
+    logger.warning("No TrueType fonts available, using PIL default bitmap font (size will be ignored)")
+    return ImageFont.load_default()
 
 
 def image_to_bytes(image: Image.Image, width: int = 128, height: int = 40) -> List[int]:
